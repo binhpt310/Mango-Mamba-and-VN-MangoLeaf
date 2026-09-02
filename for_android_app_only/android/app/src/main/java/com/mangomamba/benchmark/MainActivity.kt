@@ -52,6 +52,15 @@ class MainActivity : AppCompatActivity() {
     private val testImageExtra = "test_image_path"
     private val testBatchManifestExtra = "test_batch_manifest_path"
     private val captureIntervalMs = 800L
+    private val expectedModelLabels = listOf(
+        "Anthracnose",
+        "Dieback",
+        "Gall Midge",
+        "Healthy",
+        "Powdery Mildew",
+        "Red Rust",
+        "Sooty Mold"
+    )
     private lateinit var cameraPreview: PreviewView
     private lateinit var cameraScreen: LinearLayout
     private lateinit var informationScreen: LinearLayout
@@ -470,7 +479,11 @@ class MainActivity : AppCompatActivity() {
             .map { it.groupValues[1] }
             .filter { it != "class_names" }
             .toList()
-            .also { require(it.size == 7) { "Nhãn model phải có đúng 7 lớp" } }
+            .also {
+                require(it == expectedModelLabels) {
+                    "Nhãn model phải đúng thứ tự 7 lớp đã được app hỗ trợ"
+                }
+            }
     }
 
     private fun bitmapToTensor(bitmap: Bitmap): FloatArray {

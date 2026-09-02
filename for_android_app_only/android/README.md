@@ -4,7 +4,7 @@ This Android app runs the Phase 3 VN-MangoLeaf model with exactly seven classes:
 
 `Anthracnose`, `Dieback`, `Gall Midge`, `Healthy`, `Powdery Mildew`, `Red Rust`, and `Sooty Mold`.
 
-`MainActivity.kt` loads only `app/src/main/assets/mango_mamba_7class.onnx`. The model lineage, hashes, training metadata, source code, and APK are one directory above this project in `../ANDROID_MODEL_PROVENANCE.md`, `../provenance/`, and `../artifacts/`.
+`MainActivity.kt` loads only `app/src/main/assets/mango_mamba_7class.onnx`. Model lineage, hashes, and training metadata are in `../ANDROID_MODEL_PROVENANCE.md` and `../provenance/`. Build outputs and device-test data stay local under `app/build/` and `../artifacts/`.
 
 ## Build
 
@@ -14,7 +14,7 @@ $env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
 .\gradlew.bat clean :app:assembleDebug
 ```
 
-The built APK is `../artifacts/MangoMamba-VNMangoLeaf-7class-debug.apk`.
+The built APK is `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## Model contract
 
@@ -27,3 +27,7 @@ For an ADB smoke test, put an image in the app external-files directory and run:
 ```powershell
 adb shell am start -n com.mangomamba.benchmark/.MainActivity --es test_image_path /sdcard/Android/data/com.mangomamba.benchmark/files/test.jpg
 ```
+
+## Replacing the model
+
+Use `../scripts/replace_android_7class_model.ps1` with a new `.onnx` and labels JSON. The script only accepts the current seven labels in the exact order. It does not validate a new model's input/output contract or accuracy. Build, install, run the device batch benchmark, then update `../ANDROID_MODEL_PROVENANCE.md` with the new hashes and results.

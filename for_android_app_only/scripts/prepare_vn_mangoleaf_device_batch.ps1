@@ -2,6 +2,8 @@ param(
     [string]$SourceRoot = 'D:\Mango-Mamba-backup\vnmangoleaf_not_splitted',
     [string]$OutputRoot = "$PSScriptRoot\..\artifacts\vn_mangoleaf_device_batch_100",
     [string]$DeviceBasePath = '/sdcard/Android/data/com.mangomamba.benchmark/files/vn_mangoleaf_batch_100',
+    [ValidateRange(1, 1000)]
+    [int]$ImagesPerClass = 100,
     [switch]$IncludeHealthy,
     [string]$HealthySourceRoot = 'D:\Mango-Mamba-backup\mangomamba_android_build_cache_temp\root-build\test-images-20260802\vn\Healthy'
 )
@@ -28,9 +30,9 @@ foreach ($entry in $classMap.GetEnumerator()) {
     $targetClass = Join-Path $OutputRoot $entry.Value
     $images = Get-ChildItem -LiteralPath $sourceClass -File -Recurse -Include *.jpg,*.jpeg,*.png |
         Sort-Object FullName |
-        Select-Object -First 100
-    if ($images.Count -ne 100) {
-        throw "Expected 100 images for $($entry.Key), found $($images.Count)"
+        Select-Object -First $ImagesPerClass
+    if ($images.Count -ne $ImagesPerClass) {
+        throw "Expected $ImagesPerClass images for $($entry.Key), found $($images.Count)"
     }
 
     New-Item -ItemType Directory -Path $targetClass | Out-Null

@@ -1,0 +1,4 @@
+# Rebuildable Android outputs and local device-test data.
+for_android_app_only/android/.gradle/
+for_android_app_only/android/app/build/
+for_android_app_only/artifacts/
