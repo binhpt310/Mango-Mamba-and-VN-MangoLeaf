@@ -13,7 +13,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.view.Surface
 import android.view.View
 import android.widget.ImageView
@@ -31,6 +30,7 @@ import androidx.core.content.ContextCompat
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -49,16 +49,13 @@ class MainActivity : AppCompatActivity() {
     private val imageSize = 224
     private val resizeShortSide = 256
     private val testImageExtra = "test_image_path"
+    private val testBatchManifestExtra = "test_batch_manifest_path"
     private val captureIntervalMs = 800L
-    private val sourceUrl = Uri.parse(
-        "https://sansangxuatkhau.ppd.gov.vn/kien-thuc-kinh-nghiem/" +
-            "hai-giai-phap-sinh-hoc-hieu-qua-o-vung-xoai-cam-lam.html"
-    )
-
     private lateinit var cameraPreview: PreviewView
     private lateinit var cameraScreen: LinearLayout
     private lateinit var informationScreen: LinearLayout
     private lateinit var statusText: TextView
+    private lateinit var inferenceProgress: LinearProgressIndicator
     private lateinit var resultImage: ImageView
     private lateinit var resultName: TextView
     private lateinit var resultConfidence: TextView
@@ -70,8 +67,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var informationSubtitle: TextView
     private lateinit var symptomsText: TextView
     private lateinit var preventionText: TextView
-    private lateinit var helpText: TextView
     private lateinit var referenceButton: MaterialButton
+    private lateinit var referenceButtonSecondary: MaterialButton
 
     private val labels by lazy { loadLabels() }
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -148,6 +145,7 @@ class MainActivity : AppCompatActivity() {
         cameraScreen = findViewById(R.id.cameraScreen)
         informationScreen = findViewById(R.id.informationScreen)
         statusText = findViewById(R.id.statusText)
+        inferenceProgress = findViewById(R.id.inferenceProgress)
         resultImage = findViewById(R.id.resultImage)
         resultName = findViewById(R.id.resultName)
         resultConfidence = findViewById(R.id.resultConfidence)
@@ -159,8 +157,8 @@ class MainActivity : AppCompatActivity() {
         informationSubtitle = findViewById(R.id.informationSubtitle)
         symptomsText = findViewById(R.id.symptomsText)
         preventionText = findViewById(R.id.preventionText)
-        helpText = findViewById(R.id.helpText)
         referenceButton = findViewById(R.id.referenceButton)
+        referenceButtonSecondary = findViewById(R.id.referenceButtonSecondary)
     }
 
     private fun bindActions() {
@@ -170,7 +168,6 @@ class MainActivity : AppCompatActivity() {
         }
         informationButton.setOnClickListener { latestPrediction?.let { showInformation(it) } }
         findViewById<MaterialButton>(R.id.backButton).setOnClickListener { showCameraScreen() }
-        referenceButton.setOnClickListener { openReference() }
     }
 
     private fun requestCameraWhenNeeded() {
@@ -238,6 +235,7 @@ class MainActivity : AppCompatActivity() {
         if (isCaptureOrInferenceRunning) return
 
         isCaptureOrInferenceRunning = true
+        showInferenceProgress(true)
         if (!continuousCaptureEnabled) setStatus(getString(R.string.analysing))
         val outputFile = File(cacheDir, "mango_capture_${System.currentTimeMillis()}.jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
@@ -251,6 +249,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onError(exception: ImageCaptureException) {
                     isCaptureOrInferenceRunning = false
+                    showInferenceProgress(false)
                     if (!continuousCaptureEnabled) setStatus(getString(R.string.camera_unavailable))
                 }
             }
@@ -258,9 +257,70 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleTestImageIntent(intent: Intent?) {
-        intent?.getStringExtra(testImageExtra)
+        intent?.getStringExtra(testBatchManifestExtra)
+            ?.takeIf { it.isNotBlank() }
+            ?.let { runBatchInference(File(it)) }
+            ?: intent?.getStringExtra(testImageExtra)
             ?.takeIf { it.isNotBlank() }
             ?.let { classifyCapturedFile(File(it), keepFile = true) }
+    }
+
+    private fun runBatchInference(manifestFile: File) {
+        if (isCaptureOrInferenceRunning || !manifestFile.isFile) return
+        val entries = manifestFile.readLines()
+            .mapNotNull { line ->
+                val fields = line.split('\t', limit = 2)
+                val expectedLabel = fields.firstOrNull()?.removePrefix("\uFEFF")
+                if (fields.size == 2 && expectedLabel != null && expectedLabel in labels && File(fields[1]).isFile) {
+                    BatchEntry(expectedLabel, File(fields[1]))
+                } else {
+                    null
+                }
+            }
+        if (entries.isEmpty()) return
+
+        isCaptureOrInferenceRunning = true
+        showInferenceProgress(true)
+        setStatus("Đang kiểm tra 0/${entries.size} ảnh")
+        lifecycleScope.launch {
+            val summary = withContext(Dispatchers.Default) {
+                val outputFile = File(getExternalFilesDir(null), "vn_mangoleaf_batch_results.csv")
+                val correctByClass = mutableMapOf<String, Int>()
+                val countByClass = mutableMapOf<String, Int>()
+                outputFile.bufferedWriter().use { writer ->
+                    writer.appendLine("expected,predicted,confidence,latency_ms,file_name")
+                    entries.forEachIndexed { index, entry ->
+                        val captured = classifyFile(entry.file)
+                        try {
+                            val prediction = captured.prediction
+                            countByClass[entry.expectedLabel] = (countByClass[entry.expectedLabel] ?: 0) + 1
+                            if (prediction.modelLabel == entry.expectedLabel) {
+                                correctByClass[entry.expectedLabel] = (correctByClass[entry.expectedLabel] ?: 0) + 1
+                            }
+                            writer.appendLine(
+                                listOf(
+                                    entry.expectedLabel,
+                                    prediction.modelLabel,
+                                    String.format(Locale.US, "%.6f", prediction.confidence),
+                                    String.format(Locale.US, "%.2f", prediction.latencyMs),
+                                    entry.file.name
+                                ).joinToString(",")
+                            )
+                        } finally {
+                            captured.previewBitmap.recycle()
+                        }
+                        if ((index + 1) % 25 == 0 && index + 1 < entries.size) {
+                            runOnUiThread { setStatus("Đang kiểm tra ${index + 1}/${entries.size} ảnh") }
+                        }
+                    }
+                }
+                BatchSummary(outputFile, countByClass, correctByClass)
+            }
+            isCaptureOrInferenceRunning = false
+            showInferenceProgress(false)
+            val correct = summary.correctByClass.values.sum()
+            setStatus("Đã kiểm tra ${entries.size} ảnh, đúng $correct/${entries.size}. CSV đã lưu trong thư mục app.")
+        }
     }
 
     private fun classifyCapturedFile(file: File, keepFile: Boolean = false) {
@@ -269,11 +329,13 @@ class MainActivity : AppCompatActivity() {
             return
         }
         isCaptureOrInferenceRunning = true
+        showInferenceProgress(true)
         lifecycleScope.launch {
             val result = withContext(Dispatchers.Default) {
                 runCatching { classifyFile(file) }
             }
             isCaptureOrInferenceRunning = false
+            showInferenceProgress(false)
             result.onSuccess { captured ->
                 showPrediction(captured)
                 if (!continuousCaptureEnabled) setStatus(getString(R.string.camera_ready))
@@ -434,12 +496,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun showInformation(prediction: Prediction) {
         stopContinuousCapture()
-        val content = contentFor(prediction.modelLabel)
+        val content = factCheckedContentFor(prediction.modelLabel)
         informationTitle.text = getString(R.string.disease_information)
         informationSubtitle.text = displayName(prediction.modelLabel)
         symptomsText.text = content.symptoms
         preventionText.text = content.prevention
-        helpText.text = content.seekHelp
+        bindReferenceButton(referenceButton, content.references.first())
+        content.references.getOrNull(1)?.let { secondReference ->
+            bindReferenceButton(referenceButtonSecondary, secondReference)
+            referenceButtonSecondary.visibility = View.VISIBLE
+        } ?: run {
+            referenceButtonSecondary.visibility = View.GONE
+        }
         cameraScreen.visibility = View.GONE
         informationScreen.visibility = View.VISIBLE
     }
@@ -449,49 +517,72 @@ class MainActivity : AppCompatActivity() {
         cameraScreen.visibility = View.VISIBLE
     }
 
-    private fun openReference() {
+    private fun bindReferenceButton(button: MaterialButton, reference: ReferenceLink) {
+        button.text = reference.title
+        button.setOnClickListener { openReference(reference.uri) }
+    }
+
+    private fun openReference(uri: Uri) {
         runCatching {
-            startActivity(Intent(Intent.ACTION_VIEW, sourceUrl))
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
         }.onFailure {
-            startActivity(Intent(Settings.ACTION_SETTINGS))
+            referenceButton.error = getString(R.string.camera_unavailable)
         }
     }
 
-    private fun contentFor(modelLabel: String): DiseaseContent = when (modelLabel) {
-        "Anthracnose" -> DiseaseContent(
-            "Trên lá có thể xuất hiện đốm nâu hoặc đen, sau đó lan rộng khi điều kiện ẩm kéo dài.",
-            "Tỉa cành cho vườn thông thoáng, thu gom lá bệnh và theo dõi vườn sau mưa. Chỉ dùng biện pháp bảo vệ thực vật theo hướng dẫn của cơ quan chuyên môn.",
-            "Hỏi cán bộ nông nghiệp địa phương khi vết bệnh lan nhanh, xuất hiện nhiều trên lộc non hoặc ảnh hưởng đến quả."
+    private fun factCheckedContentFor(modelLabel: String): FactCheckedDiseaseContent = when (modelLabel) {
+        "Anthracnose" -> FactCheckedDiseaseContent(
+            "Đốm tròn nâu đen, ban đầu nhỏ rồi lan rộng; nhiều vết liên kết có thể gây cháy, khô lá. Bệnh thường mạnh khi ẩm độ cao, mưa nhiều.",
+            "Cắt tỉa tạo tán thông thoáng; thu gom, tiêu hủy cành và lá bệnh; bón phân cân đối. Vệ sinh sau thu hoạch và quản lý sớm khi chồi, lá non xuất hiện.",
+            listOf(
+                ReferenceLink("Sở NN&MT Lai Châu", "https://sonnmt.laichau.gov.vn/tin-tuc-thong-ke/tang-cuong-phong-tru-sau-benh-hai-tren-cay-xoai.html"),
+                ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo.html")
+            )
         )
-        "Dieback" -> DiseaseContent(
-            "Cành non có thể khô dần từ đầu cành, lá trên cành bị ảnh hưởng héo hoặc rụng.",
-            "Cắt tỉa phần cành bị hại bằng dụng cụ sạch, giữ tán cây thông thoáng và theo dõi vết khô mới.",
-            "Hỏi cán bộ nông nghiệp khi cành khô lan xuống thân hoặc nhiều cây trong vườn có dấu hiệu tương tự."
+        "Dieback" -> FactCheckedDiseaseContent(
+            "Vết sậm màu có thể lan từ đọt sang cành non và cuống lá; lá chuyển nâu, mép lá cuốn lên; cành có thể nhăn, chảy mủ rồi khô chết.",
+            "Chọn vật liệu giống hoặc ghép khỏe; vệ sinh dụng cụ; tránh ngập úng; cắt và tiêu hủy cành, đọt bệnh; kiểm tra vườn thường xuyên và bón phân cân đối.",
+            listOf(
+                ReferenceLink("Nông nghiệp AVN", "https://nongnghiepavn.com/phong-tru-benh-kho-dot-thoi-trai-tren-cay-xoai/"),
+                ReferenceLink("Cổng TTĐT Tiền Giang", "https://tiengiang.gov.vn/hoi-dap/-/qa/3?_questionmvcportletcontentdgaction_WAR_Iportal_Hoi_Dap_Manageportlet_cur=30")
+            )
         )
-        "Gall Midge" -> DiseaseContent(
-            "Lá non có thể biến dạng, có vết hại nhỏ hoặc phát triển không đều.",
-            "Theo dõi đợt lộc non, vệ sinh vườn và trao đổi với cán bộ kỹ thuật về biện pháp phù hợp tại địa phương.",
-            "Hỏi cán bộ nông nghiệp khi lá non bị hại trên diện rộng hoặc cây giảm sinh trưởng rõ rệt."
+        "Gall Midge" -> FactCheckedDiseaseContent(
+            "Lá có nốt u hoặc mụn, chỗ sưng phồng; khi bị hại nặng lá có thể vàng, biến dạng. Muỗi còn có thể gây hại chồi, hoa và quả non.",
+            "Cắt tỉa để vườn thông thoáng; điều khiển cây ra đọt tập trung để dễ quản lý; theo dõi kỹ giai đoạn lá non và xử lý khi muỗi mới xuất hiện.",
+            listOf(
+                ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/tin-tuc/quy-trinh-khoa-hoc-cong-nghe/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo-745.html?download=2&id=0"),
+                ReferenceLink("Cẩm Nang Nhà Nông", "https://camnangnhanong.com/trong-trot/cay-an-qua/la-xoai-bi-noi-mun-la-bi-benh-gi.html")
+            )
         )
-        "Healthy" -> DiseaseContent(
+        "Healthy" -> FactCheckedDiseaseContent(
             "Ảnh hiện tại chưa cho thấy dấu hiệu rõ của sáu nhóm bệnh còn lại trong model 7 lớp.",
             "Tiếp tục giữ vườn thông thoáng, theo dõi lá non và chụp lại khi xuất hiện đốm, mốc hoặc biến dạng.",
-            "Hỏi cán bộ nông nghiệp nếu cây vẫn suy yếu, dù app không nhận diện được dấu hiệu trong ảnh."
+            listOf(ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo.html"))
         )
-        "Powdery Mildew" -> DiseaseContent(
-            "Bề mặt lá có thể có lớp phấn trắng hoặc mốc mịn, thường dễ thấy hơn trên phần non.",
-            "Giữ tán cây thông thoáng, tránh để ẩm kéo dài và theo dõi sớm các đợt lá non.",
-            "Hỏi cán bộ nông nghiệp khi lớp phấn lan nhanh hoặc xuất hiện đồng thời trên hoa, chồi và lá."
+        "Powdery Mildew" -> FactCheckedDiseaseContent(
+            "Trên lá, hoa và chùm quả non có thể xuất hiện lớp phấn trắng như bột; mô non suy yếu, hoa khô và giảm đậu quả.",
+            "Sau thu hoạch cắt bỏ cành già và bộ phận nhiễm bệnh; tạo tán thoáng; vệ sinh vườn, bón phân cân đối và quản lý sớm từ giai đoạn phát hoa.",
+            listOf(
+                ReferenceLink("Sở NN&MT Lai Châu", "https://sonnmt.laichau.gov.vn/tin-tuc-thong-ke/tang-cuong-phong-tru-sau-benh-hai-tren-cay-xoai.html"),
+                ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/tin-tuc/quy-trinh-khoa-hoc-cong-nghe/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo-745.html?download=2&id=0")
+            )
         )
-        "Red Rust" -> DiseaseContent(
-            "Lá có thể xuất hiện mảng màu cam đỏ hoặc nâu đỏ, cần chụp thêm mặt trên và mặt dưới lá để đối chiếu.",
-            "Thu gom bộ phận bị hại, giữ vườn sạch và theo dõi diễn biến sau các giai đoạn ẩm kéo dài.",
-            "Hỏi cán bộ nông nghiệp khi mảng màu lan rộng, lá rụng nhiều hoặc cây sinh trưởng kém."
+        "Red Rust" -> FactCheckedDiseaseContent(
+            "Đốm tròn cam, nâu đỏ hoặc rỉ sắt, hơi nhô lên, bề mặt như lớp nhung và thường thấy rõ ở mặt trên lá. Khi nặng, các đốm có thể liên kết làm giảm quang hợp.",
+            "Trồng mật độ hợp lý; cắt tỉa tạo tán thoáng; chăm sóc cây khỏe; tưới đủ mùa khô, thoát nước tốt mùa mưa; tỉa và tiêu hủy bộ phận nhiễm nặng.",
+            listOf(
+                ReferenceLink("Khuyến nông Việt Nam", "https://khuyennongvn.gov.vn/khoa-hoc-cong-nghe/khcn-trong-nuoc/phong-tri-benh-dom-rong-tren-cay-an-trai-trong-mua-mua-17309.html"),
+                ReferenceLink("Chi cục TT&BVTV TP.HCM", "https://chicucttbvtvhcm.gov.vn/cay-an-qua/benh-dom-rong-471.html")
+            )
         )
-        else -> DiseaseContent(
-            "Lá có thể phủ lớp đen như muội; nên kiểm tra thêm sự xuất hiện của côn trùng tiết mật trên cây.",
-            "Giữ tán cây thông thoáng, vệ sinh lá bị ảnh hưởng và hỏi cán bộ kỹ thuật về cách quản lý côn trùng liên quan.",
-            "Hỏi cán bộ nông nghiệp khi lớp đen phủ rộng hoặc xuất hiện đồng thời rệp, rầy hay côn trùng chích hút."
+        else -> FactCheckedDiseaseContent(
+            "Bề mặt lá bị phủ lớp muội đen hoặc mảng đen như bồ hóng. Nấm thường đi kèm mật ngọt do rầy, rệp tiết ra và làm giảm khả năng quang hợp.",
+            "Ưu tiên kiểm soát rầy, rệp và côn trùng chích hút; tỉa cành tạo tán thông thoáng và chăm sóc cây khỏe.",
+            listOf(
+                ReferenceLink("Chi cục TT&BVTV TP.HCM", "https://chicucttbvtvhcm.gov.vn/cay-an-qua/benh-bo-hong-493.html"),
+                ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/tin-tuc/quy-trinh-khoa-hoc-cong-nghe/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo-745.html?download=2&id=0")
+            )
         )
     }
 
@@ -509,6 +600,10 @@ class MainActivity : AppCompatActivity() {
         statusText.text = message
     }
 
+    private fun showInferenceProgress(show: Boolean) {
+        inferenceProgress.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
     private data class Prediction(
         val modelLabel: String,
         val confidence: Float,
@@ -520,9 +615,21 @@ class MainActivity : AppCompatActivity() {
         val previewBitmap: Bitmap
     )
 
-    private data class DiseaseContent(
+    private data class BatchEntry(val expectedLabel: String, val file: File)
+
+    private data class BatchSummary(
+        val outputFile: File,
+        val countByClass: Map<String, Int>,
+        val correctByClass: Map<String, Int>
+    )
+
+    private data class FactCheckedDiseaseContent(
         val symptoms: String,
         val prevention: String,
-        val seekHelp: String
+        val references: List<ReferenceLink>
     )
+
+    private data class ReferenceLink(val title: String, val url: String) {
+        val uri: Uri get() = Uri.parse(url)
+    }
 }

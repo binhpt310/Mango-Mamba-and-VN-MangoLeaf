@@ -15,13 +15,13 @@
         android:paddingEnd="20dp"
         android:paddingBottom="16dp">
 
-        <TextView
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/camera_title"
-            android:textColor="@color/mm_text"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_height="56dp"
+            app:title="@string/camera_title"
+            app:titleTextColor="@color/mm_text"
+            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
         <TextView
             android:id="@+id/statusText"
@@ -31,6 +31,15 @@
             android:text="@string/camera_hint"
             android:textColor="@color/mm_text_secondary"
             android:textSize="16sp" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/inferenceProgress"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:indicatorColor="@color/mm_primary"
+            app:trackColor="@color/mm_primary_container" />
 
         <androidx.camera.view.PreviewView
             android:id="@+id/cameraPreview"
@@ -216,6 +225,12 @@
                     android:textColor="@color/mm_text_secondary"
                     android:textSize="18sp" />
 
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:dividerColor="@color/mm_primary_container" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -233,22 +248,11 @@
                     android:textColor="@color/mm_text_secondary"
                     android:textSize="18sp" />
 
-                <TextView
+                <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/seek_help"
-                    android:textColor="@color/mm_text"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/helpText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/mm_text_secondary"
-                    android:textSize="18sp" />
+                    android:layout_marginTop="20dp"
+                    app:dividerColor="@color/mm_primary_container" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -271,6 +275,17 @@
                     android:textSize="18sp"
                     app:cornerRadius="16dp"
                     app:strokeColor="@color/mm_primary" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/referenceButtonSecondary"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/mm_primary"
+                    android:textSize="16sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
