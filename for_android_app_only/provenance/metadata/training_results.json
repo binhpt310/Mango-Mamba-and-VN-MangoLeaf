@@ -1,0 +1,113 @@
+{
+  "training_time_seconds": 4433.262946844101,
+  "training_time_formatted": "1h 13m 53s",
+  "total_parameters": 5810043,
+  "trainable_parameters": 5810043,
+  "model_size_mb": 22.163555145263672,
+  "best_validation_accuracy": 97.57142804827009,
+  "early_stopping": {
+    "patience_epochs": 20,
+    "monitor_metric": "loss",
+    "early_stopping_triggered": true,
+    "epochs_completed": 93,
+    "best_epoch": 73
+  },
+  "final_metrics": {
+    "train_loss": 0.06954858664955411,
+    "val_loss": 0.08374744926180158,
+    "train_acc": 99.88839285714286,
+    "val_acc": 97.57142804827009,
+    "test_loss": 0.057050931831030376,
+    "test_acc": 98.71244630827242
+  },
+  "validation_metrics": {
+    "accuracy": 0.9771428571428571,
+    "precision": 0.9775537984185767,
+    "recall": 0.9771428571428571,
+    "f1_score": 0.9772240897058981
+  },
+  "test_metrics": {
+    "accuracy": 0.977110157367668,
+    "precision": 0.9769423510058404,
+    "recall": 0.977110157367668,
+    "f1_score": 0.9767413389958374
+  },
+  "validation_per_class_metrics": {
+    "precision": [
+      0.912621359223301,
+      1.0,
+      0.99,
+      1.0,
+      0.970873786407767,
+      0.979381443298969,
+      0.99
+    ],
+    "recall": [
+      0.94,
+      0.97,
+      0.99,
+      1.0,
+      1.0,
+      0.95,
+      0.99
+    ],
+    "f1_score": [
+      0.9261083743842364,
+      0.9847715736040609,
+      0.99,
+      1.0,
+      0.9852216748768473,
+      0.9644670050761421,
+      0.99
+    ],
+    "class_names": [
+      "Anthracnose",
+      "Dieback",
+      "Gall Midge",
+      "Healthy",
+      "Powdery Mildew",
+      "Red Rust",
+      "Sooty Mold"
+    ]
+  },
+  "test_per_class_metrics": {
+    "precision": [
+      0.9560439560439561,
+      1.0,
+      0.9801980198019802,
+      0.9803921568627451,
+      0.9900990099009901,
+      0.9514563106796117,
+      0.9801980198019802
+    ],
+    "recall": [
+      0.8787878787878788,
+      1.0,
+      0.99,
+      1.0,
+      1.0,
+      0.98,
+      0.99
+    ],
+    "f1_score": [
+      0.9157894736842105,
+      1.0,
+      0.9850746268656716,
+      0.9900990099009901,
+      0.9950248756218906,
+      0.9655172413793104,
+      0.9850746268656716
+    ],
+    "class_names": [
+      "Anthracnose",
+      "Dieback",
+      "Gall Midge",
+      "Healthy",
+      "Powdery Mildew",
+      "Red Rust",
+      "Sooty Mold"
+    ]
+  },
+  "epochs_completed": 93,
+  "best_epoch": 73
+}
