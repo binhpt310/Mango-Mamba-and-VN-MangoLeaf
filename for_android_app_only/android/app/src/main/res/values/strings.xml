@@ -6,7 +6,9 @@
     <string name="camera_ready">Sẵn sàng chụp ảnh</string>
     <string name="camera_permission_needed">Ứng dụng cần quyền camera để chụp ảnh lá xoài.</string>
     <string name="camera_unavailable">Không thể mở camera. Hãy thử lại hoặc kiểm tra quyền camera.</string>
+    <string name="image_unavailable">Không thể đọc ảnh đã chọn. Hãy chọn một ảnh khác.</string>
     <string name="capture_single">Chụp ảnh</string>
+    <string name="pick_image">Chọn ảnh</string>
     <string name="capture_continuous">Chụp liên tục</string>
     <string name="stop_capture">Dừng chụp</string>
     <string name="continuous_status">Đang chụp liên tục, cập nhật mỗi 0,8 giây</string>
@@ -19,6 +21,7 @@
     <string name="view_information">Xem triệu chứng và cách phòng</string>
     <string name="back">Trở lại</string>
     <string name="disease_information">Thông tin bệnh</string>
+    <string name="dataset_illustration_caption">Ảnh minh họa từ VN MangoLeaf Dataset</string>
     <string name="symptoms">Dấu hiệu thường gặp</string>
     <string name="prevention">Cách phòng chống</string>
     <string name="reference">Nguồn tham khảo tại Việt Nam</string>

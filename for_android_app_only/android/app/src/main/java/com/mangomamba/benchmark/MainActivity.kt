@@ -29,6 +29,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.Dispatchers
@@ -57,14 +58,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusText: TextView
     private lateinit var inferenceProgress: LinearProgressIndicator
     private lateinit var resultImage: ImageView
+    private lateinit var resultPlaceholderIcon: ImageView
     private lateinit var resultName: TextView
     private lateinit var resultConfidence: TextView
     private lateinit var resultMessage: TextView
     private lateinit var captureButton: MaterialButton
+    private lateinit var pickImageButton: MaterialButton
     private lateinit var continuousButton: MaterialButton
     private lateinit var informationButton: MaterialButton
-    private lateinit var informationTitle: TextView
     private lateinit var informationSubtitle: TextView
+    private lateinit var informationEnglishName: TextView
+    private lateinit var diseaseGuideImage: ImageView
     private lateinit var symptomsText: TextView
     private lateinit var preventionText: TextView
     private lateinit var referenceButton: MaterialButton
@@ -93,6 +97,12 @@ class MainActivity : AppCompatActivity() {
         } else {
             setStatus(getString(R.string.camera_permission_needed))
         }
+    }
+
+    private val galleryPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let(::classifyGalleryImage)
     }
 
     companion object {
@@ -147,14 +157,17 @@ class MainActivity : AppCompatActivity() {
         statusText = findViewById(R.id.statusText)
         inferenceProgress = findViewById(R.id.inferenceProgress)
         resultImage = findViewById(R.id.resultImage)
+        resultPlaceholderIcon = findViewById(R.id.resultPlaceholderIcon)
         resultName = findViewById(R.id.resultName)
         resultConfidence = findViewById(R.id.resultConfidence)
         resultMessage = findViewById(R.id.resultMessage)
         captureButton = findViewById(R.id.captureButton)
+        pickImageButton = findViewById(R.id.pickImageButton)
         continuousButton = findViewById(R.id.continuousButton)
         informationButton = findViewById(R.id.informationButton)
-        informationTitle = findViewById(R.id.informationTitle)
         informationSubtitle = findViewById(R.id.informationSubtitle)
+        informationEnglishName = findViewById(R.id.informationEnglishName)
+        diseaseGuideImage = findViewById(R.id.diseaseGuideImage)
         symptomsText = findViewById(R.id.symptomsText)
         preventionText = findViewById(R.id.preventionText)
         referenceButton = findViewById(R.id.referenceButton)
@@ -163,11 +176,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun bindActions() {
         captureButton.setOnClickListener { capturePhoto() }
+        pickImageButton.setOnClickListener { galleryPickerLauncher.launch("image/*") }
         continuousButton.setOnClickListener {
             if (continuousCaptureEnabled) stopContinuousCapture() else startContinuousCapture()
         }
         informationButton.setOnClickListener { latestPrediction?.let { showInformation(it) } }
-        findViewById<MaterialButton>(R.id.backButton).setOnClickListener { showCameraScreen() }
+        findViewById<MaterialToolbar>(R.id.informationTopAppBar)
+            .setNavigationOnClickListener { showCameraScreen() }
     }
 
     private fun requestCameraWhenNeeded() {
@@ -254,6 +269,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    private fun classifyGalleryImage(uri: Uri) {
+        if (isCaptureOrInferenceRunning) return
+        val imageFile = File(cacheDir, "mango_album_${System.currentTimeMillis()}.jpg")
+        runCatching {
+            contentResolver.openInputStream(uri)?.use { input ->
+                imageFile.outputStream().use { output -> input.copyTo(output) }
+            } ?: error("Không đọc được ảnh đã chọn")
+        }.onSuccess {
+            classifyCapturedFile(imageFile)
+        }.onFailure {
+            imageFile.delete()
+            setStatus(getString(R.string.image_unavailable))
+        }
     }
 
     private fun handleTestImageIntent(intent: Intent?) {
@@ -481,6 +511,7 @@ class MainActivity : AppCompatActivity() {
         latestPrediction = captured.prediction
         resultImage.setImageBitmap(captured.previewBitmap)
         resultImage.visibility = View.VISIBLE
+        resultPlaceholderIcon.visibility = View.GONE
         resultName.text = displayName(captured.prediction.modelLabel)
         resultConfidence.text = String.format(Locale.getDefault(), "%.0f%%", captured.prediction.confidence * 100)
         resultConfidence.visibility = View.VISIBLE
@@ -497,8 +528,9 @@ class MainActivity : AppCompatActivity() {
     private fun showInformation(prediction: Prediction) {
         stopContinuousCapture()
         val content = factCheckedContentFor(prediction.modelLabel)
-        informationTitle.text = getString(R.string.disease_information)
         informationSubtitle.text = displayName(prediction.modelLabel)
+        informationEnglishName.text = content.englishName
+        diseaseGuideImage.setImageResource(content.guideImageRes)
         symptomsText.text = content.symptoms
         preventionText.text = content.prevention
         bindReferenceButton(referenceButton, content.references.first())
@@ -532,54 +564,68 @@ class MainActivity : AppCompatActivity() {
 
     private fun factCheckedContentFor(modelLabel: String): FactCheckedDiseaseContent = when (modelLabel) {
         "Anthracnose" -> FactCheckedDiseaseContent(
-            "Đốm tròn nâu đen, ban đầu nhỏ rồi lan rộng; nhiều vết liên kết có thể gây cháy, khô lá. Bệnh thường mạnh khi ẩm độ cao, mưa nhiều.",
-            "Cắt tỉa tạo tán thông thoáng; thu gom, tiêu hủy cành và lá bệnh; bón phân cân đối. Vệ sinh sau thu hoạch và quản lý sớm khi chồi, lá non xuất hiện.",
-            listOf(
+            englishName = "Anthracnose",
+            guideImageRes = R.drawable.guide_anthracnose,
+            symptoms = "• Đốm nâu đen thường xuất hiện trước trên lá non; vùng lá lành quanh vết có thể vàng.\n• Vết bệnh lớn dần, liên kết với nhau và làm phần lá bị cháy hoặc khô.\n• Cành non có thể có vết nâu đen hơi lõm và khô dần.\n• Bệnh dễ phát triển khi vườn ẩm, nhiều sương hoặc mưa kéo dài.",
+            prevention = "• Thu gom và tiêu hủy lá, cành bệnh; dọn cỏ và tàn dư trong vườn.\n• Cắt tỉa cành vô hiệu để tán nhận ánh sáng và nhanh khô sau mưa.\n• Bón phân cân đối, tránh bón thừa đạm làm tán quá rậm.\n• Theo dõi sớm ở đợt lộc non, nụ và quả non; chỉ dùng thuốc nằm trong danh mục và theo nhãn.",
+            references = listOf(
                 ReferenceLink("Sở NN&MT Lai Châu", "https://sonnmt.laichau.gov.vn/tin-tuc-thong-ke/tang-cuong-phong-tru-sau-benh-hai-tren-cay-xoai.html"),
                 ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo.html")
             )
         )
         "Dieback" -> FactCheckedDiseaseContent(
-            "Vết sậm màu có thể lan từ đọt sang cành non và cuống lá; lá chuyển nâu, mép lá cuốn lên; cành có thể nhăn, chảy mủ rồi khô chết.",
-            "Chọn vật liệu giống hoặc ghép khỏe; vệ sinh dụng cụ; tránh ngập úng; cắt và tiêu hủy cành, đọt bệnh; kiểm tra vườn thường xuyên và bón phân cân đối.",
-            listOf(
+            englishName = "Dieback",
+            guideImageRes = R.drawable.guide_dieback,
+            symptoms = "• Đọt hoặc cành non có vết sậm màu, sau đó khô dần từ phần ngọn.\n• Lá trên cành bị hại chuyển nâu, có thể cuốn mép và rụng sớm.\n• Vết hại có thể lan xuống cành; cành nặng bị nhăn hoặc chết khô.\n• Cần phân biệt với khô cành do thiếu nước hay tổn thương cơ giới bằng cách theo dõi vết mới.",
+            prevention = "• Dùng giống, cành ghép khỏe và vệ sinh dao kéo trước, sau khi cắt tỉa.\n• Cắt bỏ phần cành bệnh vào lúc khô ráo, thu gom và tiêu hủy ngoài vườn.\n• Giữ đất thoát nước, tránh để vùng rễ ngập úng kéo dài.\n• Bón phân cân đối và theo dõi sớm các đọt mới để xử lý ổ bệnh nhỏ.",
+            references = listOf(
                 ReferenceLink("Nông nghiệp AVN", "https://nongnghiepavn.com/phong-tru-benh-kho-dot-thoi-trai-tren-cay-xoai/"),
                 ReferenceLink("Cổng TTĐT Tiền Giang", "https://tiengiang.gov.vn/hoi-dap/-/qa/3?_questionmvcportletcontentdgaction_WAR_Iportal_Hoi_Dap_Manageportlet_cur=30")
             )
         )
         "Gall Midge" -> FactCheckedDiseaseContent(
-            "Lá có nốt u hoặc mụn, chỗ sưng phồng; khi bị hại nặng lá có thể vàng, biến dạng. Muỗi còn có thể gây hại chồi, hoa và quả non.",
-            "Cắt tỉa để vườn thông thoáng; điều khiển cây ra đọt tập trung để dễ quản lý; theo dõi kỹ giai đoạn lá non và xử lý khi muỗi mới xuất hiện.",
-            listOf(
+            englishName = "Gall Midge",
+            guideImageRes = R.drawable.guide_gall_midge,
+            symptoms = "• Trên lá có thể thấy nốt u hoặc mụn, phần mô lá sưng phồng.\n• Lá non bị hại nặng dễ vàng, biến dạng hoặc phát triển không đều.\n• Cần kiểm tra kỹ đợt lá non vì đây là giai đoạn dễ nhìn thấy dấu hiệu nhất.\n• Tổn thương tương tự có thể xuất hiện ở chồi, hoa hoặc quả non.",
+            prevention = "• Cắt tỉa tạo tán thông thoáng để dễ quan sát đợt lộc non.\n• Điều khiển cây ra đọt tập trung, tránh nhiều đợt lá non chồng chéo khó quản lý.\n• Theo dõi thường xuyên ngay khi lá non mới mở; loại bỏ bộ phận hại nặng.\n• Khi cần dùng biện pháp bảo vệ thực vật, chọn sản phẩm được phép cho cây xoài và theo đúng nhãn.",
+            references = listOf(
                 ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/tin-tuc/quy-trinh-khoa-hoc-cong-nghe/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo-745.html?download=2&id=0"),
                 ReferenceLink("Cẩm Nang Nhà Nông", "https://camnangnhanong.com/trong-trot/cay-an-qua/la-xoai-bi-noi-mun-la-bi-benh-gi.html")
             )
         )
         "Healthy" -> FactCheckedDiseaseContent(
-            "Ảnh hiện tại chưa cho thấy dấu hiệu rõ của sáu nhóm bệnh còn lại trong model 7 lớp.",
-            "Tiếp tục giữ vườn thông thoáng, theo dõi lá non và chụp lại khi xuất hiện đốm, mốc hoặc biến dạng.",
-            listOf(ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo.html"))
+            englishName = "Healthy leaf",
+            guideImageRes = R.drawable.guide_healthy,
+            symptoms = "• Ảnh hiện tại không có dấu hiệu nổi bật của sáu nhóm bệnh còn lại trong model.\n• Lá khỏe thường có màu tương đối đồng đều, không có lớp phấn trắng hay mảng muội đen.\n• Không nên coi kết quả này là chẩn đoán toàn bộ cây vì ảnh chỉ phản ánh phần lá đã chụp.\n• Chụp lại khi lá xuất hiện đốm, mốc, mụn hoặc biến dạng mới.",
+            prevention = "• Giữ tán cây thông thoáng và dọn lá, cành già sau thu hoạch.\n• Theo dõi lá non, mặt dưới lá và các côn trùng chích hút định kỳ.\n• Bón phân, tưới và thoát nước phù hợp với điều kiện vườn.\n• Tiếp tục ghi nhận ảnh ở cùng vị trí để phát hiện thay đổi sớm.",
+            references = listOf(ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo.html"))
         )
         "Powdery Mildew" -> FactCheckedDiseaseContent(
-            "Trên lá, hoa và chùm quả non có thể xuất hiện lớp phấn trắng như bột; mô non suy yếu, hoa khô và giảm đậu quả.",
-            "Sau thu hoạch cắt bỏ cành già và bộ phận nhiễm bệnh; tạo tán thoáng; vệ sinh vườn, bón phân cân đối và quản lý sớm từ giai đoạn phát hoa.",
-            listOf(
+            englishName = "Powdery Mildew",
+            guideImageRes = R.drawable.guide_powdery_mildew,
+            symptoms = "• Mặt lá, hoa hoặc chùm quả non có thể phủ lớp phấn trắng như bột.\n• Phần mô non bị hại suy yếu, hoa dễ khô và giảm khả năng đậu quả.\n• Dấu hiệu thường rõ trong giai đoạn cây ra hoa, đậu quả.\n• Khi phấn lan rộng, kiểm tra cả chồi non và chùm hoa để đánh giá mức độ.",
+            prevention = "• Thu gom bộ phận rụng, cắt bỏ cành già và phần nhiễm bệnh sau thu hoạch.\n• Tạo tán thoáng, giảm nơi giữ ẩm và giúp kiểm tra phát hoa dễ hơn.\n• Bón phân cân đối, không thúc đạm quá mức.\n• Theo dõi từ lúc phát hoa; nếu cần xử lý thuốc, dùng theo nhãn và tránh ảnh hưởng thụ phấn.",
+            references = listOf(
                 ReferenceLink("Sở NN&MT Lai Châu", "https://sonnmt.laichau.gov.vn/tin-tuc-thong-ke/tang-cuong-phong-tru-sau-benh-hai-tren-cay-xoai.html"),
                 ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/tin-tuc/quy-trinh-khoa-hoc-cong-nghe/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo-745.html?download=2&id=0")
             )
         )
         "Red Rust" -> FactCheckedDiseaseContent(
-            "Đốm tròn cam, nâu đỏ hoặc rỉ sắt, hơi nhô lên, bề mặt như lớp nhung và thường thấy rõ ở mặt trên lá. Khi nặng, các đốm có thể liên kết làm giảm quang hợp.",
-            "Trồng mật độ hợp lý; cắt tỉa tạo tán thoáng; chăm sóc cây khỏe; tưới đủ mùa khô, thoát nước tốt mùa mưa; tỉa và tiêu hủy bộ phận nhiễm nặng.",
-            listOf(
+            englishName = "Red Rust / Algal Leaf Spot",
+            guideImageRes = R.drawable.guide_red_rust,
+            symptoms = "• Trên lá có đốm tròn cam, nâu đỏ hoặc màu rỉ sắt.\n• Đốm thường hơi nhô lên, bề mặt có cảm giác như lớp nhung và dễ thấy ở mặt trên lá.\n• Các đốm có thể liên kết thành mảng khi bệnh nặng.\n• Mảng bệnh rộng làm giảm diện tích quang hợp của lá.",
+            prevention = "• Trồng với mật độ hợp lý, cắt tỉa để ánh sáng và gió đi qua tán.\n• Thoát nước tốt trong mùa mưa, không để vườn ẩm kéo dài.\n• Tỉa và tiêu hủy lá, cành bị nặng để giảm nguồn bệnh.\n• Duy trì chăm sóc và dinh dưỡng cân đối để cây phục hồi tốt.",
+            references = listOf(
                 ReferenceLink("Khuyến nông Việt Nam", "https://khuyennongvn.gov.vn/khoa-hoc-cong-nghe/khcn-trong-nuoc/phong-tri-benh-dom-rong-tren-cay-an-trai-trong-mua-mua-17309.html"),
                 ReferenceLink("Chi cục TT&BVTV TP.HCM", "https://chicucttbvtvhcm.gov.vn/cay-an-qua/benh-dom-rong-471.html")
             )
         )
         else -> FactCheckedDiseaseContent(
-            "Bề mặt lá bị phủ lớp muội đen hoặc mảng đen như bồ hóng. Nấm thường đi kèm mật ngọt do rầy, rệp tiết ra và làm giảm khả năng quang hợp.",
-            "Ưu tiên kiểm soát rầy, rệp và côn trùng chích hút; tỉa cành tạo tán thông thoáng và chăm sóc cây khỏe.",
-            listOf(
+            englishName = "Sooty Mold",
+            guideImageRes = R.drawable.guide_sooty_mold,
+            symptoms = "• Bề mặt lá có lớp muội đen hoặc mảng đen như bồ hóng.\n• Lớp nấm thường phát triển trên mật ngọt do rầy, rệp hay côn trùng chích hút tiết ra.\n• Lá bị phủ dày nhận ánh sáng kém và giảm quang hợp.\n• Nên kiểm tra mặt dưới lá, chồi và cuống lá để tìm rầy, rệp đi kèm.",
+            prevention = "• Ưu tiên quản lý rầy, rệp và các côn trùng chích hút tạo mật ngọt.\n• Cắt tỉa cành để tán thông thoáng và thuận tiện kiểm tra ổ dịch.\n• Theo dõi lá non, chồi non và cuống lá, nơi côn trùng thường tập trung.\n• Chăm sóc cây khỏe, chỉ chọn biện pháp bảo vệ thực vật theo danh mục và hướng dẫn trên nhãn.",
+            references = listOf(
                 ReferenceLink("Chi cục TT&BVTV TP.HCM", "https://chicucttbvtvhcm.gov.vn/cay-an-qua/benh-bo-hong-493.html"),
                 ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/tin-tuc/quy-trinh-khoa-hoc-cong-nghe/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo-745.html?download=2&id=0")
             )
@@ -624,6 +670,8 @@ class MainActivity : AppCompatActivity() {
     )
 
     private data class FactCheckedDiseaseContent(
+        val englishName: String,
+        val guideImageRes: Int,
         val symptoms: String,
         val prevention: String,
         val references: List<ReferenceLink>

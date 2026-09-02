@@ -5,6 +5,7 @@
     <color name="mm_primary">#247A3D</color>
     <color name="mm_primary_dark">#155A2A</color>
     <color name="mm_primary_container">#E4F2E7</color>
+    <color name="mm_surface_variant">#EEF5EE</color>
     <color name="mm_text">#172217</color>
     <color name="mm_text_secondary">#485448</color>
     <color name="mm_error">#B3261E</color>

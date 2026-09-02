@@ -12,4 +12,14 @@
         <item name="colorSurface">@color/mm_surface</item>
         <item name="colorOnSurface">@color/mm_text</item>
     </style>
+
+    <style name="TextAppearance.MangoMamba.ToolbarTitle" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textSize">30sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.MangoMamba.InfoToolbarTitle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

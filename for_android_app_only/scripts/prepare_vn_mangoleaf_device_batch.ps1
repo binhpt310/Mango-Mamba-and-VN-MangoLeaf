@@ -1,7 +1,9 @@
 param(
     [string]$SourceRoot = 'D:\Mango-Mamba-backup\vnmangoleaf_not_splitted',
     [string]$OutputRoot = "$PSScriptRoot\..\artifacts\vn_mangoleaf_device_batch_100",
-    [string]$DeviceBasePath = '/sdcard/Android/data/com.mangomamba.benchmark/files/vn_mangoleaf_batch_100'
+    [string]$DeviceBasePath = '/sdcard/Android/data/com.mangomamba.benchmark/files/vn_mangoleaf_batch_100',
+    [switch]$IncludeHealthy,
+    [string]$HealthySourceRoot = 'D:\Mango-Mamba-backup\mangomamba_android_build_cache_temp\root-build\test-images-20260802\vn\Healthy'
 )
 
 $classMap = [ordered]@{
@@ -38,6 +40,22 @@ foreach ($entry in $classMap.GetEnumerator()) {
         $manifestRows.Add("$($entry.Value)`t$devicePath")
     }
     $summary[$entry.Value] = $images.Count
+}
+
+if ($IncludeHealthy) {
+    $healthyImages = Get-ChildItem -LiteralPath $HealthySourceRoot -File -Recurse -Include *.jpg,*.jpeg,*.png |
+        Sort-Object FullName
+    if ($healthyImages.Count -eq 0) {
+        throw "No Healthy images found at $HealthySourceRoot"
+    }
+
+    $healthyTarget = Join-Path $OutputRoot 'Healthy'
+    New-Item -ItemType Directory -Path $healthyTarget | Out-Null
+    foreach ($image in $healthyImages) {
+        Copy-Item -LiteralPath $image.FullName -Destination (Join-Path $healthyTarget $image.Name)
+        $manifestRows.Add("Healthy`t$DeviceBasePath/Healthy/$($image.Name)")
+    }
+    $summary['Healthy'] = $healthyImages.Count
 }
 
 $manifestPath = Join-Path $OutputRoot 'device_manifest.tsv'
