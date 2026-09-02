@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.MangoMambaBenchmark" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
+    <style name="Theme.MangoMamba" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">@color/mm_primary</item>
+        <item name="android:navigationBarColor">@color/mm_background</item>
+        <item name="android:statusBarColor">@color/mm_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorPrimary">@color/mm_primary</item>
+        <item name="colorPrimaryVariant">@color/mm_primary_dark</item>
+        <item name="colorOnPrimary">@color/mm_surface</item>
+        <item name="colorSurface">@color/mm_surface</item>
+        <item name="colorOnSurface">@color/mm_text</item>
+    </style>
 </resources>

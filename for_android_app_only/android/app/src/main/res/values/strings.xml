@@ -1,4 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MangoMamba Bench</string>
+    <string name="app_name">Nhận diện lá xoài</string>
+    <string name="camera_title">Chẩn đoán lá xoài</string>
+    <string name="camera_hint">Đưa lá vào vùng khung, đủ sáng và lấy nét rõ.</string>
+    <string name="camera_ready">Sẵn sàng chụp ảnh</string>
+    <string name="camera_permission_needed">Ứng dụng cần quyền camera để chụp ảnh lá xoài.</string>
+    <string name="camera_unavailable">Không thể mở camera. Hãy thử lại hoặc kiểm tra quyền camera.</string>
+    <string name="capture_single">Chụp ảnh</string>
+    <string name="capture_continuous">Chụp liên tục</string>
+    <string name="stop_capture">Dừng chụp</string>
+    <string name="continuous_status">Đang chụp liên tục, cập nhật mỗi 0,8 giây</string>
+    <string name="analysing">Đang phân tích ảnh</string>
+    <string name="latest_result">Kết quả mới nhất</string>
+    <string name="result_empty">Chưa có kết quả</string>
+    <string name="confidence_high">Độ tin cậy cao</string>
+    <string name="confidence_medium">Nên chụp lại để kiểm tra</string>
+    <string name="confidence_low">Kết quả chưa đủ chắc chắn. Hãy chụp gần hơn và đủ sáng.</string>
+    <string name="view_information">Xem triệu chứng và cách phòng</string>
+    <string name="back">Trở lại</string>
+    <string name="disease_information">Thông tin bệnh</string>
+    <string name="symptoms">Dấu hiệu thường gặp</string>
+    <string name="prevention">Cách phòng chống</string>
+    <string name="seek_help">Khi nào cần hỏi cán bộ nông nghiệp</string>
+    <string name="reference">Nguồn tham khảo tại Việt Nam</string>
+    <string name="open_reference">Mở nguồn tham khảo</string>
+    <string name="healthy_name">Lá khỏe</string>
+    <string name="anthracnose_name">Thán thư</string>
+    <string name="dieback_name">Khô cành</string>
+    <string name="gall_midge_name">Muỗi đục lá</string>
+    <string name="powdery_mildew_name">Phấn trắng</string>
+    <string name="red_rust_name">Rỉ sắt đỏ</string>
+    <string name="sooty_mold_name">Nấm bồ hóng</string>
 </resources>
