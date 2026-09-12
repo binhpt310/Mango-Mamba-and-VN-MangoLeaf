@@ -1,0 +1,1064 @@
+Highlights
+Mango-Mamba and VN-MangoLeaf: A Lightweight Mamba Model and New Dataset for
+Mango Leaf Disease Classification
+Thien B. Nguyen-Tat, Binh Pham-Thanh
+
+
+   • MangoMamba achieves ≤ 1.52 ms GPU inference with competitive accuracy.
+
+   • Hybrid Mamba-Attention model offers linear complexity for disease detection.
+   • VN-MangoLeaf dataset introduced: 7000 images from Vietnam with Red Rust.
+   • Three-phase curriculum learning enables cross-geographical knowledge transfer.
+
+   • Lightweight ≤ 25 MB model enables 100-300 ms smartphone-based detection.
+Mango-Mamba and VN-MangoLeaf: A Lightweight Mamba Model
+and New Dataset for Mango Leaf Disease Classification
+Thien B. Nguyen-Tata,b,∗ , Binh Pham-Thanha,b
+a University of Information Technology, Ho Chi Minh City, Vietnam
+b Vietnam National University, Ho Chi Minh City, Vietnam
+
+
+
+ARTICLE INFO                                     ABSTRACT
+Keywords:                                        Mango leaf disease represents a significant threat to fruit quality and yield, necessitating highly
+Deep Learning                                    accurate, real-time detection systems. However, existing Deep Learning approaches, particularly
+Mango Leaf Classification                        Transformer-based models, often suffer from prohibitive computational complexity (quadratic
+Mamba Models                                     scaling), limiting their deployment on resource-constrained edge devices. To address this
+Image processing                                 challenge, this study introduces MangoMamba, a novel lightweight hybrid architecture specif-
+Smart agriculture                                ically optimized for mobile deployment. The proposed model integrates Multi-Scale Mamba
+                                                 Mixers with Large-Kernel Attention mechanisms within a hierarchical four-stage framework,
+                                                 enabling linear computational complexity while preserving global receptive fields. Experimental
+                                                 evaluations were conducted on the MangoLeafBD dataset and the newly curated VN-MangoLeaf
+                                                 dataset, which comprises 7,000 images of Vietnamese mango varieties. Results demonstrate
+                                                 that MangoMamba achieves competitive classification accuracies of 99.75% and 98.71% on the
+                                                 respective datasets. Crucially, the model exhibits exceptional efficiency with only 5.8 million
+                                                 parameters and an inference latency of 1.46 ms per image on T4 GPU, approximately 80
+                                                 times faster than recent ViX-MangoEFormer architectures. Furthermore, the practical feasibility
+                                                 of the proposed approach is validated through a functional Android application capable of
+                                                 offline inference (100-300 ms latency) on standard smartphones. These findings confirm that
+                                                 MangoMamba establishes a new competitive trade-off between accuracy and efficiency for smart
+                                                 agriculture applications.
+
+
+
+
+1. Introduction
+    Mango (Mangifera indica L.) cultivation is a vital component of the global agricultural economy, yet it faces
+substantial production risks due to foliar pathogens. Diseases such as Anthracnose, Powdery Mildew, and Red Rust
+can cause yield losses exceeding 20-30% if not managed effectively [1]. Traditional disease management relies on
+manual visual inspection by pathologists, a process that is labor-intensive, subjective, and difficult to scale in large
+orchards or resource-limited regions [9]. Consequently, the development of automated, accurate, and real-time disease
+detection systems has become a priority in smart agriculture.
+    Recent advancements in deep learning have significantly improved automated plant disease diagnosis. Convolu-
+tional Neural Networks (CNNs) [14, 8] and Transformer-based architectures [6, 2] have achieved high classification
+accuracy on benchmark datasets. However, the practical deployment of these models on edge devices (e.g., smart-
+phones, embedded sensors) is hindered by computational constraints. While Vision Transformers (ViTs) offer superior
+global context modeling compared to CNNs, they suffer from a quadratic computational complexity (𝑂(𝑁 2 )) with
+respect to image resolution due to the self-attention mechanism [7]. This results in high memory consumption and
+latency, rendering them unsuitable for real-time applications in rural environments where internet connectivity for
+cloud processing is often unreliable [9].
+    Additionally, recent studies have demonstrated the potential of advanced hybrid architectures in addressing
+performance and computational challenges. For instance, Qin et al. [11] introduced CropCapsNet, which integrates an
+enhanced capsule network with Squeeze-and-Excitation Inception modules. This approach effectively captures multi-
+scale features for crop disease classification, achieving remarkable accuracy by overcoming the spatial information
+loss inherent in traditional CNNs. Similarly, Truong et al. [17] proposed SC-MambaFew, utilizing the Mamba
+architecture coupled with selective spatial-channel attention for bearing fault diagnosis. Their work highlights the
+capability of Mamba-based hybrids to model long-range dependencies efficiently, particularly in few-shot learning
+        thienntb@uit.edu.vn (T.B. Nguyen-Tat)
+     ORCID (s): 00000-0002-4809-7126 (T.B. Nguyen-Tat)
+
+
+
+First Author et al.: Preprint submitted to Elsevier                                                                                Page 1 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+scenarios. However, while these pioneering works validate the efficacy of hybrid models, they do not explicitly
+target the optimization of Mamba-Attention mechanisms for the subtle, fine-grained visual characteristics of mango
+leaf diseases on strictly resource-constrained edge hardware. Furthermore, the issue of cross-domain generalization
+against geographical bias- a critical requirement in global agriculture-remains largely unaddressed in these architectural
+studies. This research builds upon these advancements to bridge that specific gap.
+     To address the limitations of quadratic complexity while ensuring high diagnostic precision, State Space Models
+(SSMs), particularly the Mamba architecture [3], have emerged as a promising alternative. Mamba introduces a
+selective scan mechanism that allows for modeling long-range dependencies with linear computational complexity
+(𝑂(𝑁)). Recent adaptations of Mamba for computer vision, such as MambaVision [5] and Vision Mamba [22], have
+demonstrated that SSMs can rival Transformers in performance while significantly reducing inference costs. Despite
+these advances, the specific optimization of hybrid Mamba-Attention architectures for lightweight agricultural disease
+classification remains underexplored. Existing lightweight models often sacrifice accuracy for speed or fail to capture
+the multi-scale features required to distinguish between morphologically similar mango leaf diseases [21].
+     Furthermore, a critical gap exists in the geographical diversity of available mango leaf disease datasets. The
+majority of public datasets, including MangoLeafBD [1] and MLD24 [15], originate primarily from Bangladesh. This
+geographical bias limits the generalization capability of models when applied to regions with different mango cultivars
+and disease prevalence, such as Vietnam, where distinct pathogens like Red Rust are more common [10].
+     To bridge these gaps, this study proposes MangoMamba, a lightweight architecture specifically engineered for
+efficient mango leaf disease classification on edge devices. The architecture integrates Multi-Scale Mamba Mixers
+for linear-complexity global context modeling with Large-Kernel Attention (LKA) mechanisms for local feature
+refinement. Additionally, the VN-MangoLeaf dataset is introduced to address regional data scarcity, complemented
+by a curriculum learning strategy to enhance cross-domain generalization.
+     The primary contributions of this research are summarized as follows:
+   1. A specialized hybrid architecture, MangoMamba, is developed, combining the efficiency of Selective State
+      Space Models with the spatial precision of Large-Kernel Attention. This design achieves linear computational
+      complexity, significantly reducing inference latency compared to Transformer-based counterparts.
+   2. The VN-MangoLeaf dataset is introduced, comprising 7,000 images collected from Vietnamese orchards. This
+      dataset mitigates geographical bias by including regionally specific classes such as Red Rust, enabling more
+      robust model evaluation.
+   3. A three-phase curriculum learning methodology is implemented to facilitate effective knowledge transfer
+      between datasets with varying class distributions, enhancing the model’s robustness against morphological
+      variations.
+   4. Extensive experimental validation demonstrates that the proposed model achieves competitive accuracy (99.75%
+      on MangoLeafBD and 98.14% on VN-MangoLeaf) while maintaining an inference time of approximately 1.5
+      ms per image, verifying its suitability for real-time mobile deployment.
+
+
+2. Materials and Methods
+Datasets overview
+    Existing public datasets for mango leaf disease detection, such as MangoLeafBD [1] and MLD24 [15], have
+provided valuable benchmarks for the research community. However, these datasets originate predominantly from
+Bangladesh, which limits the generalization capability of models when applied to other geographical regions with
+different environmental conditions and pathogen distributions. To address this geographical bias and the lack of diverse
+regional data, this study introduces the VN-MangoLeaf dataset, collected extensively across southern Vietnam.
+    A critical distinction of the VN-MangoLeaf dataset is the specific disease distribution observed in Vietnam
+compared to Bangladesh (Figure 1). While diseases such as ‘Cutting Weevil’ and ‘Bacterial Canker’ are common
+in previous datasets, they are infrequently observed in Vietnamese mango orchards. Conversely, ‘Red Rust’, caused by
+the algal plant pathogen Cephaleuros virescens [10], is highly prevalent in this region but underrepresented in existing
+benchmarks. Red Rust manifests as orange-brown, rust-like spots, typically on the upper leaf surface [10], as illustrated
+in Figure 2.
+    The dataset comprises seven distinct classes: Healthy, Anthracnose, Gall Midge, Powdery Mildew, Sooty Mold,
+Dieback, and Red Rust. Images were acquired using a Xiaomi Redmi Note 11S smartphone camera. To ensure high
+
+First Author et al.: Preprint submitted to Elsevier                                                          Page 2 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+Figure 1: Comparison of disease classes: 8 classes from existing Bangladesh-based datasets versus 7 classes from the
+proposed VN-MangoLeaf dataset.
+
+
+
+fidelity, images were captured at a native resolution of 3000 × 4000 pixels under natural lighting conditions between
+7:00 AM and 4:00 PM, capturing variations in sunlight intensity and shadowing. The collection sites covered diverse
+locations in Southern Vietnam, including Binh Thanh District, District 12, District 9 (Ho Chi Minh City), Cao Lanh
+City (Dong Thap Province), and Giong Trom District (Ben Tre), as described in Figure 3.
+    To ensure label accuracy and dataset consistency, a two-stage verification process was implemented. Initial labeling
+was performed by the research team, followed by cross-verification by experienced mango orchard owners, who acted
+as domain experts. This process resulted in the removal of approximately 2,000 images identified as ambiguous,
+mislabeled, or of poor quality. The final curated dataset comprises 7,000 images (post-balancing), with at least 700
+verified original images per class prior to augmentation. A comparison between VN-MangoLeaf and existing datasets
+is presented in Table 1.
+
+2.1. Data augmentation
+    To facilitate the proposed Curriculum Learning strategy, this study utilizes two distinct categories of data serving
+complementary roles: a large-scale Combined Dataset serving as the source domain for general feature learning, and
+the proprietary VN-MangoLeaf dataset serving as the target domain for regional adaptation. Three publicly available
+datasets originating from Bangladesh: MangoLeafBD [1], MLD24 [15], and the Mendeley Mango Leaf Disease Dataset
+[12] were consolidated. This merged corpus, referred to as the Combined Dataset, provides a diverse range of 8 disease
+classes but suffers from significant class imbalance (Figure 4). It’s primarily used in the early training phases to expose
+the model to a wide variety of visual symptoms.
+    In contrast, the VN-MangoLeaf dataset (described in Section 2) represents the specific environmental conditions
+and pathogen distributions of Vietnam. It is carefully verified by experts, contains the unique ’Red Rust’ class, and
+excludes classes not prevalent in the region (Cutting Weevil and Bacterial Canker). This dataset is reserved for the
+
+First Author et al.: Preprint submitted to Elsevier                                                           Page 3 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+Figure 2: Representative samples of Mango leaves infected with Red Rust (Cephaleuros virescens) from the VN-MangoLeaf
+dataset.
+
+
+
+
+                                 Figure 3: The mango orchards locations of VN-MangoLeaf
+
+
+
+final fine-tuning phase and performance benchmarking to validate the model’s real-world applicability in the target
+geographical region.
+    As illustrated in Figure 4, the initial distribution of the three Bangladesh mango leaf datasets exhibited significant
+imbalance, with classes such as Bacterial Canker being overrepresented compared to Powdery Mildew. Such disparities
+can lead to model overfitting on the majority classes.
+
+
+First Author et al.: Preprint submitted to Elsevier                                                          Page 4 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+Table 1
+Comparison between mango leaf disease datasets from Bangladesh and our proposed dataset from Vietnam
+
+Dataset        Data      Resolution      Image           Type of disease         Class    Image per       Locations of images
+              format                    amount                                              class
+  VN-          JPG        240x320     7000 (4900      Healthy; Anthracnose;        7         1000       Giong Trom (Ben Tre);
+MangoLeaf                              original +       Powdery Mildew;                                 Cao Lanh (Dong Thap);
+                                          2100        Dieback; Sooty Mold;                               District 12 (TPHCM);
+                                      augmented)      Gall Midge; Red Rust                              Binh Thanh (TPHCM);
+                                                                                                          District 9 (TPHCM)
+MangoLeafBD JPG           240x320     4000 (1800      Healthy; Anthracnose;        8          500            Sher-e-Bangla
+                                       original +        Powdery Mildew;                                 Agricultural University
+                                          2200         Dieback; Sooty Mold;                             orchard; Jahangir Nagar
+                                      augmented)       Gall Midge; Bacterial                               University orchard;
+                                                      Canker; Cutting Weevil                            Udaypur village orchard;
+                                                                                                        Itakhola village orchard
+                                                                                                              (Bangladesh)
+ MLD24         JPG        240x240       6400 (all     Healthy; Anthracnose;        8          800           Kushtia; Dhaka
+                                        original)        Powdery Mildew;                                      (Bangladesh)
+                                                       Dieback; Sooty Mold;
+                                                       Gall Midge; Bacterial
+                                                      Canker; Cutting Weevil
+
+
+
+
+Figure 4: The initial class distribution across the component datasets before balancing, highlighting significant imbalances.
+
+
+
+    To mitigate this, augmentation strategies adapted from Noman et al. [9] were employed. Geometric transformations
+(rotation, flipping) and photometric adjustments (brightness, scaling) were applied specifically to underrepresented
+classes to achieve a target balance. Table 2 details the augmentation parameters and preprocessing steps.
+    Following these procedures, the Combined Dataset achieved a balanced distribution with approximately 5,000
+images per class, totaling 40,000 images. Figure 5 depicts the class distribution post-augmentation.
+
+
+First Author et al.: Preprint submitted to Elsevier                                                            Page 5 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+Table 2
+Data augmentation parameters and preprocessing specifications.
+  Processing Step            Description & Parameters
+  1. Augmentation            Applied stochastically to achieve target counts
+  Rotation                   Range: [−45◦ , 45◦ ]
+  Flipping                   Vertical and Horizontal
+  Brightness                 Factor range: [0.8, 1.2]
+  Scaling                    Factor range: [0.5, 1.5]
+  2. Resizing                Uniform resizing to 224 × 224 pixels (JPG format)
+  3. Normalization           Min-Max scaling to the range [0, 1] for stable convergence.
+
+
+
+
+  Figure 5: Balanced class distribution of the Combined Dataset following the application of augmentation strategies.
+
+
+
+   To ensure consistent feature scaling and accelerate gradient descent convergence, all images underwent Min-Max
+normalization. Each pixel value 𝑥 was scaled to 𝑥′ using Equation 1:
+
+              𝑥 − 𝑥min
+      𝑥′ =                                                                                                                 (1)
+             𝑥max − 𝑥min
+    where 𝑥max and 𝑥min represent the maximum (255) and minimum (0) pixel intensities, respectively.
+    To strictly evaluate generalization performance and prevent data leakage, the datasets were partitioned using a
+stratified random split with a ratio of 80:10:10 for training, validation, and testing, respectively. The specific distribution
+of images across these subsets for the MangoLeafBD, Combined, and VN-MangoLeaf datasets is summarized in Table
+3.
+
+2.2. MangoMamba model’s architecture
+   The proposed MangoMamba architecture is a lightweight, hierarchical vision backbone specifically engineered for
+mango leaf disease recognition on edge devices. It prioritizes a compact model size and rapid inference capabilities
+
+First Author et al.: Preprint submitted to Elsevier                                                              Page 6 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+Table 3
+Distribution of images across Training, Validation, and Test sets for each experimental dataset.
+
+                           Dataset                Train (80%)   Validation (10%)     Test (10%)
+                           MangoLeafBD                 3,200           400               400
+                           Combined Dataset           32,000          4,000             4,000
+                           VN-MangoLeaf                5,600           700               700
+
+
+while maintaining high classification accuracy. The architecture adopts a four-stage structure with progressively
+decreasing spatial resolutions (𝐻∕4 → 𝐻∕32) and increasing channel dimensions (𝐶 → 8𝐶). To maintain linear
+computational complexity, each stage processes features through non-overlapping windows.
+    Unlike standard hybrid architectures that combine State Space Models (SSM) with computationally intensive
+Transformer blocks, MangoMamba introduces a hybrid integration of Mamba Mixers and Large-Kernel Attention
+(LKA). This design strategically utilizes the global receptive field of SSMs for sequence modeling and the spatial
+adaptability of LKA for capturing local disease textures, effectively eliminating the quadratic complexity associated
+with traditional Self-Attention.
+    The model integrates several advanced components, selected based on extensive ablation studies to maximize the
+trade-off between efficiency and performance:
+
+    • Global Response Normalization (GRN): Utilized to enhance the contrast and selectivity of channels, thereby
+      preventing feature collapse and stabilizing training dynamics. This component, adapted from ConvNeXt V2
+      [20], ensures that feature diversity is maintained across the deep layers of the network.
+    • Efficient Channel Attention (ECA): Implemented to provide channel-wise feature enhancement with negligible
+      parameter overhead [19]. By emphasizing informative channels, ECA allows the model to focus on distinct
+      disease characteristics amidst complex leaf backgrounds.
+    • Windowed Processing: Inspired by the hierarchical design of the Swin Transformer [7], feature maps are
+      partitioned into local windows. This approach facilitates efficient local attention computation and hierarchical
+      feature representation, eliminating the heavy computational burden associated with global attention.
+    • Multi-Scale Mamba Mixers: Inspired by the MambaVision architecture [5], this component is adapted to model
+      multi-resolution features. It preserves the linear scaling superiority of SSMs [3], enabling the model to effectively
+      capture long-range dependencies across the leaf surface.
+    • Large-Kernel Attention (LKA): Incorporated to replace the Transformer component found in typical hybrid
+      models. LKA decomposes large kernel convolutions to capture spatial correlations and long-range dependencies
+      with lower computational cost and parameter count compared to standard self-attention mechanisms [4].
+    • SwiGLU Activation: Employed within the Multi-Layer Perceptron (MLP) blocks, SwiGLU offers enhanced
+      representational capacity compared to standard GELU or ReLU activations [16]. It operates as a gated linear
+      unit with a sigmoid-activated component, improving the model’s ability to learn complex non-linear disease
+      patterns.
+
+    As visualized in Figure 6, the input processing commences with a lightweight patch embedding module. This
+module efficiently transforms raw images into patch-level representations using two consecutive stride-2 convolutions,
+reducing the spatial dimension to a quarter of the input resolution while projecting to the base channel dimension.
+    To ensure robust feature initialization, this embedding is immediately refined by the ECA and GRN mechanisms.
+The ECA module generates channel-wise attention weights by applying a parameter-efficient 1D convolution over
+global average pooling features, followed by a sigmoid activation. These weights are then element-wise multiplied with
+the input features to recalibrate channel importance. Subsequently, the GRN mechanism stabilizes feature responses
+by normalizing the spatial L2-norm across height and width dimensions, followed by a learnable affine transformation.
+This process emphasizes spatially important regions and suppresses redundant information.
+    The core of the architecture employs a hierarchical four-stage design utilizing windowed processing. In each stage,
+feature maps are partitioned into non-overlapping windows of size 𝑆 × 𝑆. This partitioning transforms the input tensor
+
+First Author et al.: Preprint submitted to Elsevier                                                           Page 7 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+                        Figure 6: The architectural overview of the proposed MangoMamba model
+
+
+
+into a windowed sequence, allowing the model to perform computations on smaller, fixed-size token sets rather than
+the entire image at once. This strategy significantly reduces memory usage and computational complexity.
+    Within the processing stages, the architecture utilizes a specific intra-stage hybrid strategy. The initial blocks of
+each stage employ Mamba Mixers to scan the windowed sequences and establish global context, while the subsequent
+blocks utilize LKA to refine spatial details and texture information. This order ensures that the model first understands
+the global structure of the leaf and lesion distribution before focusing on the fine-grained visual patterns of the disease.
+Between stages, depthwise separable convolutions with a stride of 2 are employed for efficient downsampling, followed
+by additional ECA and GRN modules to preserve feature distinctiveness during resolution reduction.
+
+2.3. MangoMambaBlock
+    The MangoMambaBlock serves as the foundational computational unit within each stage of the architecture,
+designed to efficiently extract and refine features for mango leaf disease classification. As illustrated in Figure 7, this
+block utilizes a dual-pathway residual structure that integrates advanced mixing mechanisms with a robust feed-forward
+network. The design is engineered to balance the capture of local textural details-essential for identifying specific
+lesions like Anthracnose-with global context, which is required to detect broader stress symptoms such as Dieback.
+    To achieve this balance while minimizing computational overhead, the architecture employs an intra-stage hybrid
+strategy. The initial blocks of a stage utilize the Multi-Scale Mamba Mixer to model long-range dependencies and
+global sequence patterns with linear complexity. Conversely, the latter blocks of the stage switch to Large-Kernel
+Attention (LKA) to refine explicit spatial attention and local correlations. This alternation is determined by the block’s
+depth index; empirically, activating LKA in the second half of the stage enhances the model’s ability to discriminate
+between visually similar disease classes by focusing on fine-grained spatial textures after the global context has been
+established.
+    The signal propagation within the MangoMambaBlock follows a standard pre-normalization residual design. The
+input token sequence first undergoes Layer Normalization before entering the designated Mixer module (either Mamba
+or LKA). The output of the mixer is scaled by a learnable layer-scaling coefficient and subjected to stochastic depth
+(DropPath) regularization before being added back to the original input. This process is repeated for the second half of
+the block, which consists of a Layer Normalization step followed by a SwiGLU-based Feed-Forward Network (FFN).
+The inclusion of learnable layer scaling is critical for stabilizing the training of deep networks by mitigating potential
+gradient distinctness issues.
+
+First Author et al.: Preprint submitted to Elsevier                                                           Page 8 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+          Figure 7: The architectural diagram of the MangoMambaBlock, illustrating the dual-pathway design.
+
+
+
+    To address the challenge of scale variance in disease symptoms, the Multi-Scale Mamba Mixer processes windowed
+tokens through two parallel branches. A high-resolution branch processes the native token sequence to preserve fine
+details, while a low-resolution branch operates on a spatially downsampled version to capture broader semantic features.
+The low-resolution input is generated via bilinear interpolation, processed, and then upsampled back to the original
+size. Both branches utilize the Disease Aware Mixer (DAM), and their outputs are fused via a learnable, channel-
+wise sigmoid gate. This gating mechanism allows the network to adaptively weigh the importance of fine versus
+coarse features for each channel, optimizing the representation without the parameter explosion typical of dense fusion
+methods.
+    The DAM module is a lightweight adaptation of the mixer found in MambaVision [5], specifically optimized for
+disease pattern recognition. It reduces the state dimension and convolution kernel size to prioritize inference speed on
+edge devices while preserving the selective reasoning capabilities of State Space Models (SSM). Internally, the input
+projection is split into two streams. The first stream undergoes a 1D depthwise convolution to capture local context,
+followed by a selective state-space operation where the discretized state-transition parameters are derived dynamically
+from the input. This enables the model to selectively propagate or forget information along the sequence, effectively
+modeling the interconnected nature of disease symptoms across leaf veins. The output is then gated by the second
+stream (the z-stream) to regulate information flow before the final output projection.
+    In the later layers of the stage, the block utilizes Large-Kernel Attention to generate spatial attention maps. Unlike
+the Mamba mixer, LKA is designed to capture spatial correlations directly without the quadratic cost of self-attention.
+It decomposes a large kernel convolution into a sequence of smaller operations: a standard depthwise convolution
+to capture local dependencies, followed by a dilated depthwise convolution to expand the receptive field. In this
+
+
+First Author et al.: Preprint submitted to Elsevier                                                          Page 9 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+Figure 8: The proposed three-phase training curriculum, progressing from the source dataset (MangoLeafBD) to a combined
+robust dataset, and finally adapting to the target domain (VN-MangoLeaf).
+
+
+
+implementation, a kernel size of 3 × 3 is used for the local convolution, followed by a 5 × 5 kernel with a dilation rate
+of 2. This combination effectively simulates a large receptive field, allowing the model to encompass larger irregular
+patterns, such as red rust pustules, while remaining computationally efficient. The resulting attention map is applied
+to the input via element-wise multiplication.
+    To enhance the non-linear representational capacity of the block, a Position-wise Feed-Forward Network with
+SwiGLU activation is employed. Selected based on ablation results demonstrating its superiority over standard GELU,
+the SwiGLU mechanism projects the input into two parallel linear layers. One path is activated by the SiLU function
+and then element-wise multiplied by the output of the second path. This gating interaction allows the network to learn
+more complex feature transformations, contributing to the high classification accuracy observed in the experiments.
+
+2.4. Proposed methodology
+    To address data scarcity and adapt to the specific label-set variations across different agricultural datasets, a three-
+phase curriculum learning strategy is implemented. This approach, visualized in Figure 8, progressively broadens the
+data diversity before narrowing down to the specific target domain.
+
+    • Phase 1: Source Domain Initialization (MangoLeafBD). The MangoMamba backbone is initialized with
+      an 8-class linear projection head. Training is conducted end-to-end on the MangoLeafBD dataset. This phase
+      establishes a foundational representation of canonical mango lesion features, creating a baseline checkpoint.
+    • Phase 2: Robust Feature Learning (Combined Dataset). The checkpoint from Phase 1 is loaded and fine-tuned
+      on a composite dataset constructed from MangoLeafBD, the Mango Leaf Disease Dataset, and MLD24. This
+      phase exposes the model to significant variations in illumination, capture devices, and lesion morphology while
+      maintaining the original 8-way classification scheme. Lower layers are optionally frozen during the initial epochs
+
+First Author et al.: Preprint submitted to Elsevier                                                          Page 10 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+      to preserve low-level feature extractors, followed by full-model adaptation. This step is critical for learning
+      invariance to environmental conditions.
+    • Phase 3: Target Domain Adaptation (VN-MangoLeaf). In the final phase, the linear classifier is replaced to
+      accommodate the 7-class label set of the target VN-MangoLeaf dataset. The backbone retains weights from the
+      Combined checkpoint. Since the target dataset excludes classes such as ’Cutting Weevil’ and ’Bacterial Canker’
+      but emphasizes ’Red Rust’, the adaptation process biases the updates toward high-level semantic features while
+      retaining the low-level textural invariances learned in Phase 2. This strategy effectively manages the domain
+      shift and class imbalance inherent in the target environment.
+
+   Algorithm 1 formally describes the complete training procedure and the internal forward pass mechanism of the
+proposed model.
+
+Algorithm 1 MangoMamba Training Curriculum and Inference Procedure
+Require: Source Data 𝑠𝑟𝑐 , Combined Data 𝑐𝑜𝑚𝑏 , Target Data 𝑡𝑔𝑡
+Ensure: Final Optimized Model 𝑓 𝑖𝑛𝑎𝑙
+    Part I: Three-Phase Training Curriculum
+ 1:  ← InitializeMangoMamba(𝑐𝑙𝑎𝑠𝑠𝑒𝑠 = 8)
+ 2: 𝜃𝐴 ← Train(, 𝑠𝑟𝑐 )                                                            ⊳ Phase 1: Feature Initialization
+ 3: .load_weights(𝜃𝐴 )
+ 4: 𝜃𝐵 ← FineTune(, 𝑐𝑜𝑚𝑏 )                                                    ⊳ Phase 2: Robustness to Variations
+ 5: .load_weights(𝜃𝐵 )
+ 6: .head ← Reinitialize(𝑖𝑛 = 384, 𝑜𝑢𝑡 = 7)
+ 7: 𝑓 𝑖𝑛𝑎𝑙 ← FineTune(, 𝑡𝑔𝑡 )                                                     ⊳ Phase 3: Domain Adaptation
+    Part II: Model Inference (Forward Pass)
+ 8: function F ORWARD (𝑥𝑟𝑔𝑏 )
+ 9:    𝑥 ← PatchEmbed(𝑥𝑟𝑔𝑏 )
+10:    𝑥 ← ECA(𝑥) + GRN(𝑥)
+11:    for 𝑖 = 1 to 4 do
+12:         𝑥𝑤𝑖𝑛 ← WindowPartition(𝑥, size = 𝑊𝑖 )
+13:         for 𝑗 = 1 to 𝐷𝑒𝑝𝑡ℎ𝑖 do
+14:              𝑥𝑛𝑜𝑟𝑚 ← LayerNorm(𝑥𝑤𝑖𝑛 )
+15:              if 𝑗 < ⌊𝐷𝑒𝑝𝑡ℎ𝑖 ∕2⌋ then
+16:                   𝑥𝑤𝑖𝑛 ← 𝑥𝑤𝑖𝑛 + MambaMixer(𝑥𝑛𝑜𝑟𝑚 )                                             ⊳ Global Context
+17:              else
+18:                   𝑥𝑤𝑖𝑛 ← 𝑥𝑤𝑖𝑛 + LKAMixer(𝑥𝑛𝑜𝑟𝑚 )                                                ⊳ Local Texture
+19:              end if
+20:              𝑥𝑤𝑖𝑛 ← 𝑥𝑤𝑖𝑛 + SwiGLU_MLP(LayerNorm(𝑥𝑤𝑖𝑛 ))
+21:         end for
+22:         𝑥 ← WindowReverse(𝑥𝑤𝑖𝑛 )
+23:         𝑥 ← StageGRN(𝑥)
+24:         if 𝑖 < 4 then
+25:              𝑥 ← Downsample(𝑥)
+26:         end if
+27:    end for
+28:    𝑦 ← LinearHead(GlobalAvgPool(𝑥))
+29:    return 𝑦
+30: end function
+
+
+
+
+First Author et al.: Preprint submitted to Elsevier                                                    Page 11 of 23
+                                              Mango-Mamba and VN-MangoLeaf
+
+Table 4
+Comprehensive ablation analysis of MangoMamba components evaluated on the MangoLeafBD dataset. To ensure
+statistical reliability and reproducibility, each experimental case was executed across four independent runs using distinct
+random seeds {42, 123, 2024, 3333}. All models were trained using a consistent hyperparameter configuration: 100 epochs,
+batch size of 256, initial learning rate of 0.0005 with 5 warmup epochs, and an early stopping patience of 20. The results
+are reported as Mean ± Standard Deviation. Model complexity is denoted in millions of parameters (M), while Validation
+and Test metrics (Accuracy and F1 Score) are measured in percentage. The final selected configuration, achieving the
+optimal trade-off between stability and performance, is highlighted in bold.
+Note: (↑) indicates higher is better; (↓) indicates lower is better.
+No.    Model Configuration (Ablation Case)         Params (M)↓   Val Accuracy ↑   Val F1 Score ↑   Test Accuracy ↑   Test F1 Score ↑
+1      LKA without Mamba, ECA , GRN, SwiGLU        3.01          99.09 ± 0.49     99.22 ± 0.40     98.88 ± 0.63      99.19 ± 0.47
+2      Mamba without LKA, ECA , GRN, SwiGLU        6.62          99.09 ± 0.21     99.12 ± 0.20     99.25 ± 0.35      99.12 ± 0.32
+3      LKA without Mamba                           4.41          98.63 ± 0.77     98.78 ± 0.70     98.44 ± 1.45      98.50 ± 1.34
+4      Hybrid without ECA , GRN, SwiGLU            4.41          99.09 ± 0.45     99.22 ± 0.36     99.12 ± 0.63      99.19 ± 0.75
+5      Hybrid without ECA                          5.81          98.59 ± 0.99     98.78 ± 1.01     98.56 ± 1.52      98.75 ± 1.34
+6      Hybrid without SwiGLU                       4.41          99.25 ± 0.27     99.31 ± 0.16     99.31 ± 0.38      99.44 ± 0.12
+7      Hybrid without GRN                          5.81          99.56 ± 0.16     99.56 ± 0.16     99.50 ± 0.20      99.62 ± 0.32
+8      Hybrid with fixed Window [7, 7, 7, 7]       5.81          99.62 ± 0.10     99.62 ± 0.10     99.44 ± 0.31      99.69 ± 0.24
+9      Hybrid Baseline (Original) [8, 8, 14, 7]    5.81          98.59 ± 0.91     98.66 ± 0.85     98.56 ± 0.97      98.57 ± 1.02
+10     Hybrid on VN-MangoLeaf without Curriculum   5.81          97.22 ± 0.43     97.28 ± 0.39     98.07 ± 0.34      97.63 ± 0.57
+
+
+
+
+3. Results and Discussion
+3.1. Ablation study
+    To validate the effectiveness of the proposed MangoMamba architecture and justify the inclusion of each specific
+component, a comprehensive ablation study was conducted on the MangoLeafBD dataset. The experiments were
+performed using consistent hyperparameters across four independent runs for each configuration to ensure statistical
+reliability. The results, summarizing the impact of the Mixer core, enhancement modules (ECA, GRN, SwiGLU), and
+windowing strategies, are presented in Table 4.
+    The core hypothesis of MangoMamba is that combining State Space Models with Large-Kernel Attention offers
+a balanced trade-off between global context modeling and parameter efficiency compared to pure architectures. As
+shown in Table 4, the Pure LKA model (Case 1) is the most lightweight (3.01M parameters) but lacks the sequence
+modeling capabilities required for complex disease patterns, resulting in lower stability. Conversely, the Pure Mamba
+model (Case 4) achieves competitive accuracy (99.25%) but incurs a significant parameter penalty (6.62M), which
+is less ideal for edge deployment. The Hybrid architecture without additional features (Case 3) strikes a balance,
+achieving 99.12% accuracy with 4.41M parameters. This confirms that integrating Mamba Mixers in early layers to
+capture global dependencies and LKA in later layers for spatial refinement provides an optimal foundation for the
+model.
+    The necessity of the integrated components—Efficient Channel Attention (ECA), Global Response Normalization
+(GRN), and SwiGLU—was evaluated by selectively removing them from the hybrid baseline.
+
+      • Impact of ECA (Case 6): Removing the ECA module resulted in a significant increase in variance (±1.52%) and
+        a drop in accuracy to 98.56%. This indicates that the channel-wise attention mechanism is critical for stabilizing
+        feature selection and focusing the model on relevant disease symptoms amidst background noise.
+
+      • Impact of GRN (Case 7): While removing GRN maintained high accuracy (99.50%), the inclusion of GRN
+        in the final configuration (Case 8) contributed to a higher F1-score (99.69% vs. 99.62%). GRN is retained to
+        prevent feature collapse in deep layers and ensure the model prioritizes high-contrast features, which is essential
+        for generalization across diverse datasets.
+      • Impact of SwiGLU (Case 5): Replacing SwiGLU with standard activations resulted in a slight decrease in F1-
+        score compared to the optimal configuration. The SwiGLU activation enhances the non-linear representational
+        capacity of the MLP blocks, allowing the model to capture more intricate decision boundaries between similar
+        disease classes.
+
+
+
+First Author et al.: Preprint submitted to Elsevier                                                                  Page 12 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+Table 5
+Hyperparameter configuration for training MangoMamba.
+                                        Hyperparameter                 Value
+                                        Training Epochs                 100
+                                        Batch Size                      256
+                                        Base Learning Rate            5 × 10−4
+                                        Warmup Epochs                    5
+                                        Optimizer                     AdamW
+                                        Learning Rate Scheduler   Cosine Annealing
+                                        Early Stopping Patience      20 epochs
+
+
+    A critical finding from the ablation study is the impact of window size configuration. The initial design utilized a
+multi-scale window strategy ([8, 8, 14, 7]) to mimic hierarchical receptive fields (Case 9). However, empirical results
+demonstrate that a Fixed Window strategy of [7, 7, 7, 7] (Case 8) yields better performance, achieving the highest
+F1-score of 99.69% with the lowest standard deviation (± 0.24%). This suggests that a consistent local context size of
+7 × 7 aligns better with the typical spatial extent of mango leaf lesions at the processed feature resolutions, minimizing
+boundary artifacts often introduced by varying window sizes. Consequently, the Fixed Window configuration (Case 8)
+was selected as the final architecture for MangoMamba.
+
+3.2. Training setup
+    The experimental validation of the MangoMamba model was conducted within a standardized computational
+environment to ensure reproducibility and accessibility for resource-constrained agricultural applications. All training
+and evaluation procedures were executed on the Google Colab platform (Free Tier), utilizing a single NVIDIA Tesla
+T4 GPU (15 GB VRAM) and 12.7 GB of system RAM. The software stack was built upon Python 3.12 and PyTorch
+2.6 with CUDA 12.6 support. Key dependencies included NumPy 2.2.2, Matplotlib 3.10.3, and Scikit-learn 1.7.1 for
+data handling and analysis; Transformers 4.50, TIMM 1.0.9, and Einops 0.8.1 for model architecture components; and
+Mamba-SSM 2.2.4 for the state-space modeling operations.
+    As delineated in Section 2.1, the datasets were stratified into distinct subsets: 80% for training, 10% for validation,
+and 10% for testing. To ensure assessment of generalization capability, all performance metrics reported in subsequent
+sections are derived exclusively from the held-out test set, which comprises images completely unseen during the
+optimization process.
+    The training configuration was standardized across all experiments to maintain consistency. The specific hyper-
+parameters are detailed in Table 5. The model was optimized using the AdamW optimizer with a cosine annealing
+learning rate scheduler, initialized at a learning rate of 5 × 10−4 following a 5-epoch linear warmup period. This
+warmup strategy is critical for stabilizing the early training dynamics of the hybrid Mamba-LKA architecture.
+    Despite the substantial volume of training data, a comprehensive suite of regularization techniques was employed
+to mitigate overfitting and simulate the noise characteristics of real-world deployment. Label smoothing was applied to
+prevent the model from becoming over-confident in its predictions, thereby encouraging softer probability distributions.
+Weight decay was utilized to penalize large weights and promote parameter sparsity. Stochastic depth (DropPath) was
+implemented to randomly drop residual paths during training, effectively training an implicit ensemble of sub-networks.
+Additionally, gradient clipping was enforced to stabilize the optimization of the recurrent state-space components, and
+an early stopping mechanism with a patience of 20 epochs was used to halt training when validation performance
+plateaued. These measures collectively ensure that the final deployed model maintains robust performance on edge
+devices.
+
+3.3. Evaluation metrics
+    To assess the performance of our proposed model for classifying multiple mango leaf diseases on edge devices,
+MangoMamba was evaluated on four widely adopted evaluation metrics: Accuracy, Precision, Recall, and F1 Score.
+These metrics provide a comprehensive evaluation of the model’s classification performance across diverse disease
+classes.
+    Accuracy quantifies the proportion of correctly classified samples relative to the total number of samples. It is
+defined as:
+
+
+First Author et al.: Preprint submitted to Elsevier                                                         Page 13 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+                           𝑇𝑃 + 𝑇𝑁
+       Accuracy =                                                                                                        (2)
+                      𝑇𝑃 + 𝑇𝑁 + 𝐹𝑃 + 𝐹𝑁
+    where TP (True Positives) is the number of correctly predicted positive samples, TN (True Negatives) is the number
+of correctly predicted negative samples, FP (False Positives) is the number of negative samples incorrectly predicted
+as positive, and FN (False Negatives) is the number of positive samples incorrectly predicted as negative.
+    Precision measures the proportion of correctly predicted positive samples among all samples predicted as positive,
+emphasizing the model’s ability to minimize false positives. It is calculated as:
+
+                        𝑇𝑃
+       Precision =                                                                                                       (3)
+                      𝑇𝑃 + 𝐹𝑃
+    Recall evaluates the model’s ability to identify all positive samples, reflecting its capacity to detect all instances of
+a specific disease. It is defined as:
+                     𝑇𝑃
+       Recall =                                                                                                          (4)
+                   𝑇𝑃 + 𝐹𝑁
+   F1 Score provides a balanced measure of Precision and Recall, beneficial for imbalanced datasets where one class
+may dominate. It is also the harmonic mean of Precision and Recall, computed as:
+                         Precision ⋅ Recall
+       F1 Score = 2 ⋅                                                                                                    (5)
+                         Precision + Recall
+3.4. Confusion Matrix
+     To evaluate the classification consistency across different data distributions, the confusion matrices for the
+MangoLeafBD, Combined, and VN-MangoLeaf test sets are presented in Figure 9 and Figure 10.
+     Figures 9(a) and 9(b) illustrate the performance on the MangoLeafBD and Combined datasets, respectively, which
+both encompass the standard eight-class schema (Anthracnose, Bacterial Canker, Cutting Weevil, Die Back, Gall
+Midge, Healthy, Powdery Mildew, and Sooty Mold). A distinct dominance of diagonal elements is observed in both
+matrices, indicating high precision and recall rates. The minimal off-diagonal values suggest that the model successfully
+extracted discriminative features for each class, maintaining high separability even when the dataset size and diversity
+were expanded in the Combined set.
+     In the case of the VN-MangoLeaf dataset (Figure 10), which operates on a seven-class schema (excluding
+Bacterial Canker and Cutting Weevil while introducing Red Rust), the diagonal structure remains prominent. However,
+minor misclassifications are observable, particularly between ’Red Rust’ and ’Anthracnose’. This phenomenon can be
+attributed to the morphological similarities between the early-stage necrotic spots of Anthracnose and the reddish-
+brown pustules of Red Rust, which can pose a challenge for feature extraction under varying lighting conditions.
+Despite these subtle inter-class similarities, the overall concentration of predictions along the diagonal confirms the
+reliability of the MangoMamba architecture for practical disease diagnosis.
+
+3.5. Grad-CAM visualization
+    To validate the interpretability of the model and ensure that predictions rely on pathological features rather than
+background noise, Gradient-weighted Class Activation Mapping (Grad-CAM) was employed. This technique generates
+a coarse localization map highlighting the varying intensity of regions within the input image that most significantly
+influence the decision-making process of the final convolutional layer.
+    Consistent with the visual analysis framework employed in recent studies [9], the activation heatmaps were overlaid
+on representative samples from each class to verify semantic alignment. As depicted in Figure 11, the visualizations
+demonstrate a strong correlation between high-activation regions (red/yellow zones) and the biological symptoms of
+the diseases:
+
+    • For Powdery Mildew, the heatmap accurately localizes the white, dusty fungal patches spread across the leaf
+      surface.
+
+
+First Author et al.: Preprint submitted to Elsevier                                                           Page 14 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+Figure 9: Confusion matrices evaluating classification performance on (a) the MangoLeafBD dataset and (b) the Combined
+dataset, sharing the same eight-class structure.
+
+
+
+
+Figure 10: Confusion matrix for the VN-MangoLeaf dataset, illustrating performance across its specific seven-class schema.
+
+
+
+    • In cases of Bacterial Canker and Anthracnose, the model focuses intensely on the characteristic necrotic
+      lesions and dark spots, ignoring the healthy green tissues.
+    • The visualizations for Sooty Mold and Red Rust confirm the model’s attention to the black fungal coatings and
+      reddish-brown pustules, respectively.
+
+    • For the Healthy class, the activation maps are characteristically diffuse with lower intensity, reflecting the
+      absence of specific lesion patterns.
+These qualitative results confirm that the proposed MangoMamba architecture effectively learns distinct disease
+markers and does not overfit to irrelevant background artifacts.
+
+First Author et al.: Preprint submitted to Elsevier                                                        Page 15 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+Figure 11: Grad-CAM visualization of representative images from each class. The columns display the original image, the
+activation heatmap, and the superposition of the heatmap on the original image, demonstrating the model’s focus on
+disease-specific symptoms.
+
+
+
+3.6. Performance comparison
+     Table 6 presents a comprehensive comparison of the proposed MangoMamba model against existing state-of-the-
+art (SOTA) approaches evaluated on mango leaf disease datasets. The comparison encompasses classification accuracy,
+computational efficiency (inference time and parameter count), and storage requirements suitable for edge deployment.
+It is important to note that direct comparisons of inference speed must account for hardware heterogeneity. As the source
+code and deployed mobile applications for the comparative studies were not publicly available, the performance metrics
+for these methods are cited directly from their respective publications. Specifically, the models analyzed by Hossain et
+al. (2024) [citation needed] were evaluated on an Intel Xeon CPU @ 2.20GHz, whereas the ViX-MangoEFormer by
+Noman et al. (2025) [9] reported inference speeds on mid-tier GPUs (e.g., NVIDIA Jetson Xavier NX or T4 - which
+is the same type as Google Colab’s T4 GPU).
+     The proposed MangoMamba model demonstrates competitive classification performance, achieving an accuracy
+of 99.75% on the MangoLeafBD dataset, 99.65% on the Combined dataset, and 98.14% on the newly introduced
+
+
+First Author et al.: Preprint submitted to Elsevier                                                        Page 16 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+Figure 12: Demonstration of the MangoMamba model deployed on a mobile device via an Android application. The model
+runs locally using the ONNX runtime, enabling real-time disease classification without internet dependency.
+
+
+
+VN-MangoLeaf dataset. While certain heavy architectures such as Fused ViT-ConvNeXt [2] or InceptionV3 [18] may
+report marginally higher accuracies (e.g., 99.87% on MangoLeafBD), these gains often come at the cost of significantly
+increased computational complexity, rendering them less suitable for on-device deployment. A substantial advantage
+of the proposed architecture lies in its inference speed. On a standard GPU environment, MangoMamba requires only
+1.46-1.52 ms per image. When compared to the recent ViX-MangoEFormer [9], which reports an inference time of
+approximately 120 ms on GPU hardware, MangoMamba achieves an approximate 80× reduction in latency while
+maintaining comparable accuracy.
+    Unlike many existing studies that primarily utilize models as remote backends accessed via Web APIs (e.g., ViX-
+MangoEFormer), the proposed framework explicitly supports offline, on-device execution. To validate this capability,
+the trained MangoMamba model was converted to the ONNX format and integrated into a native Android application
+using Android Studio.
+    Figure 12 illustrates the real-world deployment of the application. The system successfully processes images
+directly on the mobile device, with an inference latency of 100-300 ms (depending on the specific mobile chipset),
+ensuring functionality even in areas with limited or no internet connectivity. This contrasts with server-dependent
+solutions that suffer from latency induced by network transmission.
+    Regarding model size, MangoMamba strikes an optimal balance with 5.8 million parameters and a file size of 22.2
+MB. This is significantly more compact than transformer-based alternatives, such as DeiT (85.8M parameters, 1.03
+
+
+First Author et al.: Preprint submitted to Elsevier                                                     Page 17 of 23
+                                                        Mango-Mamba and VN-MangoLeaf
+
+Table 6
+Comparison between the proposed model and other studies that also evaluated on the MangoLeafBD dataset. Note: (↑)
+indicates higher is better; (↓) indicates lower is better.
+                                                                              Inference Time     Inference Time
+ Model                  Accuracy(%) ↑   Dataset              Image Amount ↑                  ↓                  ↓   Params ↓       Model Size ↓     Train/Test split
+                                                                              (Per image)        on mobile
+ DeiT [6]               99.75           MangoLeafBD          4,000            346.87 ms (CPU)    Not provided       85.8 M         1.03 GB          8:1:1
+ Optimized DeiT [6]     99.75           MangoLeafBD          4,000            315.78 ms (CPU)    Not provided       781 K          88.47 MB         8:1:1
+ SwinTransformer [6]    99.5            MangoLeafBD          4,000            206.02 ms (CPU)    Not provided       27.58 M        110.30 MB        8:1:1
+ ShuffleNet [6]         99.5            MangoLeafBD          4,000            40.76 ms (CPU)     Not provided       5.36 M         64.72 MB         8:1:1
+ MobileNetV2 [6]        98.79           MangoLeafBD          4,000            42.28 ms (CPU)     Not provided       2.23 M         27.19 MB         8:1:1
+ EfficientNet [6]       98.75           MangoLeafBD          4,000            45.01 ms (CPU)     Not provided       4.01 M         48.7 MB          8:1:1
+ DenseNet121 [6]        96.75           MangoLeafBD          4,000            119.34 ms (CPU)    Not provided       6.96 M         84.47 MB         8:1:1
+ SqueezeNet [6]         96.5            MangoLeafBD          4,000            20.80 ms (CPU)     Not provided       726.6 K        8.78 MB          8:1:1
+ ViX-MangoEFormer [9]   99.43           MangoLeafBD          4,000            120 ms (GPU)       Not provided       Not provided   Not provided     9:1
+                        98.02           Mango Leaf Disease   12,730           120 ms (GPU)       Not provided       Not provided   Not provided     9:1
+                        98.63           MLD24                6,400            120 ms (GPU)       Not provided       Not provided   Not provided     9:1
+                        99.78           Combined             25,530           120 ms (GPU)       Not provided       Not provided   Not provided     9:1
+ MangoMamba             99.75           MangoLeafBD          4000             1.46 ms (GPU)      100-300 ms         5.8 M          22.2 & 68.8 MB   8:1:1
+ Our proposed model     99.72           Combined             40,000           1.52 ms (GPU)      100-300 ms         5.8 M          22.2 & 68.8 MB   8:1:1
+                        98.14           VN-MangoLeaf         7000             1.48 ms (GPU)      100-300 ms         5.8 M          22.2 & 68.8 MB   8:1:1
+
+
+
+
+GB) and SwinTransformer (27.58M parameters, 110.30 MB). Although SqueezeNet offers a smaller footprint (8.78
+MB), its accuracy (96.5%) is notably lower than that of the proposed method (99.75%).
+   In summary, the experimental results indicate that MangoMamba achieves an effective trade-off between accuracy
+and efficiency, validating its suitability for real-time edge computing in smart agriculture.
+
+3.7. Error analysis
+    While the MangoMamba model achieves high overall classification accuracy, a granular analysis of misclassified
+samples reveals specific limitations in distinguishing phenotypically similar diseases. Figure 13 illustrates represen-
+tative error cases accompanied by Grad-CAM visualizations, which serve to diagnose whether failures stem from
+incorrect spatial localization or feature ambiguity.
+    Two primary misclassification patterns are observed. The first involves confusion between Anthracnose and Red
+Rust (Rows 1, 2, and 4 in Figure 13). In these instances, the model incorrectly predicts the class with moderate
+confidence (e.g., 0.511-0.665). The Grad-CAM heatmaps demonstrate that the attention mechanism correctly activates
+on the necrotic lesions, indicating that the model successfully localizes the pathology. However, the decision boundary
+remains ambiguous due to the shared reddish-brown chromatic characteristics of both diseases. This suggests that the
+feature extractor prioritizes dominant color features over the subtle textural differences (e.g., the powdery pustules of
+Red Rust versus the sunken necrosis of Anthracnose).
+    The second pattern involves the misclassification of Gall Midge as Sooty Mold (Row 3). Both conditions manifest
+as dark, clustered masses on the leaf surface. Although the model accurately focuses on the gall structures, the
+morphological similarity in low-contrast regions leads to erroneous predictions.
+    These findings imply that while the hybrid Mamba-Attention architecture excels at capturing global context and
+localizing symptoms (as evidenced by precise Grad-CAM activation), it occasionally struggles with fine-grained
+texture discrimination when inter-class color similarity is high. The relatively low confidence scores in these
+misclassified cases suggest that integrating an uncertainty threshold mechanism could effectively flag such ambiguous
+samples for expert review in practical deployment.
+
+3.8. Limitations and Future Research Directions
+    While the experimental results demonstrate that the proposed MangoMamba architecture achieves a favorable
+trade-off between computational efficiency and classification accuracy, several limitations regarding the study’s scope
+and deployment validity are acknowledged.
+    First, regarding the hardware deployment claims, although the model was designed for edge devices, the current
+empirical validation of real-time inference is limited to a specific mid-range smartphone configuration (Xiaomi Redmi
+Note 11S). While this device confirms the feasibility of the architecture with an inference latency suitable for interactive
+use, the performance on lower-end devices or different mobile chipsets (e.g., older Snapdragon series or MediaTek
+entry-level chips) has not been comprehensively benchmarked. Furthermore, the current deployment relies on the raw
+PyTorch mobile runtime. The potential gains from hardware-specific optimizations, such as quantization (INT8) or
+conversion to ONNX/TensorFlow Lite formats, which are critical for broad cross-platform compatibility, remain an
+open area for investigation.
+
+First Author et al.: Preprint submitted to Elsevier                                                                                               Page 18 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+
+
+
+                                            Figure 13: Incorrect predicted images
+
+
+
+    Second, the generalization capability of the VN-MangoLeaf dataset presents geographical constraints. Although the
+dataset successfully addresses the bias of existing Bangladesh-centric repositories by introducing Vietnamese-specific
+disease variants like Red Rust, the data collection was primarily concentrated in Southern Vietnam. Consequently, the
+model may exhibit reduced sensitivity to disease manifestations specific to Northern Vietnam or other tropical regions
+with differing climatic conditions. Additionally, the current taxonomy includes seven distinct classes; however, other
+economically significant mango pathologies, such as Bacterial Black Spot (Xanthomonas campestris) or Malformation
+disease, are absent from the training distribution. This limitation implies that the system classifies unseen pathologies
+as one of the existing seven categories rather than identifying them as "unknown" or "out-of-distribution."
+    Third, while data augmentation and curriculum learning were employed to mitigate environmental variability, the
+robustness of the model under extreme field conditions—such as varying sunlight angles at dusk/dawn, severe occlusion
+
+
+
+First Author et al.: Preprint submitted to Elsevier                                                        Page 19 of 23
+                                                Mango-Mamba and VN-MangoLeaf
+
+by overlapping foliage, or motion blur caused by wind—requires further rigorous field testing. The current evaluation
+relies heavily on static images, whereas real-world agricultural diagnosis often involves dynamic video streams.
+    Future research directions will focus on three key objectives to address these shortcomings.
+    • Cross-Platform ptimization: Future work will implement and evaluate model quantization and pruning
+      techniques to establish a comprehensive benchmark across a diverse fleet of Android and iOS devices, ensuring
+      consistent real-time performance regardless of hardware tier.
+    • Dataset expansion: The VN-MangoLeaf dataset will be expanded through a citizen science approach, incor-
+      porating samples from diverse geographical latitudes to capture broader symptom variations. Concurrently, the
+      architecture will be adapted to support open-set recognition, enabling the model to flag unknown diseases rather
+      than forcing a misclassification.
+    • Integrated pest management system: Beyond singular leaf disease classification, future iterations aim to
+      integrate the MangoMamba backbone into a multi-modal system capable of analyzing fruit quality and pest
+      infestation simultaneously, providing a holistic diagnostic tool for precision agriculture.
+
+4. Conclusion
+    This study introduced MangoMamba, a lightweight hybrid architecture that effectively balances classification
+accuracy with computational efficiency for mango leaf disease detection. By integrating Multi-Scale Mamba Mixers
+with Large-Kernel Attention, the proposed model achieved competitive accuracies of 99.75% on the MangoLeafBD
+dataset and 98.71% on the newly curated VN-MangoLeaf dataset (7,000 images). With a compact footprint of 5.8
+million parameters and a file size of 22.2 MB, the model demonstrates linear complexity, enabling an inference
+speed of 1.46 ms per image on GPU, representing an approximate 80× speedup compared to recent Transformer-
+based approaches like ViX-MangoEFormer. Crucially, practical deployment feasibility was validated via an ONNX-
+based Android application, achieving stable inference latencies of 100-300 ms on mobile devices without internet
+dependency. Ablation studies confirmed that the synergistic combination of Mamba mixers and attention mechanisms
+significantly minimizes feature redundancy while maximizing diagnostic precision. Future work will focus on integrat-
+ing uncertainty quantification to handle ambiguous cases and expanding the dataset to include diverse environmental
+conditions for broader agro-ecological generalization.
+
+Conflicts of interest
+    The authors have no conflicts of interest to declare that are relevant to the content of this article.
+
+Data and code availability
+    To promote transparency and facilitate future research in the domain of agricultural plant pathology, the VN-
+MangoLeaf dataset has been made publicly available. It is released under the Creative Commons Attribution 4.0 In-
+ternational (CC BY 4.0) license, allowing for unrestricted use, distribution, and reproduction in any medium, provided
+the original work is properly cited. The full dataset, including raw and augmented images, can be accessed via the Kag-
+gle repository at: https://www.kaggle.com/datasets/binhpt310/viet-nam-mango-diseases-leaves-dataset.
+The source code can also be found at https://github.com/binhpt310/Mango-Mamba-and-VN-MangoLeaf.
+The corresponding author can provide the datasets and codes generated and/or analyzed during the current work upon
+reasonable request.
+
+Acknowledgements
+   This research was supported by The VNUHCM-University of Information Technology’s Scientific Research
+Support Fund.
+
+References
+ [1] Sarder Iftekhar Ahmed, Muhammad Ibrahim, Md. Nadim, Md. Mizanur Rahman, Maria Mehjabin Shejunti, Taskeed Jabid, and Md. Sawkat
+     Ali. MangoLeafBD: A comprehensive image dataset to classify diseased and healthy mango leaves. Data in Brief, 47:108941, April 2023.
+
+First Author et al.: Preprint submitted to Elsevier                                                                      Page 20 of 23
+                                                  Mango-Mamba and VN-MangoLeaf
+
+ [2] Faten S. Alamri, Tariq Sadad, Ahmed S. Almasoud, Raja Atif Aurangzeb, and Amjad Khan. Mango disease detection using fused vision
+     transformer with convnext architecture. Computers, Materials & Continua, 83(1):1023–1039, 2025.
+ [3] Albert Gu and Tri Dao. Mamba: linear-time sequence modeling with selective state spaces, 2023.
+ [4] Meng-Hao Guo, Cheng-Ze Lu, Zheng-Ning Liu, Ming-Ming Cheng, and Shi-Min Hu. Visual attention network, December 2023.
+ [5] Ali Hatamizadeh and Jan Kautz. Mambavision: A hybrid mamba-transformer vision backbone. In Proceedings of the IEEE/CVF Conference
+     on Computer Vision and Pattern Recognition (CVPR), pages 25261–25270, June 2025.
+ [6] Md. Arban Hossain, Saadman Sakib, Hasan Muhammad Abdullah, and Shifat E. Arman. Deep learning for mango leaf disease identification:
+     A vision transformer perspective. Heliyon, 10(17):e36361, September 2024.
+ [7] Ze Liu, Yutong Lin, Yue Cao, Han Hu, Yixuan Wei, Zheng Zhang, Stephen Lin, and Baining Guo. Swin Transformer: Hierarchical Vision
+     Transformer using Shifted Windows. In 2021 IEEE/CVF International Conference on Computer Vision (ICCV), pages 9992–10002, Montreal,
+     QC, Canada, October 2021. IEEE.
+ [8] Bahar Uddin Mahmud, Abdullah Al Mamun, Md Jakir Hossen, Guan Yue Hong, and Busrat Jahan. Light-Weight Deep Learning Model for
+     Accelerating the Classification of Mango-Leaf Disease. Emerging Science Journal, 8(1):28–42, February 2024.
+ [9] Abdullah Al Noman, Amira Hossain, Anamul Sakib, Jesika Debnath, Hasib Fardin, Abdullah Al Sakib, Rezaul Haque, Md. Redwan Ahmed,
+     Ahmed Wasif Reza, and M. Ali Akber Dewan. Vix-mangoeformer: an enhanced vision transformer–efficientformer and stacking ensemble
+     approach for mango leaf disease recognition with explainable artificial intelligence. Computers, 14(5):171, May 2025.
+[10] Ngoh D. J. Patrice, Heu Alain, Mboussi S. Bertrand, Kuate T. W. Norbert, Kone N. A. Nourou, Tchoupou T. D. Brice, Amani G. Honorine,
+     Jeutsa A. Dolaris, Djile Bouba, and Ambang Zachee. First report of red rust disease caused by cephaleuros virescens on mango (Mangifera
+     indica) tree in cameroon. International Journal of Phytopathology, 9(3):187–193, December 2020.
+[11] Juan Qin, Linfan Deng, Cong Li, Junjie He, Haibo Pen, and Zhaoxia Wang. CropCapsNet: Enhanced capsule network for crop disease
+     classification. Computers and Electrical Engineering, 128:110635, December 2025.
+[12] Md Shajedur Rahman, Rakibul Hasan, and Mayen Uddin Mojumdar. Mango leaf disease dataset, November 2024.
+[13] Yongming Rao, Wenliang Zhao, Benlin Liu, Jiwen Lu, Jie Zhou, and Cho-Jui Hsieh. Dynamicvit: efficient vision transformers with dynamic
+     token sparsification. In Proceedings of the 35th International Conference on Neural Information Processing Systems, NIPS ’21, Red Hook,
+     NY, USA, 2021. Curran Associates Inc.
+[14] Redwan Ahmed Rizvee, Tasnim Hossain Orpa, Adil Ahnaf, Md Ahsan Kabir, Mohammad Rifat Ahmmad Rashid, Mohammad Manzurul
+     Islam, Maheen Islam, Taskeed Jabid, and Md Sawkat Ali. LeafNet: A proficient convolutional neural network for detecting seven prominent
+     mango leaf diseases. Journal of Agriculture and Food Research, 14:100787, December 2023.
+[15] Md. Mahir Hasan Shakib, Sumaya Mustofa, and Md Taimur Ahad. MLD24: An image dataset for mango leaf disease detection, August 2024.
+[16] Noam Shazeer. Glu variants improve transformer, 2020.
+[17] Gia-Bao Truong, Thi-Thao Tran, Nhu-Linh Than, Van Quang Nguyen, Thi Hue Nguyen, and Van-Truong Pham. SC-MambaFew: Few-
+     shot learning based on Mamba and selective spatial-channel attention for bearing fault diagnosis. Computers and Electrical Engineering,
+     123:110004, April 2025.
+[18] Teena Varma, Prajwal Mate, Noamaan Abdul Azeem, Sanjeev Sharma, and Bhupendra Singh. Automatic mango leaf disease detection using
+     different transfer learning models. Multimedia Tools and Applications, May 2024.
+[19] Qilong Wang, Banggu Wu, Pengfei Zhu, Peihua Li, Wangmeng Zuo, and Qinghua Hu. Eca-net: efficient channel attention for deep
+     convolutional neural networks. In 2020 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pages 11531–11539,
+     Seattle, WA, USA, June 2020. IEEE.
+[20] Sanghyun Woo, Shoubhik Debnath, Ronghang Hu, Xinlei Chen, Zhuang Liu, In So Kweon, and Saining Xie. Convnext v2: Co-designing and
+     scaling convnets with masked autoencoders, June 2023.
+[21] Hewei Zhang, Shengzhou Li, Jialong Xie, Zihan Chen, Jiyang Chen, and Jianwen Guo. VMamba for plant leaf disease identification: design
+     and experiment. Frontiers in Plant Science, 16:1515021, April 2025.
+[22] Lianghui Zhu, Bencheng Liao, Qian Zhang, Xinlong Wang, Wenyu Liu, and Xinggang Wang. Vision mamba: efficient visual representation
+     learning with bidirectional state space model. In Proceedings of the 41st International Conference on Machine Learning, ICML’24. JMLR.org,
+     2024.
+
+
+Appendix A: Model Architecture Equations
+   This appendix provides the detailed mathematical formulations for the core components of the proposed Man-
+goMamba architecture, specifically the LayerNorm-SwiGLU-Residual pathway, the Large-Kernel Attention (LKA)
+mechanism, and the Selective State Space Model (SSM) components.
+
+A.1. Efficient Channel Attention (ECA)
+   ECA mechanism [19] generates channel-wise attention weights 𝑠 via a parameter-efficient 1D convolution over
+global average pooled (GAP) features according to Equation 6:
+
+       𝑠 = 𝜎(Conv1D(GAP(𝑥))),
+                                                                                                                                           (6)
+       𝑥̂ = 𝑥 ⊙ 𝑠,
+   where sigmoid activation 𝜎 is applied on the result of a 1D convolution over the GAP features, and 𝑥̂ applies these
+weights to the original input 𝑥 through element-wise multiplication ⊙.
+
+First Author et al.: Preprint submitted to Elsevier                                                                           Page 21 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+A.2. Global Response Normalization (GRN)
+   GRN mechanism [20] stabilizes feature responses by normalizing the spatial L2-norm (energy) across the height
+and width dimensions, followed by a learnable affine transformation. This is applied according to Equation 7:
+
+                      ‖𝑥‖2
+          𝑛𝑥 = (       (     )   ),
+                mean𝐶 ‖𝑥‖2 + 𝜖                                                                                           (7)
+                    (      )
+      GRN(𝑥) = 𝑥 + 𝛾 𝑥 ⊙ 𝑛𝑥 + 𝛽,
+
+    where ‖ ⋅ ‖2 denotes the L 2 -norm computed over the spatial dimensions ( H, W ) for each channel, mean𝐶 (⋅) is
+the mean across channels, 𝜖 is a small constant for numerical stability (typically 10−6 ), ⊙ represents element-wise
+multiplication, 𝑥 and 𝛾 are learnable parameters initialized to zero.
+
+A.3. Windowed processing
+    In each stage, the feature maps are partitioned into non-overlapping windows of size 𝑆 × 𝑆 to facilitate efficient
+local computation. This process transforms the input tensor 𝑥 ∈ ℝ𝐵×𝐶×𝐻×𝑊 into a windowed representation
+𝑋 ∈ ℝ𝐵win ×𝐿×𝐶 ( 𝐿 = 𝑆 2 where 𝐿 represents the number of tokens within each window) and according to Equation
+8:
+                  ( ) ( )
+                    𝐻       𝑊
+       𝐵win = 𝐵 ⋅        ⋅       ,                                                                                 (8)
+                     𝑠       𝑠
+
+   where 𝐵win is the total number of windows, with 𝐵 being the batch size, while 𝐻𝑠 and 𝑊𝑠 indicate the number of
+windows along the height and width dimensions, respectively.
+
+A.4. Dual-pathway residual architecture
+   Structurally, the MangoMambaBlock employs a dual-pathway residual architecture, comprising a LayerNorm-
+Mixer-Residual pathway followed by a LayerNorm-SwiGLU-Residual pathway. For an input token sequence 𝑥 ∈
+ℝ𝐵×𝐿×𝐶 the forward pass is formalized as Equation 9:
+
+                       (                          )
+      𝑥′ = 𝑥 + DropPath 𝛾1 ⋅ Mixer( LayerNorm (𝑥)) ,
+                       (         (           ( )))                                                                       (9)
+      𝑦 = 𝑥′ + DropPath 𝛾2 ⋅ FFN LayerNorm 𝑥′       ,
+
+    where Mixer denotes either the Multi-Scale Mamba Mixer or LKA based on the block position, FFN is the
+SwiGLU-based feed-forward network, DropPath applies stochastic depth regularization with a stage-specific drop rate
+(derived from a linear schedule up to 0.15 ), and 𝛾1 , 𝛾2 are learnable layer scaling coefficients initialized to 1 × 10−5 to
+mitigate vanishing gradients and promote stable training, as per modern practices in vision transformers [13].
+
+A.5. Multi-Scale Mamba Mixer
+     The Multi-Scale Mamba Mixer addresses the challenge of capturing dependencies at varying spatial resolutions by
+processing windowed tokens through parallel high- and low-resolution branches. The high-resolution branch processes
+the full token sequence of length 𝐿 = 𝑆 2 , while the low-resolution branch operates on a spatially downsampled
+version of length 𝐿4 , achieved by reshaping to ℝ𝐵×𝐶×𝑆×𝑆 , applying bilinear interpolation downsampling to 𝑆2 × 𝑆2 , and
+flattening. Each branch utilizes a DiseaseAwareMixer (DAM) module, with the high branch employing an expansion
+factor of 1.5 for richer representations and the low branch using 1.0 for efficiency. The outputs of 𝑦high = DAM (𝑥)
+and 𝑦low = Upsample ( DAM ( Downsample (𝑥))) are fused using a learnable per-channel gate as Equation 10:
+
+      𝑔 = 𝜎(𝑊 ) ∈ ℝ1×1×𝑐 ,
+                                                                                                                        (10)
+      𝑦 = (1 − 𝑔)𝑦high + 𝑔𝑦low
+
+   where 𝑊 is a learnable parameter tensor initialized to zero (shape [1, 1, 𝐶] ) and 𝜎 is the sigmoid activation.
+This gating mechanism allows adaptive blending, reducing parameters compared to dense fusion while enhancing
+multi-scale feature integration.
+
+First Author et al.: Preprint submitted to Elsevier                                                           Page 22 of 23
+                                             Mango-Mamba and VN-MangoLeaf
+
+A.6. DiseaseAwareMixer
+    The input 𝑥 is first projected to an inner dimension 𝑑inner = ⌊expand ×𝐶⌋ where 𝑧 = in _proj (𝑥). This expanded
+representation is split into x-stream 𝑥𝑧 (first half) and z-stream 𝑧𝑧 (second half) for state-space processing and gating,
+respectively. The x-stream undergoes SiLU activation and depthwise 1D convolution for local context according to
+Equation 11:
+                      (                  (              ))
+      𝑥conv = SiLU DWConv1D 𝑥𝑧 , kernel = 3 ,
+                           (            )         (       )                                                           (11)
+                            Δ𝑡 , 𝐵𝑡 , 𝐶𝑡 = 𝑥_proj 𝑥conv ,
+
+    where Δ𝑡 is further projected and softplus-activated via 𝑑𝑡_𝑝𝑟𝑜𝑗 to ensure positive time steps. The selective state-
+space recurrence is then computed using the selective_scan_fn interface [from mamba_ssm] as follow in Equation
+12:
+
+             ( )          (       )
+      ℎ𝑡 = 𝐴̃ Δ𝑡 ℎ𝑡−1 + 𝐵̃ Δ𝑡 , 𝐵𝑡 𝑥𝑡
+                               𝑜 = ℎ𝑡 𝐶𝑡                                                                             (12)
+                                   ( )
+                      𝑦 = 𝑜 ⊙ SiLU 𝑧𝑧
+
+    with 𝐴̃ and 𝐵̃ as discretized matrices, enabling input-dependent evolution of the hidden state ℎ𝑡 ∈ ℝ𝑑state
+then the output is gated by the SiLU-activated z-stream and projected back to 𝐶 dimensions via out_proj. This
+formulation provides efficient modeling of long-range dependencies in windowed tokens, which are crucial for
+detecting interconnected disease symptoms across leaf veins.
+
+A.7. Large-Kernel Attention (LKA)
+    In later blocks, the Large-Kernel Attention (LKA) pathway replaces the Mamba Mixer to generate spatial attention
+maps through cascaded depthwise convolutions, achieving large receptive fields without quadratic complexity. This is
+advantageous for capturing multi-scale spatial dependencies in mango leaves, such as the irregular patterns of red rust
+pustules. The input tokens are reshaped to spatial format 𝑥 ∈ ℝ𝐵×𝐶×𝑆×𝑆 , then processed sequentially. A depthwise
+convolution with kernel size 𝑘1 = 3, padding 1 followed by a dilated depthwise convolution with 𝑘2 = 5, dilation 2
+will result a residual gate with a learnable per-channel parameter 𝐺 ∈ ℝ1×𝐶×1×1 as described in Equation 13 :
+
+          𝑎 = DWConv𝑘1 =3 (𝑥),
+      𝑏 = DWConv𝑘2 =5,𝑑=2 (𝑎),                                                                                       (13)
+              𝑦 = 𝑥 + 𝜎(𝐺) ⊙ 𝑏,
+
+Where 𝜎 is sigmoid and ⊙ is broadcasted element-wise multiplication. The output is flattened back to token sequence
+format for downstream processing.
+
+A.8. SwiGLU activation
+    To further enhance representational capacity, each block incorporates a position-wise feed-forward network using
+SwiGLU activation. The input is projected to a reduced hidden dimension ℎ = ⌊0.8× mlp_ratio ×𝐶⌋ (mlp_ratio=2.0
+typically) via two parallel linear layers 𝑉1 and 𝑉2 followed by gating Equation 14:
+
+                      SiLU(𝑧) = 𝑧 ⋅ 𝜎(𝑧),
+                       (
+                       (   )       )                                                                                 (14)
+      SwiGLU(𝑥) = SiLU 𝑥𝑉 2 ⊙ 𝑥𝑉 1 𝑊𝑜 ,
+
+    where ⊙ is element-wise, and 𝑊𝑜 is the output projection back to 𝐶.
+
+
+
+
+First Author et al.: Preprint submitted to Elsevier                                                        Page 23 of 23
+

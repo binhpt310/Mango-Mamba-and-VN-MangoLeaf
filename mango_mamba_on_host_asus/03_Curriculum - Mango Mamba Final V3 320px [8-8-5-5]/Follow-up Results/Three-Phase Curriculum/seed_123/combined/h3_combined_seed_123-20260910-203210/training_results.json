@@ -1,0 +1,129 @@
+{
+  "training_time_seconds": 31045.577698946,
+  "training_time_formatted": "8h 37m 26s",
+  "total_parameters": 5824420,
+  "trainable_parameters": 5824420,
+  "model_size_mb": 22.218399047851562,
+  "best_validation_accuracy": 99.775,
+  "early_stopping": {
+    "patience_epochs": 20,
+    "monitor_metric": "loss",
+    "early_stopping_triggered": false,
+    "epochs_completed_this_run": 100,
+    "epochs_completed_total": 100,
+    "best_epoch": 94
+  },
+  "resume": {
+    "enabled": false,
+    "checkpoint_path": null,
+    "start_epoch": 0,
+    "target_epochs": 100
+  },
+  "final_metrics": {
+    "train_loss": 0.07177668178081513,
+    "val_loss": 0.01838576316833496,
+    "train_acc": 99.8875,
+    "val_acc": 99.775,
+    "test_loss": 0.02122687941789627,
+    "test_acc": 99.525
+  },
+  "validation_metrics": {
+    "accuracy": 0.99775,
+    "precision": 0.9977529779875266,
+    "recall": 0.99775,
+    "f1_score": 0.9977494922359441
+  },
+  "test_metrics": {
+    "loss": 0.020851170241832733,
+    "accuracy": 0.99575,
+    "precision": 0.9957746974187558,
+    "recall": 0.99575,
+    "f1_score": 0.9957486364984943
+  },
+  "validation_per_class_metrics": {
+    "precision": [
+      0.9940119760479041,
+      0.9960159362549801,
+      1.0,
+      1.0,
+      0.998,
+      1.0,
+      0.9979879275653923,
+      0.9960079840319361
+    ],
+    "recall": [
+      0.996,
+      1.0,
+      0.998,
+      1.0,
+      0.998,
+      1.0,
+      0.992,
+      0.998
+    ],
+    "f1_score": [
+      0.995004995004995,
+      0.998003992015968,
+      0.998998998998999,
+      1.0,
+      0.998,
+      1.0,
+      0.9949849548645938,
+      0.997002997002997
+    ],
+    "class_names": [
+      "Anthracnose",
+      "Bacterial Canker",
+      "Cutting Weevil",
+      "Die Back",
+      "Gall Midge",
+      "Healthy",
+      "Powdery Mildew",
+      "Sooty Mould"
+    ]
+  },
+  "test_per_class_metrics": {
+    "precision": [
+      0.9959839357429718,
+      0.994,
+      0.998003992015968,
+      0.9960159362549801,
+      0.9841897233201581,
+      1.0,
+      0.998003992015968,
+      1.0
+    ],
+    "recall": [
+      0.992,
+      0.994,
+      1.0,
+      1.0,
+      0.996,
+      1.0,
+      1.0,
+      0.984
+    ],
+    "f1_score": [
+      0.9939879759519038,
+      0.994,
+      0.999000999000999,
+      0.998003992015968,
+      0.9900596421471173,
+      1.0,
+      0.999000999000999,
+      0.9919354838709677
+    ],
+    "class_names": [
+      "Anthracnose",
+      "Bacterial Canker",
+      "Cutting Weevil",
+      "Die Back",
+      "Gall Midge",
+      "Healthy",
+      "Powdery Mildew",
+      "Sooty Mould"
+    ]
+  },
+  "epochs_completed": 100,
+  "best_epoch": 94
+}

@@ -1,0 +1,6 @@
+{
+  "task": "no-inter",
+  "seed": 42,
+  "source_h3": "/home/admincsc/workspace/binh/reproduce_mm/results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_42-20260909-100206/model_best.pth.tar",
+  "result": "/home/admincsc/workspace/binh/reproduce_mm/results/h3_320_aligned_followup/no_inter_mangoleafbd/h3_no_inter_mangoleafbd_seed_42-20260910-093108/model_best.pth.tar"
+}

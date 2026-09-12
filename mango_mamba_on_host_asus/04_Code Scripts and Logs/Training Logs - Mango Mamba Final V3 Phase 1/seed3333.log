@@ -1,0 +1,885 @@
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+GPU Memory cleared. Available: 119.63 GB
+Using native Torch AMP for mixed precision training.
+Data processing configuration for current model + dataset:
+	input_size: (3, 320, 320)
+	interpolation: bicubic
+	mean: (0.485, 0.456, 0.406)
+	std: (0.229, 0.224, 0.225)
+	crop_pct: 0.875
+	crop_mode: center
+Starting training at epoch 1 of 100...
+
+Model Parameters:
+  Total parameters: 5,824,420
+  Trainable parameters: 5,824,420
+  Model size: 22.22 MB (float32)
+
+GPU Memory - Allocated: 0.25 GB, Reserved: 0.41 GB
+Train: 0 [   0/50 (  0%)] Loss: 2.016 (2.02) Acc@1: 32.8 (32.8) Time: 18.442s LR: 1.000e-05 Data: 0.345s
+Train: 0 [  10/50 ( 20%)] Loss: 2.039 (2.02) Acc@1: 17.2 (24.1) Time: 0.925s LR: 1.000e-05 Data: 0.001s
+Train: 0 [  20/50 ( 41%)] Loss: 2.016 (2.01) Acc@1: 26.6 (25.3) Time: 0.455s LR: 1.000e-05 Data: 0.001s
+Train: 0 [  30/50 ( 61%)] Loss: 1.984 (2.01) Acc@1: 29.7 (26.4) Time: 0.930s LR: 1.000e-05 Data: 0.002s
+Train: 0 [  40/50 ( 82%)] Loss: 1.971 (2.00) Acc@1: 32.8 (27.2) Time: 0.465s LR: 1.000e-05 Data: 0.002s
+Test: [   0/6] Time: 0.733 (0.733) Loss:  2.0460 (2.0460) Acc@1: 23.4375 (23.4375)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-0.pth.tar', 2.02365478515625)
+
+Epoch 1/100 - Train Loss: 2.0005 - Val Acc: 26.5000 - Best Acc: 26.5000 (epoch 1) - Val Loss: 2.0237 (best: 2.0237) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 1 [   0/50 (  0%)] Loss: 1.992 (1.99) Acc@1: 29.7 (29.7) Time: 0.999s LR: 1.080e-04 Data: 0.208s
+Train: 1 [  10/50 ( 20%)] Loss: 1.929 (1.97) Acc@1: 40.6 (31.2) Time: 0.871s LR: 1.080e-04 Data: 0.002s
+Train: 1 [  20/50 ( 41%)] Loss: 1.814 (1.92) Acc@1: 46.9 (35.4) Time: 0.469s LR: 1.080e-04 Data: 0.001s
+Train: 1 [  30/50 ( 61%)] Loss: 1.737 (1.88) Acc@1: 56.2 (39.6) Time: 0.746s LR: 1.080e-04 Data: 0.001s
+Train: 1 [  40/50 ( 82%)] Loss: 1.657 (1.85) Acc@1: 51.6 (41.8) Time: 0.382s LR: 1.080e-04 Data: 0.001s
+Test: [   0/6] Time: 0.397 (0.397) Loss:  1.7560 (1.7560) Acc@1: 50.0000 (50.0000)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-1.pth.tar', 1.61176025390625)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-0.pth.tar', 2.02365478515625)
+
+Epoch 2/100 - Train Loss: 1.8168 - Val Acc: 47.5000 - Best Acc: 47.5000 (epoch 2) - Val Loss: 1.6118 (best: 1.6118) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 2 [   0/50 (  0%)] Loss: 1.637 (1.64) Acc@1: 46.9 (46.9) Time: 0.971s LR: 2.060e-04 Data: 0.205s
+Train: 2 [  10/50 ( 20%)] Loss: 1.585 (1.58) Acc@1: 43.8 (52.4) Time: 0.698s LR: 2.060e-04 Data: 0.002s
+Train: 2 [  20/50 ( 41%)] Loss: 1.463 (1.55) Acc@1: 51.6 (50.6) Time: 0.409s LR: 2.060e-04 Data: 0.001s
+Train: 2 [  30/50 ( 61%)] Loss: 1.388 (1.51) Acc@1: 51.6 (50.3) Time: 0.743s LR: 2.060e-04 Data: 0.002s
+Train: 2 [  40/50 ( 82%)] Loss: 1.357 (1.48) Acc@1: 53.1 (50.7) Time: 0.444s LR: 2.060e-04 Data: 0.002s
+Test: [   0/6] Time: 0.300 (0.300) Loss:  1.2419 (1.2419) Acc@1: 70.3125 (70.3125)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-2.pth.tar', 1.1991696166992187)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-1.pth.tar', 1.61176025390625)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-0.pth.tar', 2.02365478515625)
+
+Epoch 3/100 - Train Loss: 1.4508 - Val Acc: 60.7500 - Best Acc: 60.7500 (epoch 3) - Val Loss: 1.1992 (best: 1.1992) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 3 [   0/50 (  0%)] Loss: 1.117 (1.12) Acc@1: 75.0 (75.0) Time: 0.933s LR: 3.040e-04 Data: 0.179s
+Train: 3 [  10/50 ( 20%)] Loss: 1.335 (1.25) Acc@1: 48.4 (58.5) Time: 0.700s LR: 3.040e-04 Data: 0.002s
+Train: 3 [  20/50 ( 41%)] Loss: 1.071 (1.20) Acc@1: 67.2 (62.1) Time: 0.305s LR: 3.040e-04 Data: 0.001s
+Train: 3 [  30/50 ( 61%)] Loss: 1.024 (1.17) Acc@1: 64.1 (63.4) Time: 0.587s LR: 3.040e-04 Data: 0.002s
+Train: 3 [  40/50 ( 82%)] Loss: 0.9746 (1.14) Acc@1: 68.8 (64.7) Time: 0.305s LR: 3.040e-04 Data: 0.000s
+Test: [   0/6] Time: 0.529 (0.529) Loss:  0.4036 (0.4036) Acc@1: 95.3125 (95.3125)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-3.pth.tar', 0.8413588094711304)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-2.pth.tar', 1.1991696166992187)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-1.pth.tar', 1.61176025390625)
+
+Epoch 4/100 - Train Loss: 1.1138 - Val Acc: 71.5000 - Best Acc: 71.5000 (epoch 4) - Val Loss: 0.8414 (best: 0.8414) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 4 [   0/50 (  0%)] Loss: 0.9450 (0.945) Acc@1: 68.8 (68.8) Time: 0.927s LR: 4.020e-04 Data: 0.216s
+Train: 4 [  10/50 ( 20%)] Loss: 0.9780 (0.947) Acc@1: 65.6 (69.9) Time: 0.827s LR: 4.020e-04 Data: 0.002s
+Train: 4 [  20/50 ( 41%)] Loss: 0.8270 (0.912) Acc@1: 76.6 (70.8) Time: 0.468s LR: 4.020e-04 Data: 0.002s
+Train: 4 [  30/50 ( 61%)] Loss: 0.9502 (0.887) Acc@1: 73.4 (71.3) Time: 0.925s LR: 4.020e-04 Data: 0.003s
+Train: 4 [  40/50 ( 82%)] Loss: 0.6592 (0.845) Acc@1: 82.8 (72.9) Time: 0.468s LR: 4.020e-04 Data: 0.001s
+Test: [   0/6] Time: 0.437 (0.437) Loss:  0.3775 (0.3775) Acc@1: 90.6250 (90.6250)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-4.pth.tar', 0.6067262172698975)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-3.pth.tar', 0.8413588094711304)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-2.pth.tar', 1.1991696166992187)
+
+Epoch 5/100 - Train Loss: 0.8317 - Val Acc: 79.7500 - Best Acc: 79.7500 (epoch 5) - Val Loss: 0.6067 (best: 0.6067) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 5 [   0/50 (  0%)] Loss: 0.8991 (0.899) Acc@1: 70.3 (70.3) Time: 0.995s LR: 4.970e-04 Data: 0.201s
+Train: 5 [  10/50 ( 20%)] Loss: 0.6448 (0.718) Acc@1: 84.4 (77.8) Time: 0.932s LR: 4.970e-04 Data: 0.002s
+Train: 5 [  20/50 ( 41%)] Loss: 0.5664 (0.683) Acc@1: 84.4 (79.4) Time: 0.460s LR: 4.970e-04 Data: 0.002s
+Train: 5 [  30/50 ( 61%)] Loss: 0.6781 (0.653) Acc@1: 73.4 (80.8) Time: 0.931s LR: 4.970e-04 Data: 0.002s
+Train: 5 [  40/50 ( 82%)] Loss: 0.4852 (0.627) Acc@1: 82.8 (81.4) Time: 0.463s LR: 4.970e-04 Data: 0.001s
+Test: [   0/6] Time: 0.459 (0.459) Loss:  0.6313 (0.6313) Acc@1: 76.5625 (76.5625)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-5.pth.tar', 0.505861428976059)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-4.pth.tar', 0.6067262172698975)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-3.pth.tar', 0.8413588094711304)
+
+Epoch 6/100 - Train Loss: 0.6160 - Val Acc: 81.7500 - Best Acc: 81.7500 (epoch 6) - Val Loss: 0.5059 (best: 0.5059) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 6 [   0/50 (  0%)] Loss: 0.4135 (0.414) Acc@1: 89.1 (89.1) Time: 1.000s LR: 4.956e-04 Data: 0.165s
+Train: 6 [  10/50 ( 20%)] Loss: 0.6272 (0.539) Acc@1: 82.8 (83.8) Time: 0.930s LR: 4.956e-04 Data: 0.002s
+Train: 6 [  20/50 ( 41%)] Loss: 0.5198 (0.537) Acc@1: 81.2 (83.8) Time: 0.466s LR: 4.956e-04 Data: 0.001s
+Train: 6 [  30/50 ( 61%)] Loss: 0.5076 (0.505) Acc@1: 85.9 (84.8) Time: 0.934s LR: 4.956e-04 Data: 0.001s
+Train: 6 [  40/50 ( 82%)] Loss: 0.4135 (0.504) Acc@1: 89.1 (84.9) Time: 0.464s LR: 4.956e-04 Data: 0.001s
+Test: [   0/6] Time: 0.454 (0.454) Loss:  0.3178 (0.3178) Acc@1: 89.0625 (89.0625)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-6.pth.tar', 0.4522671699523926)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-5.pth.tar', 0.505861428976059)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-4.pth.tar', 0.6067262172698975)
+
+Epoch 7/100 - Train Loss: 0.4927 - Val Acc: 85.2500 - Best Acc: 85.2500 (epoch 7) - Val Loss: 0.4523 (best: 0.4523) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 7 [   0/50 (  0%)] Loss: 0.3029 (0.303) Acc@1: 95.3 (95.3) Time: 0.937s LR: 4.940e-04 Data: 0.175s
+Train: 7 [  10/50 ( 20%)] Loss: 0.5553 (0.481) Acc@1: 87.5 (86.1) Time: 0.938s LR: 4.940e-04 Data: 0.001s
+Train: 7 [  20/50 ( 41%)] Loss: 0.3633 (0.444) Acc@1: 87.5 (87.1) Time: 0.695s LR: 4.940e-04 Data: 0.001s
+Train: 7 [  30/50 ( 61%)] Loss: 0.4064 (0.429) Acc@1: 85.9 (87.7) Time: 1.389s LR: 4.940e-04 Data: 0.001s
+Train: 7 [  40/50 ( 82%)] Loss: 0.4178 (0.421) Acc@1: 85.9 (88.1) Time: 0.692s LR: 4.940e-04 Data: 0.001s
+Test: [   0/6] Time: 0.450 (0.450) Loss:  0.2354 (0.2354) Acc@1: 89.0625 (89.0625)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-7.pth.tar', 0.28703993558883667)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-6.pth.tar', 0.4522671699523926)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-5.pth.tar', 0.505861428976059)
+
+Epoch 8/100 - Train Loss: 0.4228 - Val Acc: 91.5000 - Best Acc: 91.5000 (epoch 8) - Val Loss: 0.2870 (best: 0.2870) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 8 [   0/50 (  0%)] Loss: 0.4593 (0.459) Acc@1: 89.1 (89.1) Time: 0.941s LR: 4.922e-04 Data: 0.224s
+Train: 8 [  10/50 ( 20%)] Loss: 0.2481 (0.360) Acc@1: 95.3 (91.3) Time: 1.388s LR: 4.922e-04 Data: 0.001s
+Train: 8 [  20/50 ( 41%)] Loss: 0.2594 (0.374) Acc@1: 96.9 (90.7) Time: 0.692s LR: 4.922e-04 Data: 0.001s
+Train: 8 [  30/50 ( 61%)] Loss: 0.3180 (0.371) Acc@1: 93.8 (91.0) Time: 1.388s LR: 4.922e-04 Data: 0.001s
+Train: 8 [  40/50 ( 82%)] Loss: 0.3422 (0.364) Acc@1: 90.6 (91.2) Time: 0.697s LR: 4.922e-04 Data: 0.001s
+Test: [   0/6] Time: 0.740 (0.740) Loss:  0.1249 (0.1249) Acc@1: 95.3125 (95.3125)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-8.pth.tar', 0.27366352677345274)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-7.pth.tar', 0.28703993558883667)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-6.pth.tar', 0.4522671699523926)
+
+Epoch 9/100 - Train Loss: 0.3519 - Val Acc: 90.7500 - Best Acc: 90.7500 (epoch 9) - Val Loss: 0.2737 (best: 0.2737) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 9 [   0/50 (  0%)] Loss: 0.2979 (0.298) Acc@1: 92.2 (92.2) Time: 1.323s LR: 4.902e-04 Data: 0.233s
+Train: 9 [  10/50 ( 20%)] Loss: 0.3336 (0.301) Acc@1: 90.6 (91.2) Time: 1.402s LR: 4.902e-04 Data: 0.001s
+Train: 9 [  20/50 ( 41%)] Loss: 0.4136 (0.323) Acc@1: 90.6 (90.8) Time: 0.690s LR: 4.902e-04 Data: 0.001s
+Train: 9 [  30/50 ( 61%)] Loss: 0.3354 (0.323) Acc@1: 90.6 (91.0) Time: 1.394s LR: 4.902e-04 Data: 0.001s
+Train: 9 [  40/50 ( 82%)] Loss: 0.1816 (0.334) Acc@1: 98.4 (90.9) Time: 0.695s LR: 4.902e-04 Data: 0.001s
+Test: [   0/6] Time: 0.751 (0.751) Loss:  0.2091 (0.2091) Acc@1: 92.1875 (92.1875)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-9.pth.tar', 0.2551296901702881)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-8.pth.tar', 0.27366352677345274)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-7.pth.tar', 0.28703993558883667)
+
+Epoch 10/100 - Train Loss: 0.3405 - Val Acc: 92.0000 - Best Acc: 92.0000 (epoch 10) - Val Loss: 0.2551 (best: 0.2551) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 10 [   0/50 (  0%)] Loss: 0.1995 (0.199) Acc@1: 98.4 (98.4) Time: 1.429s LR: 4.879e-04 Data: 0.225s
+Train: 10 [  10/50 ( 20%)] Loss: 0.2498 (0.343) Acc@1: 92.2 (90.9) Time: 1.404s LR: 4.879e-04 Data: 0.002s
+Train: 10 [  20/50 ( 41%)] Loss: 0.3137 (0.328) Acc@1: 89.1 (91.7) Time: 0.699s LR: 4.879e-04 Data: 0.001s
+Train: 10 [  30/50 ( 61%)] Loss: 0.3498 (0.320) Acc@1: 89.1 (92.0) Time: 1.380s LR: 4.879e-04 Data: 0.001s
+Train: 10 [  40/50 ( 82%)] Loss: 0.1878 (0.310) Acc@1: 96.9 (92.5) Time: 0.691s LR: 4.879e-04 Data: 0.001s
+Test: [   0/6] Time: 0.608 (0.608) Loss:  0.1757 (0.1757) Acc@1: 93.7500 (93.7500)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-10.pth.tar', 0.2084043550491333)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-9.pth.tar', 0.2551296901702881)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-8.pth.tar', 0.27366352677345274)
+
+Epoch 11/100 - Train Loss: 0.3080 - Val Acc: 92.0000 - Best Acc: 92.0000 (epoch 11) - Val Loss: 0.2084 (best: 0.2084) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 11 [   0/50 (  0%)] Loss: 0.2154 (0.215) Acc@1: 96.9 (96.9) Time: 1.243s LR: 4.854e-04 Data: 0.265s
+Train: 11 [  10/50 ( 20%)] Loss: 0.2220 (0.265) Acc@1: 95.3 (93.6) Time: 1.387s LR: 4.854e-04 Data: 0.001s
+Train: 11 [  20/50 ( 41%)] Loss: 0.2916 (0.273) Acc@1: 92.2 (93.2) Time: 0.697s LR: 4.854e-04 Data: 0.001s
+Train: 11 [  30/50 ( 61%)] Loss: 0.3606 (0.272) Acc@1: 90.6 (93.3) Time: 1.390s LR: 4.854e-04 Data: 0.001s
+Train: 11 [  40/50 ( 82%)] Loss: 0.3453 (0.270) Acc@1: 89.1 (93.1) Time: 0.692s LR: 4.854e-04 Data: 0.001s
+Test: [   0/6] Time: 0.664 (0.664) Loss:  0.0864 (0.0864) Acc@1: 100.0000 (100.0000)
+Epoch 12/100 - Train Loss: 0.2674 - Val Acc: 83.2500 - Best Acc: 92.0000 (epoch 11) - Val Loss: 0.4477 (best: 0.2084) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 12 [   0/50 (  0%)] Loss: 0.3387 (0.339) Acc@1: 90.6 (90.6) Time: 1.524s LR: 4.826e-04 Data: 0.282s
+Train: 12 [  10/50 ( 20%)] Loss: 0.3471 (0.303) Acc@1: 90.6 (91.8) Time: 1.388s LR: 4.826e-04 Data: 0.001s
+Train: 12 [  20/50 ( 41%)] Loss: 0.2044 (0.265) Acc@1: 96.9 (93.6) Time: 0.687s LR: 4.826e-04 Data: 0.001s
+Train: 12 [  30/50 ( 61%)] Loss: 0.1982 (0.258) Acc@1: 96.9 (94.0) Time: 1.388s LR: 4.826e-04 Data: 0.001s
+Train: 12 [  40/50 ( 82%)] Loss: 0.3608 (0.258) Acc@1: 89.1 (93.8) Time: 0.692s LR: 4.826e-04 Data: 0.001s
+Test: [   0/6] Time: 0.598 (0.598) Loss:  0.0821 (0.0821) Acc@1: 98.4375 (98.4375)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-12.pth.tar', 0.18052208065986633)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-10.pth.tar', 0.2084043550491333)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-9.pth.tar', 0.2551296901702881)
+
+Epoch 13/100 - Train Loss: 0.2545 - Val Acc: 95.5000 - Best Acc: 95.5000 (epoch 13) - Val Loss: 0.1805 (best: 0.1805) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 13 [   0/50 (  0%)] Loss: 0.1936 (0.194) Acc@1: 95.3 (95.3) Time: 1.283s LR: 4.796e-04 Data: 0.222s
+Train: 13 [  10/50 ( 20%)] Loss: 0.2603 (0.243) Acc@1: 96.9 (95.2) Time: 1.393s LR: 4.796e-04 Data: 0.001s
+Train: 13 [  20/50 ( 41%)] Loss: 0.2083 (0.239) Acc@1: 95.3 (95.2) Time: 0.694s LR: 4.796e-04 Data: 0.001s
+Train: 13 [  30/50 ( 61%)] Loss: 0.2006 (0.239) Acc@1: 93.8 (95.1) Time: 1.376s LR: 4.796e-04 Data: 0.001s
+Train: 13 [  40/50 ( 82%)] Loss: 0.1876 (0.233) Acc@1: 95.3 (95.2) Time: 0.696s LR: 4.796e-04 Data: 0.001s
+Test: [   0/6] Time: 0.635 (0.635) Loss:  0.0616 (0.0616) Acc@1: 98.4375 (98.4375)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-13.pth.tar', 0.17068533301353456)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-12.pth.tar', 0.18052208065986633)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-10.pth.tar', 0.2084043550491333)
+
+Epoch 14/100 - Train Loss: 0.2315 - Val Acc: 93.7500 - Best Acc: 93.7500 (epoch 14) - Val Loss: 0.1707 (best: 0.1707) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 14 [   0/50 (  0%)] Loss: 0.1366 (0.137) Acc@1: 98.4 (98.4) Time: 1.326s LR: 4.764e-04 Data: 0.231s
+Train: 14 [  10/50 ( 20%)] Loss: 0.1733 (0.210) Acc@1: 96.9 (95.7) Time: 1.395s LR: 4.764e-04 Data: 0.001s
+Train: 14 [  20/50 ( 41%)] Loss: 0.1904 (0.211) Acc@1: 96.9 (95.9) Time: 0.708s LR: 4.764e-04 Data: 0.002s
+Train: 14 [  30/50 ( 61%)] Loss: 0.1378 (0.213) Acc@1: 98.4 (95.5) Time: 1.396s LR: 4.764e-04 Data: 0.001s
+Train: 14 [  40/50 ( 82%)] Loss: 0.1942 (0.214) Acc@1: 96.9 (95.3) Time: 0.688s LR: 4.764e-04 Data: 0.001s
+Test: [   0/6] Time: 0.631 (0.631) Loss:  0.0438 (0.0438) Acc@1: 98.4375 (98.4375)
+Epoch 15/100 - Train Loss: 0.2162 - Val Acc: 93.2500 - Best Acc: 93.7500 (epoch 14) - Val Loss: 0.1908 (best: 0.1707) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 15 [   0/50 (  0%)] Loss: 0.2180 (0.218) Acc@1: 95.3 (95.3) Time: 1.332s LR: 4.730e-04 Data: 0.202s
+Train: 15 [  10/50 ( 20%)] Loss: 0.3071 (0.213) Acc@1: 93.8 (95.2) Time: 1.407s LR: 4.730e-04 Data: 0.001s
+Train: 15 [  20/50 ( 41%)] Loss: 0.2006 (0.227) Acc@1: 96.9 (94.8) Time: 0.685s LR: 4.730e-04 Data: 0.001s
+Train: 15 [  30/50 ( 61%)] Loss: 0.1669 (0.220) Acc@1: 96.9 (95.0) Time: 1.411s LR: 4.730e-04 Data: 0.001s
+Train: 15 [  40/50 ( 82%)] Loss: 0.2189 (0.218) Acc@1: 93.8 (95.2) Time: 0.695s LR: 4.730e-04 Data: 0.001s
+Test: [   0/6] Time: 0.708 (0.708) Loss:  0.3317 (0.3317) Acc@1: 85.9375 (85.9375)
+Epoch 16/100 - Train Loss: 0.2209 - Val Acc: 92.5000 - Best Acc: 93.7500 (epoch 14) - Val Loss: 0.2047 (best: 0.1707) - Patience: 2/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 16 [   0/50 (  0%)] Loss: 0.4054 (0.405) Acc@1: 90.6 (90.6) Time: 1.519s LR: 4.694e-04 Data: 0.237s
+Train: 16 [  10/50 ( 20%)] Loss: 0.1451 (0.224) Acc@1: 98.4 (94.7) Time: 1.387s LR: 4.694e-04 Data: 0.001s
+Train: 16 [  20/50 ( 41%)] Loss: 0.1976 (0.216) Acc@1: 95.3 (95.5) Time: 0.690s LR: 4.694e-04 Data: 0.001s
+Train: 16 [  30/50 ( 61%)] Loss: 0.1523 (0.206) Acc@1: 96.9 (96.0) Time: 1.388s LR: 4.694e-04 Data: 0.001s
+Train: 16 [  40/50 ( 82%)] Loss: 0.1141 (0.205) Acc@1: 100. (96.0) Time: 0.694s LR: 4.694e-04 Data: 0.001s
+Test: [   0/6] Time: 0.653 (0.653) Loss:  0.0697 (0.0697) Acc@1: 96.8750 (96.8750)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-16.pth.tar', 0.12008881211280822)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-13.pth.tar', 0.17068533301353456)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-12.pth.tar', 0.18052208065986633)
+
+Epoch 17/100 - Train Loss: 0.2045 - Val Acc: 96.5000 - Best Acc: 96.5000 (epoch 17) - Val Loss: 0.1201 (best: 0.1201) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 17 [   0/50 (  0%)] Loss: 0.1729 (0.173) Acc@1: 98.4 (98.4) Time: 1.341s LR: 4.655e-04 Data: 0.226s
+Train: 17 [  10/50 ( 20%)] Loss: 0.1340 (0.203) Acc@1: 100. (95.7) Time: 1.396s LR: 4.655e-04 Data: 0.002s
+Train: 17 [  20/50 ( 41%)] Loss: 0.2769 (0.193) Acc@1: 93.8 (96.2) Time: 0.702s LR: 4.655e-04 Data: 0.001s
+Train: 17 [  30/50 ( 61%)] Loss: 0.1631 (0.186) Acc@1: 96.9 (96.5) Time: 1.395s LR: 4.655e-04 Data: 0.001s
+Train: 17 [  40/50 ( 82%)] Loss: 0.2391 (0.189) Acc@1: 96.9 (96.4) Time: 0.692s LR: 4.655e-04 Data: 0.001s
+Test: [   0/6] Time: 0.715 (0.715) Loss:  0.0352 (0.0352) Acc@1: 100.0000 (100.0000)
+Epoch 18/100 - Train Loss: 0.1893 - Val Acc: 96.5000 - Best Acc: 96.5000 (epoch 17) - Val Loss: 0.1205 (best: 0.1201) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 18 [   0/50 (  0%)] Loss: 0.2073 (0.207) Acc@1: 96.9 (96.9) Time: 1.162s LR: 4.615e-04 Data: 0.222s
+Train: 18 [  10/50 ( 20%)] Loss: 0.2204 (0.193) Acc@1: 98.4 (96.9) Time: 1.395s LR: 4.615e-04 Data: 0.001s
+Train: 18 [  20/50 ( 41%)] Loss: 0.1743 (0.191) Acc@1: 98.4 (96.7) Time: 0.465s LR: 4.615e-04 Data: 0.001s
+Train: 18 [  30/50 ( 61%)] Loss: 0.2199 (0.184) Acc@1: 92.2 (96.8) Time: 0.929s LR: 4.615e-04 Data: 0.001s
+Train: 18 [  40/50 ( 82%)] Loss: 0.1839 (0.192) Acc@1: 95.3 (96.4) Time: 0.457s LR: 4.615e-04 Data: 0.001s
+Test: [   0/6] Time: 0.441 (0.441) Loss:  0.1524 (0.1524) Acc@1: 93.7500 (93.7500)
+Epoch 19/100 - Train Loss: 0.1927 - Val Acc: 94.2500 - Best Acc: 96.5000 (epoch 17) - Val Loss: 0.1421 (best: 0.1201) - Patience: 2/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 19 [   0/50 (  0%)] Loss: 0.1592 (0.159) Acc@1: 98.4 (98.4) Time: 0.944s LR: 4.572e-04 Data: 0.168s
+Train: 19 [  10/50 ( 20%)] Loss: 0.1166 (0.161) Acc@1: 100. (96.7) Time: 0.939s LR: 4.572e-04 Data: 0.002s
+Train: 19 [  20/50 ( 41%)] Loss: 0.1205 (0.181) Acc@1: 98.4 (96.2) Time: 0.465s LR: 4.572e-04 Data: 0.001s
+Train: 19 [  30/50 ( 61%)] Loss: 0.1806 (0.183) Acc@1: 95.3 (96.0) Time: 0.936s LR: 4.572e-04 Data: 0.001s
+Train: 19 [  40/50 ( 82%)] Loss: 0.1966 (0.184) Acc@1: 95.3 (96.2) Time: 0.464s LR: 4.572e-04 Data: 0.000s
+Test: [   0/6] Time: 0.621 (0.621) Loss:  0.7135 (0.7135) Acc@1: 81.2500 (81.2500)
+Epoch 20/100 - Train Loss: 0.1764 - Val Acc: 89.0000 - Best Acc: 96.5000 (epoch 17) - Val Loss: 0.3376 (best: 0.1201) - Patience: 3/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 20 [   0/50 (  0%)] Loss: 0.1499 (0.150) Acc@1: 98.4 (98.4) Time: 1.154s LR: 4.527e-04 Data: 0.200s
+Train: 20 [  10/50 ( 20%)] Loss: 0.2151 (0.164) Acc@1: 93.8 (96.9) Time: 0.934s LR: 4.527e-04 Data: 0.002s
+Train: 20 [  20/50 ( 41%)] Loss: 0.1727 (0.178) Acc@1: 95.3 (96.3) Time: 0.703s LR: 4.527e-04 Data: 0.001s
+Train: 20 [  30/50 ( 61%)] Loss: 0.2687 (0.180) Acc@1: 95.3 (96.7) Time: 1.389s LR: 4.527e-04 Data: 0.001s
+Train: 20 [  40/50 ( 82%)] Loss: 0.1857 (0.176) Acc@1: 96.9 (96.8) Time: 0.689s LR: 4.527e-04 Data: 0.001s
+Test: [   0/6] Time: 0.617 (0.617) Loss:  0.0329 (0.0329) Acc@1: 98.4375 (98.4375)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-20.pth.tar', 0.11228630423545838)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-16.pth.tar', 0.12008881211280822)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-13.pth.tar', 0.17068533301353456)
+
+Epoch 21/100 - Train Loss: 0.1719 - Val Acc: 96.2500 - Best Acc: 96.2500 (epoch 21) - Val Loss: 0.1123 (best: 0.1123) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 21 [   0/50 (  0%)] Loss: 0.1381 (0.138) Acc@1: 96.9 (96.9) Time: 1.088s LR: 4.481e-04 Data: 0.218s
+Train: 21 [  10/50 ( 20%)] Loss: 0.1669 (0.191) Acc@1: 98.4 (96.9) Time: 1.382s LR: 4.481e-04 Data: 0.001s
+Train: 21 [  20/50 ( 41%)] Loss: 0.1545 (0.186) Acc@1: 96.9 (96.7) Time: 0.695s LR: 4.481e-04 Data: 0.001s
+Train: 21 [  30/50 ( 61%)] Loss: 0.1604 (0.191) Acc@1: 96.9 (96.2) Time: 1.394s LR: 4.481e-04 Data: 0.001s
+Train: 21 [  40/50 ( 82%)] Loss: 0.1734 (0.187) Acc@1: 96.9 (96.4) Time: 0.694s LR: 4.481e-04 Data: 0.001s
+Test: [   0/6] Time: 0.661 (0.661) Loss:  0.1072 (0.1072) Acc@1: 95.3125 (95.3125)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-21.pth.tar', 0.10474688738584519)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-20.pth.tar', 0.11228630423545838)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-16.pth.tar', 0.12008881211280822)
+
+Epoch 22/100 - Train Loss: 0.1811 - Val Acc: 96.2500 - Best Acc: 96.2500 (epoch 22) - Val Loss: 0.1047 (best: 0.1047) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 22 [   0/50 (  0%)] Loss: 0.1322 (0.132) Acc@1: 98.4 (98.4) Time: 1.214s LR: 4.432e-04 Data: 0.263s
+Train: 22 [  10/50 ( 20%)] Loss: 0.1342 (0.146) Acc@1: 98.4 (97.3) Time: 1.379s LR: 4.432e-04 Data: 0.001s
+Train: 22 [  20/50 ( 41%)] Loss: 0.1091 (0.142) Acc@1: 100. (97.7) Time: 0.702s LR: 4.432e-04 Data: 0.001s
+Train: 22 [  30/50 ( 61%)] Loss: 0.1490 (0.159) Acc@1: 96.9 (97.1) Time: 1.402s LR: 4.432e-04 Data: 0.001s
+Train: 22 [  40/50 ( 82%)] Loss: 0.1357 (0.159) Acc@1: 98.4 (97.3) Time: 0.695s LR: 4.432e-04 Data: 0.001s
+Test: [   0/6] Time: 0.611 (0.611) Loss:  0.0966 (0.0966) Acc@1: 96.8750 (96.8750)
+Epoch 23/100 - Train Loss: 0.1611 - Val Acc: 95.7500 - Best Acc: 96.2500 (epoch 22) - Val Loss: 0.1135 (best: 0.1047) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 23 [   0/50 (  0%)] Loss: 0.1378 (0.138) Acc@1: 98.4 (98.4) Time: 1.299s LR: 4.382e-04 Data: 0.249s
+Train: 23 [  10/50 ( 20%)] Loss: 0.1883 (0.148) Acc@1: 96.9 (97.9) Time: 1.384s LR: 4.382e-04 Data: 0.001s
+Train: 23 [  20/50 ( 41%)] Loss: 0.1313 (0.162) Acc@1: 98.4 (97.5) Time: 0.693s LR: 4.382e-04 Data: 0.001s
+Train: 23 [  30/50 ( 61%)] Loss: 0.1545 (0.158) Acc@1: 96.9 (97.7) Time: 1.388s LR: 4.382e-04 Data: 0.001s
+Train: 23 [  40/50 ( 82%)] Loss: 0.2128 (0.158) Acc@1: 95.3 (97.6) Time: 0.658s LR: 4.382e-04 Data: 0.001s
+Test: [   0/6] Time: 0.438 (0.438) Loss:  0.1472 (0.1472) Acc@1: 93.7500 (93.7500)
+Epoch 24/100 - Train Loss: 0.1549 - Val Acc: 94.2500 - Best Acc: 96.2500 (epoch 22) - Val Loss: 0.1368 (best: 0.1047) - Patience: 2/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 24 [   0/50 (  0%)] Loss: 0.09653 (0.0965) Acc@1: 100. (100.) Time: 0.948s LR: 4.329e-04 Data: 0.176s
+Train: 24 [  10/50 ( 20%)] Loss: 0.1868 (0.132) Acc@1: 96.9 (98.6) Time: 1.389s LR: 4.329e-04 Data: 0.001s
+Train: 24 [  20/50 ( 41%)] Loss: 0.2231 (0.150) Acc@1: 95.3 (98.1) Time: 0.694s LR: 4.329e-04 Data: 0.001s
+Train: 24 [  30/50 ( 61%)] Loss: 0.1021 (0.148) Acc@1: 100. (97.9) Time: 1.380s LR: 4.329e-04 Data: 0.001s
+Train: 24 [  40/50 ( 82%)] Loss: 0.1622 (0.151) Acc@1: 95.3 (97.7) Time: 0.696s LR: 4.329e-04 Data: 0.001s
+Test: [   0/6] Time: 0.468 (0.468) Loss:  0.0806 (0.0806) Acc@1: 96.8750 (96.8750)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-24.pth.tar', 0.09655451536178589)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-21.pth.tar', 0.10474688738584519)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-20.pth.tar', 0.11228630423545838)
+
+Epoch 25/100 - Train Loss: 0.1498 - Val Acc: 96.5000 - Best Acc: 96.5000 (epoch 25) - Val Loss: 0.0966 (best: 0.0966) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 25 [   0/50 (  0%)] Loss: 0.1797 (0.180) Acc@1: 95.3 (95.3) Time: 0.965s LR: 4.275e-04 Data: 0.207s
+Train: 25 [  10/50 ( 20%)] Loss: 0.1541 (0.151) Acc@1: 95.3 (97.4) Time: 1.392s LR: 4.275e-04 Data: 0.001s
+Train: 25 [  20/50 ( 41%)] Loss: 0.1447 (0.156) Acc@1: 96.9 (97.4) Time: 0.693s LR: 4.275e-04 Data: 0.001s
+Train: 25 [  30/50 ( 61%)] Loss: 0.1159 (0.161) Acc@1: 98.4 (97.3) Time: 0.931s LR: 4.275e-04 Data: 0.002s
+Train: 25 [  40/50 ( 82%)] Loss: 0.2008 (0.162) Acc@1: 95.3 (97.1) Time: 0.461s LR: 4.275e-04 Data: 0.002s
+Test: [   0/6] Time: 0.474 (0.474) Loss:  0.0529 (0.0529) Acc@1: 98.4375 (98.4375)
+Epoch 26/100 - Train Loss: 0.1598 - Val Acc: 95.7500 - Best Acc: 96.5000 (epoch 25) - Val Loss: 0.1059 (best: 0.0966) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 26 [   0/50 (  0%)] Loss: 0.1142 (0.114) Acc@1: 100. (100.) Time: 0.962s LR: 4.219e-04 Data: 0.187s
+Train: 26 [  10/50 ( 20%)] Loss: 0.1538 (0.171) Acc@1: 95.3 (97.0) Time: 1.382s LR: 4.219e-04 Data: 0.001s
+Train: 26 [  20/50 ( 41%)] Loss: 0.1820 (0.152) Acc@1: 96.9 (97.8) Time: 0.464s LR: 4.219e-04 Data: 0.002s
+Train: 26 [  30/50 ( 61%)] Loss: 0.1800 (0.157) Acc@1: 95.3 (97.4) Time: 0.934s LR: 4.219e-04 Data: 0.001s
+Train: 26 [  40/50 ( 82%)] Loss: 0.1281 (0.150) Acc@1: 98.4 (97.7) Time: 0.461s LR: 4.219e-04 Data: 0.001s
+Test: [   0/6] Time: 0.751 (0.751) Loss:  0.1139 (0.1139) Acc@1: 95.3125 (95.3125)
+Epoch 27/100 - Train Loss: 0.1483 - Val Acc: 95.0000 - Best Acc: 96.5000 (epoch 25) - Val Loss: 0.1162 (best: 0.0966) - Patience: 2/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 27 [   0/50 (  0%)] Loss: 0.2124 (0.212) Acc@1: 96.9 (96.9) Time: 1.354s LR: 4.162e-04 Data: 0.228s
+Train: 27 [  10/50 ( 20%)] Loss: 0.1363 (0.169) Acc@1: 98.4 (96.6) Time: 1.393s LR: 4.162e-04 Data: 0.001s
+Train: 27 [  20/50 ( 41%)] Loss: 0.09137 (0.151) Acc@1: 100. (97.4) Time: 0.688s LR: 4.162e-04 Data: 0.001s
+Train: 27 [  30/50 ( 61%)] Loss: 0.1769 (0.149) Acc@1: 96.9 (97.8) Time: 1.407s LR: 4.162e-04 Data: 0.001s
+Train: 27 [  40/50 ( 82%)] Loss: 0.2344 (0.155) Acc@1: 95.3 (97.6) Time: 0.702s LR: 4.162e-04 Data: 0.001s
+Test: [   0/6] Time: 0.635 (0.635) Loss:  0.1647 (0.1647) Acc@1: 95.3125 (95.3125)
+Epoch 28/100 - Train Loss: 0.1512 - Val Acc: 95.5000 - Best Acc: 96.5000 (epoch 25) - Val Loss: 0.1226 (best: 0.0966) - Patience: 3/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 28 [   0/50 (  0%)] Loss: 0.09193 (0.0919) Acc@1: 100. (100.) Time: 1.290s LR: 4.103e-04 Data: 0.216s
+Train: 28 [  10/50 ( 20%)] Loss: 0.1791 (0.141) Acc@1: 98.4 (98.0) Time: 1.394s LR: 4.103e-04 Data: 0.001s
+Train: 28 [  20/50 ( 41%)] Loss: 0.09166 (0.140) Acc@1: 100. (98.1) Time: 0.693s LR: 4.103e-04 Data: 0.001s
+Train: 28 [  30/50 ( 61%)] Loss: 0.1256 (0.138) Acc@1: 96.9 (98.1) Time: 1.388s LR: 4.103e-04 Data: 0.001s
+Train: 28 [  40/50 ( 82%)] Loss: 0.08451 (0.141) Acc@1: 100. (97.9) Time: 0.688s LR: 4.103e-04 Data: 0.001s
+Test: [   0/6] Time: 0.613 (0.613) Loss:  0.0268 (0.0268) Acc@1: 100.0000 (100.0000)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-28.pth.tar', 0.047767883241176604)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-24.pth.tar', 0.09655451536178589)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-21.pth.tar', 0.10474688738584519)
+
+Epoch 29/100 - Train Loss: 0.1410 - Val Acc: 99.0000 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0478 (best: 0.0478) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 29 [   0/50 (  0%)] Loss: 0.1077 (0.108) Acc@1: 98.4 (98.4) Time: 1.336s LR: 4.042e-04 Data: 0.235s
+Train: 29 [  10/50 ( 20%)] Loss: 0.09952 (0.123) Acc@1: 100. (99.0) Time: 1.411s LR: 4.042e-04 Data: 0.002s
+Train: 29 [  20/50 ( 41%)] Loss: 0.1544 (0.145) Acc@1: 98.4 (98.1) Time: 0.695s LR: 4.042e-04 Data: 0.001s
+Train: 29 [  30/50 ( 61%)] Loss: 0.1754 (0.146) Acc@1: 95.3 (98.0) Time: 1.382s LR: 4.042e-04 Data: 0.001s
+Train: 29 [  40/50 ( 82%)] Loss: 0.2210 (0.143) Acc@1: 95.3 (98.1) Time: 0.694s LR: 4.042e-04 Data: 0.001s
+Test: [   0/6] Time: 0.466 (0.466) Loss:  0.0365 (0.0365) Acc@1: 98.4375 (98.4375)
+Epoch 30/100 - Train Loss: 0.1399 - Val Acc: 98.5000 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0518 (best: 0.0478) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 30 [   0/50 (  0%)] Loss: 0.1119 (0.112) Acc@1: 100. (100.) Time: 0.976s LR: 3.980e-04 Data: 0.199s
+Train: 30 [  10/50 ( 20%)] Loss: 0.1308 (0.136) Acc@1: 98.4 (97.9) Time: 1.392s LR: 3.980e-04 Data: 0.002s
+Train: 30 [  20/50 ( 41%)] Loss: 0.1433 (0.131) Acc@1: 98.4 (98.3) Time: 0.694s LR: 3.980e-04 Data: 0.001s
+Train: 30 [  30/50 ( 61%)] Loss: 0.1081 (0.137) Acc@1: 98.4 (98.1) Time: 1.388s LR: 3.980e-04 Data: 0.001s
+Train: 30 [  40/50 ( 82%)] Loss: 0.1425 (0.137) Acc@1: 96.9 (98.3) Time: 0.695s LR: 3.980e-04 Data: 0.001s
+Test: [   0/6] Time: 0.604 (0.604) Loss:  0.0413 (0.0413) Acc@1: 98.4375 (98.4375)
+Epoch 31/100 - Train Loss: 0.1434 - Val Acc: 96.7500 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.1017 (best: 0.0478) - Patience: 2/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 31 [   0/50 (  0%)] Loss: 0.1139 (0.114) Acc@1: 98.4 (98.4) Time: 1.211s LR: 3.916e-04 Data: 0.222s
+Train: 31 [  10/50 ( 20%)] Loss: 0.1047 (0.128) Acc@1: 100. (99.0) Time: 0.933s LR: 3.916e-04 Data: 0.002s
+Train: 31 [  20/50 ( 41%)] Loss: 0.09262 (0.137) Acc@1: 100. (98.4) Time: 0.464s LR: 3.916e-04 Data: 0.001s
+Train: 31 [  30/50 ( 61%)] Loss: 0.1408 (0.133) Acc@1: 98.4 (98.4) Time: 0.939s LR: 3.916e-04 Data: 0.002s
+Train: 31 [  40/50 ( 82%)] Loss: 0.1147 (0.132) Acc@1: 98.4 (98.4) Time: 0.458s LR: 3.916e-04 Data: 0.001s
+Test: [   0/6] Time: 0.398 (0.398) Loss:  0.5240 (0.5240) Acc@1: 81.2500 (81.2500)
+Epoch 32/100 - Train Loss: 0.1327 - Val Acc: 92.2500 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.2296 (best: 0.0478) - Patience: 3/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 32 [   0/50 (  0%)] Loss: 0.1334 (0.133) Acc@1: 98.4 (98.4) Time: 0.866s LR: 3.851e-04 Data: 0.187s
+Train: 32 [  10/50 ( 20%)] Loss: 0.1104 (0.153) Acc@1: 100. (97.7) Time: 0.945s LR: 3.851e-04 Data: 0.001s
+Train: 32 [  20/50 ( 41%)] Loss: 0.09265 (0.140) Acc@1: 100. (98.3) Time: 0.462s LR: 3.851e-04 Data: 0.001s
+Train: 32 [  30/50 ( 61%)] Loss: 0.1173 (0.137) Acc@1: 98.4 (98.3) Time: 1.435s LR: 3.851e-04 Data: 0.002s
+Train: 32 [  40/50 ( 82%)] Loss: 0.09622 (0.142) Acc@1: 100. (98.1) Time: 0.699s LR: 3.851e-04 Data: 0.001s
+Test: [   0/6] Time: 0.441 (0.441) Loss:  0.0550 (0.0550) Acc@1: 98.4375 (98.4375)
+Epoch 33/100 - Train Loss: 0.1404 - Val Acc: 96.2500 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0957 (best: 0.0478) - Patience: 4/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 33 [   0/50 (  0%)] Loss: 0.1865 (0.186) Acc@1: 98.4 (98.4) Time: 0.967s LR: 3.785e-04 Data: 0.216s
+Train: 33 [  10/50 ( 20%)] Loss: 0.1126 (0.152) Acc@1: 98.4 (96.7) Time: 0.936s LR: 3.785e-04 Data: 0.002s
+Train: 33 [  20/50 ( 41%)] Loss: 0.08919 (0.139) Acc@1: 100. (97.5) Time: 0.696s LR: 3.785e-04 Data: 0.001s
+Train: 33 [  30/50 ( 61%)] Loss: 0.1005 (0.139) Acc@1: 100. (97.9) Time: 0.930s LR: 3.785e-04 Data: 0.002s
+Train: 33 [  40/50 ( 82%)] Loss: 0.1043 (0.136) Acc@1: 98.4 (97.9) Time: 0.468s LR: 3.785e-04 Data: 0.001s
+Test: [   0/6] Time: 0.470 (0.470) Loss:  0.0238 (0.0238) Acc@1: 100.0000 (100.0000)
+Epoch 34/100 - Train Loss: 0.1334 - Val Acc: 96.2500 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0971 (best: 0.0478) - Patience: 5/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 34 [   0/50 (  0%)] Loss: 0.09401 (0.0940) Acc@1: 100. (100.) Time: 1.027s LR: 3.717e-04 Data: 0.222s
+Train: 34 [  10/50 ( 20%)] Loss: 0.2038 (0.129) Acc@1: 95.3 (98.4) Time: 1.388s LR: 3.717e-04 Data: 0.001s
+Train: 34 [  20/50 ( 41%)] Loss: 0.1747 (0.126) Acc@1: 95.3 (98.5) Time: 0.713s LR: 3.717e-04 Data: 0.002s
+Train: 34 [  30/50 ( 61%)] Loss: 0.1147 (0.129) Acc@1: 98.4 (98.4) Time: 1.401s LR: 3.717e-04 Data: 0.002s
+Train: 34 [  40/50 ( 82%)] Loss: 0.09991 (0.129) Acc@1: 100. (98.4) Time: 0.703s LR: 3.717e-04 Data: 0.001s
+Test: [   0/6] Time: 0.610 (0.610) Loss:  0.0596 (0.0596) Acc@1: 96.8750 (96.8750)
+Epoch 35/100 - Train Loss: 0.1287 - Val Acc: 97.5000 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0735 (best: 0.0478) - Patience: 6/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 35 [   0/50 (  0%)] Loss: 0.1751 (0.175) Acc@1: 96.9 (96.9) Time: 1.372s LR: 3.649e-04 Data: 0.227s
+Train: 35 [  10/50 ( 20%)] Loss: 0.1074 (0.140) Acc@1: 98.4 (97.9) Time: 1.416s LR: 3.649e-04 Data: 0.002s
+Train: 35 [  20/50 ( 41%)] Loss: 0.1511 (0.133) Acc@1: 98.4 (98.2) Time: 0.708s LR: 3.649e-04 Data: 0.002s
+Train: 35 [  30/50 ( 61%)] Loss: 0.2011 (0.136) Acc@1: 93.8 (98.0) Time: 1.389s LR: 3.649e-04 Data: 0.001s
+Train: 35 [  40/50 ( 82%)] Loss: 0.09961 (0.134) Acc@1: 98.4 (98.2) Time: 0.694s LR: 3.649e-04 Data: 0.001s
+Test: [   0/6] Time: 0.625 (0.625) Loss:  0.0514 (0.0514) Acc@1: 100.0000 (100.0000)
+Epoch 36/100 - Train Loss: 0.1301 - Val Acc: 98.5000 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0499 (best: 0.0478) - Patience: 7/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 36 [   0/50 (  0%)] Loss: 0.09868 (0.0987) Acc@1: 100. (100.) Time: 1.454s LR: 3.579e-04 Data: 0.217s
+Train: 36 [  10/50 ( 20%)] Loss: 0.09086 (0.114) Acc@1: 100. (99.3) Time: 1.400s LR: 3.579e-04 Data: 0.001s
+Train: 36 [  20/50 ( 41%)] Loss: 0.1402 (0.121) Acc@1: 98.4 (99.0) Time: 0.692s LR: 3.579e-04 Data: 0.001s
+Train: 36 [  30/50 ( 61%)] Loss: 0.1144 (0.127) Acc@1: 98.4 (98.6) Time: 1.388s LR: 3.579e-04 Data: 0.001s
+Train: 36 [  40/50 ( 82%)] Loss: 0.09706 (0.123) Acc@1: 100. (98.9) Time: 0.686s LR: 3.579e-04 Data: 0.001s
+Test: [   0/6] Time: 0.593 (0.593) Loss:  0.0219 (0.0219) Acc@1: 100.0000 (100.0000)
+Epoch 37/100 - Train Loss: 0.1228 - Val Acc: 98.7500 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0593 (best: 0.0478) - Patience: 8/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 37 [   0/50 (  0%)] Loss: 0.09882 (0.0988) Acc@1: 100. (100.) Time: 1.183s LR: 3.508e-04 Data: 0.209s
+Train: 37 [  10/50 ( 20%)] Loss: 0.09703 (0.133) Acc@1: 100. (98.0) Time: 1.395s LR: 3.508e-04 Data: 0.002s
+Train: 37 [  20/50 ( 41%)] Loss: 0.08485 (0.120) Acc@1: 100. (98.7) Time: 0.693s LR: 3.508e-04 Data: 0.001s
+Train: 37 [  30/50 ( 61%)] Loss: 0.1228 (0.124) Acc@1: 98.4 (98.5) Time: 1.421s LR: 3.508e-04 Data: 0.003s
+Train: 37 [  40/50 ( 82%)] Loss: 0.1387 (0.123) Acc@1: 96.9 (98.5) Time: 0.693s LR: 3.508e-04 Data: 0.001s
+Test: [   0/6] Time: 0.656 (0.656) Loss:  0.0617 (0.0617) Acc@1: 98.4375 (98.4375)
+Epoch 38/100 - Train Loss: 0.1233 - Val Acc: 96.0000 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.1094 (best: 0.0478) - Patience: 9/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 38 [   0/50 (  0%)] Loss: 0.1147 (0.115) Acc@1: 96.9 (96.9) Time: 1.502s LR: 3.436e-04 Data: 0.257s
+Train: 38 [  10/50 ( 20%)] Loss: 0.1232 (0.125) Acc@1: 98.4 (98.4) Time: 1.389s LR: 3.436e-04 Data: 0.001s
+Train: 38 [  20/50 ( 41%)] Loss: 0.1038 (0.121) Acc@1: 100. (98.8) Time: 0.689s LR: 3.436e-04 Data: 0.001s
+Train: 38 [  30/50 ( 61%)] Loss: 0.09229 (0.124) Acc@1: 100. (98.7) Time: 1.393s LR: 3.436e-04 Data: 0.001s
+Train: 38 [  40/50 ( 82%)] Loss: 0.1092 (0.120) Acc@1: 98.4 (98.8) Time: 0.693s LR: 3.436e-04 Data: 0.001s
+Test: [   0/6] Time: 0.595 (0.595) Loss:  0.0952 (0.0952) Acc@1: 95.3125 (95.3125)
+Epoch 39/100 - Train Loss: 0.1177 - Val Acc: 96.5000 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0828 (best: 0.0478) - Patience: 10/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 39 [   0/50 (  0%)] Loss: 0.1492 (0.149) Acc@1: 98.4 (98.4) Time: 1.302s LR: 3.363e-04 Data: 0.207s
+Train: 39 [  10/50 ( 20%)] Loss: 0.1161 (0.110) Acc@1: 100. (99.1) Time: 1.395s LR: 3.363e-04 Data: 0.001s
+Train: 39 [  20/50 ( 41%)] Loss: 0.1198 (0.112) Acc@1: 98.4 (99.2) Time: 0.700s LR: 3.363e-04 Data: 0.001s
+Train: 39 [  30/50 ( 61%)] Loss: 0.1296 (0.112) Acc@1: 98.4 (99.1) Time: 1.386s LR: 3.363e-04 Data: 0.001s
+Train: 39 [  40/50 ( 82%)] Loss: 0.09208 (0.110) Acc@1: 100. (99.1) Time: 0.711s LR: 3.363e-04 Data: 0.002s
+Test: [   0/6] Time: 0.649 (0.649) Loss:  0.1560 (0.1560) Acc@1: 93.7500 (93.7500)
+Epoch 40/100 - Train Loss: 0.1128 - Val Acc: 96.2500 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.1096 (best: 0.0478) - Patience: 11/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 40 [   0/50 (  0%)] Loss: 0.09401 (0.0940) Acc@1: 100. (100.) Time: 1.243s LR: 3.290e-04 Data: 0.214s
+Train: 40 [  10/50 ( 20%)] Loss: 0.09456 (0.113) Acc@1: 100. (98.9) Time: 1.403s LR: 3.290e-04 Data: 0.001s
+Train: 40 [  20/50 ( 41%)] Loss: 0.1418 (0.116) Acc@1: 98.4 (98.8) Time: 0.698s LR: 3.290e-04 Data: 0.001s
+Train: 40 [  30/50 ( 61%)] Loss: 0.1388 (0.114) Acc@1: 96.9 (98.9) Time: 1.396s LR: 3.290e-04 Data: 0.001s
+Train: 40 [  40/50 ( 82%)] Loss: 0.1362 (0.115) Acc@1: 96.9 (98.7) Time: 0.702s LR: 3.290e-04 Data: 0.001s
+Test: [   0/6] Time: 0.620 (0.620) Loss:  0.0201 (0.0201) Acc@1: 100.0000 (100.0000)
+Epoch 41/100 - Train Loss: 0.1185 - Val Acc: 98.5000 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0585 (best: 0.0478) - Patience: 12/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 41 [   0/50 (  0%)] Loss: 0.1080 (0.108) Acc@1: 100. (100.) Time: 1.314s LR: 3.216e-04 Data: 0.245s
+Train: 41 [  10/50 ( 20%)] Loss: 0.1404 (0.129) Acc@1: 98.4 (98.4) Time: 1.388s LR: 3.216e-04 Data: 0.001s
+Train: 41 [  20/50 ( 41%)] Loss: 0.1757 (0.124) Acc@1: 96.9 (98.7) Time: 0.471s LR: 3.216e-04 Data: 0.001s
+Train: 41 [  30/50 ( 61%)] Loss: 0.09279 (0.118) Acc@1: 100. (98.8) Time: 1.395s LR: 3.216e-04 Data: 0.001s
+Train: 41 [  40/50 ( 82%)] Loss: 0.09577 (0.116) Acc@1: 100. (98.9) Time: 0.693s LR: 3.216e-04 Data: 0.001s
+Test: [   0/6] Time: 0.606 (0.606) Loss:  0.0698 (0.0698) Acc@1: 98.4375 (98.4375)
+Epoch 42/100 - Train Loss: 0.1179 - Val Acc: 97.7500 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0680 (best: 0.0478) - Patience: 13/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 42 [   0/50 (  0%)] Loss: 0.1393 (0.139) Acc@1: 98.4 (98.4) Time: 1.280s LR: 3.141e-04 Data: 0.195s
+Train: 42 [  10/50 ( 20%)] Loss: 0.09740 (0.112) Acc@1: 100. (98.6) Time: 1.399s LR: 3.141e-04 Data: 0.001s
+Train: 42 [  20/50 ( 41%)] Loss: 0.08752 (0.112) Acc@1: 100. (98.7) Time: 0.695s LR: 3.141e-04 Data: 0.001s
+Train: 42 [  30/50 ( 61%)] Loss: 0.09158 (0.111) Acc@1: 100. (98.8) Time: 0.932s LR: 3.141e-04 Data: 0.002s
+Train: 42 [  40/50 ( 82%)] Loss: 0.08623 (0.111) Acc@1: 100. (98.8) Time: 0.690s LR: 3.141e-04 Data: 0.001s
+Test: [   0/6] Time: 0.617 (0.617) Loss:  0.0690 (0.0690) Acc@1: 98.4375 (98.4375)
+Epoch 43/100 - Train Loss: 0.1104 - Val Acc: 98.2500 - Best Acc: 99.0000 (epoch 29) - Val Loss: 0.0526 (best: 0.0478) - Patience: 14/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 43 [   0/50 (  0%)] Loss: 0.1002 (0.100) Acc@1: 100. (100.) Time: 1.262s LR: 3.065e-04 Data: 0.221s
+Train: 43 [  10/50 ( 20%)] Loss: 0.1186 (0.110) Acc@1: 100. (99.4) Time: 1.405s LR: 3.065e-04 Data: 0.001s
+Train: 43 [  20/50 ( 41%)] Loss: 0.1602 (0.108) Acc@1: 95.3 (99.3) Time: 0.695s LR: 3.065e-04 Data: 0.001s
+Train: 43 [  30/50 ( 61%)] Loss: 0.1330 (0.112) Acc@1: 96.9 (99.1) Time: 0.937s LR: 3.065e-04 Data: 0.002s
+Train: 43 [  40/50 ( 82%)] Loss: 0.1364 (0.112) Acc@1: 98.4 (99.2) Time: 0.695s LR: 3.065e-04 Data: 0.001s
+Test: [   0/6] Time: 0.625 (0.625) Loss:  0.0243 (0.0243) Acc@1: 100.0000 (100.0000)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-43.pth.tar', 0.03333795875310898)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-28.pth.tar', 0.047767883241176604)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-24.pth.tar', 0.09655451536178589)
+
+Epoch 44/100 - Train Loss: 0.1116 - Val Acc: 99.5000 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0333 (best: 0.0333) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 44 [   0/50 (  0%)] Loss: 0.09223 (0.0922) Acc@1: 100. (100.) Time: 1.142s LR: 2.989e-04 Data: 0.221s
+Train: 44 [  10/50 ( 20%)] Loss: 0.1163 (0.0998) Acc@1: 98.4 (99.6) Time: 1.388s LR: 2.989e-04 Data: 0.001s
+Train: 44 [  20/50 ( 41%)] Loss: 0.1016 (0.103) Acc@1: 100. (99.3) Time: 0.715s LR: 2.989e-04 Data: 0.001s
+Train: 44 [  30/50 ( 61%)] Loss: 0.08916 (0.104) Acc@1: 100. (99.2) Time: 1.397s LR: 2.989e-04 Data: 0.001s
+Train: 44 [  40/50 ( 82%)] Loss: 0.1245 (0.104) Acc@1: 98.4 (99.2) Time: 0.700s LR: 2.989e-04 Data: 0.001s
+Test: [   0/6] Time: 0.468 (0.468) Loss:  0.0282 (0.0282) Acc@1: 100.0000 (100.0000)
+Epoch 45/100 - Train Loss: 0.1050 - Val Acc: 99.2500 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0404 (best: 0.0333) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 45 [   0/50 (  0%)] Loss: 0.09292 (0.0929) Acc@1: 100. (100.) Time: 0.968s LR: 2.912e-04 Data: 0.222s
+Train: 45 [  10/50 ( 20%)] Loss: 0.08936 (0.113) Acc@1: 100. (98.7) Time: 1.422s LR: 2.912e-04 Data: 0.001s
+Train: 45 [  20/50 ( 41%)] Loss: 0.1811 (0.119) Acc@1: 95.3 (98.6) Time: 0.701s LR: 2.912e-04 Data: 0.001s
+Train: 45 [  30/50 ( 61%)] Loss: 0.1015 (0.118) Acc@1: 100. (98.8) Time: 1.396s LR: 2.912e-04 Data: 0.001s
+Train: 45 [  40/50 ( 82%)] Loss: 0.09682 (0.114) Acc@1: 100. (98.9) Time: 0.692s LR: 2.912e-04 Data: 0.001s
+Test: [   0/6] Time: 0.463 (0.463) Loss:  0.0774 (0.0774) Acc@1: 96.8750 (96.8750)
+Epoch 46/100 - Train Loss: 0.1116 - Val Acc: 97.2500 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0762 (best: 0.0333) - Patience: 2/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 46 [   0/50 (  0%)] Loss: 0.08537 (0.0854) Acc@1: 100. (100.) Time: 0.823s LR: 2.835e-04 Data: 0.165s
+Train: 46 [  10/50 ( 20%)] Loss: 0.1300 (0.107) Acc@1: 96.9 (98.9) Time: 0.938s LR: 2.835e-04 Data: 0.001s
+Train: 46 [  20/50 ( 41%)] Loss: 0.08652 (0.106) Acc@1: 100. (99.2) Time: 0.694s LR: 2.835e-04 Data: 0.001s
+Train: 46 [  30/50 ( 61%)] Loss: 0.08911 (0.106) Acc@1: 100. (99.2) Time: 1.400s LR: 2.835e-04 Data: 0.001s
+Train: 46 [  40/50 ( 82%)] Loss: 0.08796 (0.107) Acc@1: 100. (99.2) Time: 0.696s LR: 2.835e-04 Data: 0.001s
+Test: [   0/6] Time: 0.604 (0.604) Loss:  0.0230 (0.0230) Acc@1: 100.0000 (100.0000)
+Epoch 47/100 - Train Loss: 0.1055 - Val Acc: 99.2500 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0337 (best: 0.0333) - Patience: 3/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 47 [   0/50 (  0%)] Loss: 0.1202 (0.120) Acc@1: 98.4 (98.4) Time: 1.342s LR: 2.758e-04 Data: 0.232s
+Train: 47 [  10/50 ( 20%)] Loss: 0.07907 (0.100) Acc@1: 100. (99.4) Time: 1.401s LR: 2.758e-04 Data: 0.001s
+Train: 47 [  20/50 ( 41%)] Loss: 0.1190 (0.105) Acc@1: 98.4 (99.1) Time: 0.688s LR: 2.758e-04 Data: 0.001s
+Train: 47 [  30/50 ( 61%)] Loss: 0.1610 (0.105) Acc@1: 96.9 (99.2) Time: 1.382s LR: 2.758e-04 Data: 0.001s
+Train: 47 [  40/50 ( 82%)] Loss: 0.1824 (0.106) Acc@1: 93.8 (99.1) Time: 0.687s LR: 2.758e-04 Data: 0.001s
+Test: [   0/6] Time: 0.615 (0.615) Loss:  0.0230 (0.0230) Acc@1: 100.0000 (100.0000)
+Epoch 48/100 - Train Loss: 0.1068 - Val Acc: 99.0000 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0409 (best: 0.0333) - Patience: 4/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 48 [   0/50 (  0%)] Loss: 0.1093 (0.109) Acc@1: 98.4 (98.4) Time: 1.299s LR: 2.680e-04 Data: 0.234s
+Train: 48 [  10/50 ( 20%)] Loss: 0.09057 (0.0946) Acc@1: 100. (99.7) Time: 1.403s LR: 2.680e-04 Data: 0.001s
+Train: 48 [  20/50 ( 41%)] Loss: 0.1085 (0.0973) Acc@1: 100. (99.6) Time: 0.702s LR: 2.680e-04 Data: 0.001s
+Train: 48 [  30/50 ( 61%)] Loss: 0.09720 (0.101) Acc@1: 98.4 (99.3) Time: 1.386s LR: 2.680e-04 Data: 0.001s
+Train: 48 [  40/50 ( 82%)] Loss: 0.09179 (0.100) Acc@1: 100. (99.4) Time: 0.693s LR: 2.680e-04 Data: 0.000s
+Test: [   0/6] Time: 0.627 (0.627) Loss:  0.0638 (0.0638) Acc@1: 98.4375 (98.4375)
+Epoch 49/100 - Train Loss: 0.1006 - Val Acc: 98.7500 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0356 (best: 0.0333) - Patience: 5/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 49 [   0/50 (  0%)] Loss: 0.09525 (0.0952) Acc@1: 98.4 (98.4) Time: 1.289s LR: 2.603e-04 Data: 0.236s
+Train: 49 [  10/50 ( 20%)] Loss: 0.08811 (0.103) Acc@1: 100. (99.1) Time: 1.393s LR: 2.603e-04 Data: 0.001s
+Train: 49 [  20/50 ( 41%)] Loss: 0.1060 (0.101) Acc@1: 98.4 (99.3) Time: 0.687s LR: 2.603e-04 Data: 0.000s
+Train: 49 [  30/50 ( 61%)] Loss: 0.09208 (0.103) Acc@1: 100. (99.3) Time: 1.376s LR: 2.603e-04 Data: 0.001s
+Train: 49 [  40/50 ( 82%)] Loss: 0.1260 (0.103) Acc@1: 98.4 (99.3) Time: 0.692s LR: 2.603e-04 Data: 0.000s
+Test: [   0/6] Time: 0.652 (0.652) Loss:  0.0142 (0.0142) Acc@1: 100.0000 (100.0000)
+Epoch 50/100 - Train Loss: 0.1056 - Val Acc: 99.0000 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0438 (best: 0.0333) - Patience: 6/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 50 [   0/50 (  0%)] Loss: 0.1241 (0.124) Acc@1: 98.4 (98.4) Time: 1.324s LR: 2.525e-04 Data: 0.220s
+Train: 50 [  10/50 ( 20%)] Loss: 0.09850 (0.0971) Acc@1: 100. (99.6) Time: 1.400s LR: 2.525e-04 Data: 0.001s
+Train: 50 [  20/50 ( 41%)] Loss: 0.1404 (0.105) Acc@1: 98.4 (99.3) Time: 0.681s LR: 2.525e-04 Data: 0.001s
+Train: 50 [  30/50 ( 61%)] Loss: 0.09459 (0.0992) Acc@1: 100. (99.4) Time: 1.388s LR: 2.525e-04 Data: 0.001s
+Train: 50 [  40/50 ( 82%)] Loss: 0.09226 (0.0995) Acc@1: 100. (99.4) Time: 0.700s LR: 2.525e-04 Data: 0.001s
+Test: [   0/6] Time: 0.622 (0.622) Loss:  0.0273 (0.0273) Acc@1: 100.0000 (100.0000)
+Epoch 51/100 - Train Loss: 0.0989 - Val Acc: 99.5000 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0367 (best: 0.0333) - Patience: 7/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 51 [   0/50 (  0%)] Loss: 0.09178 (0.0918) Acc@1: 100. (100.) Time: 1.272s LR: 2.447e-04 Data: 0.207s
+Train: 51 [  10/50 ( 20%)] Loss: 0.1135 (0.105) Acc@1: 98.4 (98.7) Time: 1.401s LR: 2.447e-04 Data: 0.002s
+Train: 51 [  20/50 ( 41%)] Loss: 0.1103 (0.103) Acc@1: 98.4 (98.8) Time: 0.695s LR: 2.447e-04 Data: 0.001s
+Train: 51 [  30/50 ( 61%)] Loss: 0.09881 (0.102) Acc@1: 98.4 (99.0) Time: 1.409s LR: 2.447e-04 Data: 0.002s
+Train: 51 [  40/50 ( 82%)] Loss: 0.1135 (0.100) Acc@1: 98.4 (99.2) Time: 0.691s LR: 2.447e-04 Data: 0.001s
+Test: [   0/6] Time: 0.611 (0.611) Loss:  0.0832 (0.0832) Acc@1: 96.8750 (96.8750)
+Epoch 52/100 - Train Loss: 0.1014 - Val Acc: 97.7500 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0788 (best: 0.0333) - Patience: 8/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 52 [   0/50 (  0%)] Loss: 0.09455 (0.0946) Acc@1: 100. (100.) Time: 1.303s LR: 2.370e-04 Data: 0.233s
+Train: 52 [  10/50 ( 20%)] Loss: 0.1031 (0.102) Acc@1: 100. (99.3) Time: 1.396s LR: 2.370e-04 Data: 0.001s
+Train: 52 [  20/50 ( 41%)] Loss: 0.08970 (0.102) Acc@1: 100. (99.1) Time: 0.693s LR: 2.370e-04 Data: 0.001s
+Train: 52 [  30/50 ( 61%)] Loss: 0.08921 (0.0998) Acc@1: 100. (99.3) Time: 1.394s LR: 2.370e-04 Data: 0.001s
+Train: 52 [  40/50 ( 82%)] Loss: 0.08100 (0.0986) Acc@1: 100. (99.4) Time: 0.688s LR: 2.370e-04 Data: 0.001s
+Test: [   0/6] Time: 0.644 (0.644) Loss:  0.0526 (0.0526) Acc@1: 98.4375 (98.4375)
+Epoch 53/100 - Train Loss: 0.0977 - Val Acc: 99.0000 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0427 (best: 0.0333) - Patience: 9/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 53 [   0/50 (  0%)] Loss: 0.08289 (0.0829) Acc@1: 100. (100.) Time: 1.683s LR: 2.292e-04 Data: 0.280s
+Train: 53 [  10/50 ( 20%)] Loss: 0.07860 (0.0991) Acc@1: 100. (99.1) Time: 1.399s LR: 2.292e-04 Data: 0.002s
+Train: 53 [  20/50 ( 41%)] Loss: 0.09485 (0.0952) Acc@1: 100. (99.5) Time: 0.687s LR: 2.292e-04 Data: 0.001s
+Train: 53 [  30/50 ( 61%)] Loss: 0.1015 (0.0931) Acc@1: 100. (99.5) Time: 1.379s LR: 2.292e-04 Data: 0.001s
+Train: 53 [  40/50 ( 82%)] Loss: 0.09508 (0.0939) Acc@1: 98.4 (99.5) Time: 0.706s LR: 2.292e-04 Data: 0.001s
+Test: [   0/6] Time: 0.610 (0.610) Loss:  0.0217 (0.0217) Acc@1: 100.0000 (100.0000)
+Epoch 54/100 - Train Loss: 0.0954 - Val Acc: 99.2500 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0347 (best: 0.0333) - Patience: 10/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 54 [   0/50 (  0%)] Loss: 0.09626 (0.0963) Acc@1: 100. (100.) Time: 1.259s LR: 2.215e-04 Data: 0.213s
+Train: 54 [  10/50 ( 20%)] Loss: 0.1257 (0.0935) Acc@1: 98.4 (99.7) Time: 1.395s LR: 2.215e-04 Data: 0.001s
+Train: 54 [  20/50 ( 41%)] Loss: 0.08428 (0.0971) Acc@1: 100. (99.5) Time: 0.688s LR: 2.215e-04 Data: 0.001s
+Train: 54 [  30/50 ( 61%)] Loss: 0.09084 (0.0961) Acc@1: 100. (99.5) Time: 1.401s LR: 2.215e-04 Data: 0.001s
+Train: 54 [  40/50 ( 82%)] Loss: 0.09013 (0.0959) Acc@1: 100. (99.5) Time: 0.697s LR: 2.215e-04 Data: 0.001s
+Test: [   0/6] Time: 0.632 (0.632) Loss:  0.0623 (0.0623) Acc@1: 98.4375 (98.4375)
+Epoch 55/100 - Train Loss: 0.0962 - Val Acc: 99.2500 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0358 (best: 0.0333) - Patience: 11/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 55 [   0/50 (  0%)] Loss: 0.08928 (0.0893) Acc@1: 100. (100.) Time: 1.360s LR: 2.138e-04 Data: 0.245s
+Train: 55 [  10/50 ( 20%)] Loss: 0.09510 (0.0885) Acc@1: 98.4 (99.9) Time: 1.396s LR: 2.138e-04 Data: 0.001s
+Train: 55 [  20/50 ( 41%)] Loss: 0.09018 (0.0893) Acc@1: 100. (99.7) Time: 0.690s LR: 2.138e-04 Data: 0.001s
+Train: 55 [  30/50 ( 61%)] Loss: 0.1222 (0.0924) Acc@1: 96.9 (99.5) Time: 1.421s LR: 2.138e-04 Data: 0.001s
+Train: 55 [  40/50 ( 82%)] Loss: 0.08359 (0.0919) Acc@1: 100. (99.6) Time: 0.702s LR: 2.138e-04 Data: 0.001s
+Test: [   0/6] Time: 0.643 (0.643) Loss:  0.0351 (0.0351) Acc@1: 98.4375 (98.4375)
+Epoch 56/100 - Train Loss: 0.0936 - Val Acc: 99.5000 - Best Acc: 99.5000 (epoch 44) - Val Loss: 0.0343 (best: 0.0333) - Patience: 12/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 56 [   0/50 (  0%)] Loss: 0.07655 (0.0765) Acc@1: 100. (100.) Time: 1.339s LR: 2.061e-04 Data: 0.254s
+Train: 56 [  10/50 ( 20%)] Loss: 0.08083 (0.0923) Acc@1: 100. (99.3) Time: 1.394s LR: 2.061e-04 Data: 0.001s
+Train: 56 [  20/50 ( 41%)] Loss: 0.07912 (0.0904) Acc@1: 100. (99.5) Time: 0.469s LR: 2.061e-04 Data: 0.001s
+Train: 56 [  30/50 ( 61%)] Loss: 0.1054 (0.0972) Acc@1: 98.4 (99.3) Time: 0.935s LR: 2.061e-04 Data: 0.002s
+Train: 56 [  40/50 ( 82%)] Loss: 0.07869 (0.0962) Acc@1: 100. (99.4) Time: 0.462s LR: 2.061e-04 Data: 0.001s
+Test: [   0/6] Time: 0.465 (0.465) Loss:  0.0242 (0.0242) Acc@1: 100.0000 (100.0000)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-56.pth.tar', 0.0314897808432579)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-43.pth.tar', 0.03333795875310898)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-28.pth.tar', 0.047767883241176604)
+
+Epoch 57/100 - Train Loss: 0.0954 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 57) - Val Loss: 0.0315 (best: 0.0315) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 57 [   0/50 (  0%)] Loss: 0.1416 (0.142) Acc@1: 98.4 (98.4) Time: 1.250s LR: 1.985e-04 Data: 0.180s
+Train: 57 [  10/50 ( 20%)] Loss: 0.08669 (0.0936) Acc@1: 100. (99.6) Time: 1.399s LR: 1.985e-04 Data: 0.001s
+Train: 57 [  20/50 ( 41%)] Loss: 0.09422 (0.0886) Acc@1: 100. (99.8) Time: 0.689s LR: 1.985e-04 Data: 0.001s
+Train: 57 [  30/50 ( 61%)] Loss: 0.1136 (0.0895) Acc@1: 98.4 (99.7) Time: 1.396s LR: 1.985e-04 Data: 0.001s
+Train: 57 [  40/50 ( 82%)] Loss: 0.08270 (0.0894) Acc@1: 100. (99.8) Time: 0.695s LR: 1.985e-04 Data: 0.001s
+Test: [   0/6] Time: 0.606 (0.606) Loss:  0.0194 (0.0194) Acc@1: 100.0000 (100.0000)
+Epoch 58/100 - Train Loss: 0.0910 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 57) - Val Loss: 0.0317 (best: 0.0315) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 58 [   0/50 (  0%)] Loss: 0.09056 (0.0906) Acc@1: 100. (100.) Time: 1.353s LR: 1.909e-04 Data: 0.254s
+Train: 58 [  10/50 ( 20%)] Loss: 0.1237 (0.0886) Acc@1: 98.4 (99.9) Time: 1.396s LR: 1.909e-04 Data: 0.001s
+Train: 58 [  20/50 ( 41%)] Loss: 0.09587 (0.0873) Acc@1: 100. (99.9) Time: 0.686s LR: 1.909e-04 Data: 0.001s
+Train: 58 [  30/50 ( 61%)] Loss: 0.1013 (0.0899) Acc@1: 100. (99.8) Time: 1.388s LR: 1.909e-04 Data: 0.001s
+Train: 58 [  40/50 ( 82%)] Loss: 0.1125 (0.0891) Acc@1: 98.4 (99.8) Time: 0.694s LR: 1.909e-04 Data: 0.001s
+Test: [   0/6] Time: 0.604 (0.604) Loss:  0.0381 (0.0381) Acc@1: 98.4375 (98.4375)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-58.pth.tar', 0.026990113556385042)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-56.pth.tar', 0.0314897808432579)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-43.pth.tar', 0.03333795875310898)
+
+Epoch 59/100 - Train Loss: 0.0897 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 59) - Val Loss: 0.0270 (best: 0.0270) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 59 [   0/50 (  0%)] Loss: 0.08514 (0.0851) Acc@1: 100. (100.) Time: 1.057s LR: 1.834e-04 Data: 0.203s
+Train: 59 [  10/50 ( 20%)] Loss: 0.07822 (0.0907) Acc@1: 100. (99.7) Time: 1.402s LR: 1.834e-04 Data: 0.001s
+Train: 59 [  20/50 ( 41%)] Loss: 0.08436 (0.0912) Acc@1: 100. (99.7) Time: 0.684s LR: 1.834e-04 Data: 0.001s
+Train: 59 [  30/50 ( 61%)] Loss: 0.08502 (0.0909) Acc@1: 100. (99.7) Time: 1.383s LR: 1.834e-04 Data: 0.002s
+Train: 59 [  40/50 ( 82%)] Loss: 0.08616 (0.0901) Acc@1: 100. (99.8) Time: 0.702s LR: 1.834e-04 Data: 0.001s
+Test: [   0/6] Time: 0.612 (0.612) Loss:  0.0240 (0.0240) Acc@1: 100.0000 (100.0000)
+Epoch 60/100 - Train Loss: 0.0898 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 59) - Val Loss: 0.0300 (best: 0.0270) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 60 [   0/50 (  0%)] Loss: 0.1302 (0.130) Acc@1: 98.4 (98.4) Time: 1.167s LR: 1.760e-04 Data: 0.259s
+Train: 60 [  10/50 ( 20%)] Loss: 0.08395 (0.0914) Acc@1: 100. (99.7) Time: 1.393s LR: 1.760e-04 Data: 0.002s
+Train: 60 [  20/50 ( 41%)] Loss: 0.08145 (0.0921) Acc@1: 100. (99.7) Time: 0.706s LR: 1.760e-04 Data: 0.001s
+Train: 60 [  30/50 ( 61%)] Loss: 0.1013 (0.0930) Acc@1: 100. (99.6) Time: 1.386s LR: 1.760e-04 Data: 0.001s
+Train: 60 [  40/50 ( 82%)] Loss: 0.08519 (0.0928) Acc@1: 100. (99.7) Time: 0.711s LR: 1.760e-04 Data: 0.002s
+Test: [   0/6] Time: 0.592 (0.592) Loss:  0.0148 (0.0148) Acc@1: 100.0000 (100.0000)
+Epoch 61/100 - Train Loss: 0.0930 - Val Acc: 99.0000 - Best Acc: 99.2500 (epoch 59) - Val Loss: 0.0298 (best: 0.0270) - Patience: 2/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 61 [   0/50 (  0%)] Loss: 0.09413 (0.0941) Acc@1: 100. (100.) Time: 1.254s LR: 1.687e-04 Data: 0.228s
+Train: 61 [  10/50 ( 20%)] Loss: 0.08058 (0.0894) Acc@1: 100. (99.7) Time: 1.305s LR: 1.687e-04 Data: 0.001s
+Train: 61 [  20/50 ( 41%)] Loss: 0.09260 (0.0894) Acc@1: 98.4 (99.7) Time: 0.699s LR: 1.687e-04 Data: 0.002s
+Train: 61 [  30/50 ( 61%)] Loss: 0.09695 (0.0901) Acc@1: 98.4 (99.5) Time: 1.375s LR: 1.687e-04 Data: 0.001s
+Train: 61 [  40/50 ( 82%)] Loss: 0.08515 (0.0919) Acc@1: 100. (99.5) Time: 0.696s LR: 1.687e-04 Data: 0.001s
+Test: [   0/6] Time: 0.604 (0.604) Loss:  0.0644 (0.0644) Acc@1: 98.4375 (98.4375)
+Epoch 62/100 - Train Loss: 0.0925 - Val Acc: 98.5000 - Best Acc: 99.2500 (epoch 59) - Val Loss: 0.0523 (best: 0.0270) - Patience: 3/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 62 [   0/50 (  0%)] Loss: 0.08037 (0.0804) Acc@1: 100. (100.) Time: 1.523s LR: 1.614e-04 Data: 0.239s
+Train: 62 [  10/50 ( 20%)] Loss: 0.07936 (0.0881) Acc@1: 100. (99.7) Time: 1.389s LR: 1.614e-04 Data: 0.002s
+Train: 62 [  20/50 ( 41%)] Loss: 0.09636 (0.0915) Acc@1: 100. (99.7) Time: 0.699s LR: 1.614e-04 Data: 0.001s
+Train: 62 [  30/50 ( 61%)] Loss: 0.07755 (0.0901) Acc@1: 100. (99.7) Time: 1.394s LR: 1.614e-04 Data: 0.001s
+Train: 62 [  40/50 ( 82%)] Loss: 0.08400 (0.0915) Acc@1: 100. (99.7) Time: 0.696s LR: 1.614e-04 Data: 0.001s
+Test: [   0/6] Time: 0.634 (0.634) Loss:  0.0234 (0.0234) Acc@1: 100.0000 (100.0000)
+Epoch 63/100 - Train Loss: 0.0920 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 59) - Val Loss: 0.0320 (best: 0.0270) - Patience: 4/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 63 [   0/50 (  0%)] Loss: 0.07909 (0.0791) Acc@1: 100. (100.) Time: 1.342s LR: 1.542e-04 Data: 0.266s
+Train: 63 [  10/50 ( 20%)] Loss: 0.1105 (0.0910) Acc@1: 100. (99.7) Time: 1.391s LR: 1.542e-04 Data: 0.002s
+Train: 63 [  20/50 ( 41%)] Loss: 0.08029 (0.0900) Acc@1: 100. (99.7) Time: 0.687s LR: 1.542e-04 Data: 0.001s
+Train: 63 [  30/50 ( 61%)] Loss: 0.1111 (0.0905) Acc@1: 96.9 (99.6) Time: 1.383s LR: 1.542e-04 Data: 0.001s
+Train: 63 [  40/50 ( 82%)] Loss: 0.07838 (0.0890) Acc@1: 100. (99.7) Time: 0.694s LR: 1.542e-04 Data: 0.001s
+Test: [   0/6] Time: 0.603 (0.603) Loss:  0.0281 (0.0281) Acc@1: 100.0000 (100.0000)
+Epoch 64/100 - Train Loss: 0.0880 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 59) - Val Loss: 0.0324 (best: 0.0270) - Patience: 5/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 64 [   0/50 (  0%)] Loss: 0.08170 (0.0817) Acc@1: 100. (100.) Time: 1.383s LR: 1.471e-04 Data: 0.229s
+Train: 64 [  10/50 ( 20%)] Loss: 0.09258 (0.0856) Acc@1: 100. (100.) Time: 1.401s LR: 1.471e-04 Data: 0.001s
+Train: 64 [  20/50 ( 41%)] Loss: 0.08336 (0.0868) Acc@1: 100. (99.9) Time: 0.707s LR: 1.471e-04 Data: 0.001s
+Train: 64 [  30/50 ( 61%)] Loss: 0.07976 (0.0901) Acc@1: 100. (99.7) Time: 1.400s LR: 1.471e-04 Data: 0.001s
+Train: 64 [  40/50 ( 82%)] Loss: 0.08501 (0.0880) Acc@1: 100. (99.8) Time: 0.703s LR: 1.471e-04 Data: 0.001s
+Test: [   0/6] Time: 0.610 (0.610) Loss:  0.0186 (0.0186) Acc@1: 100.0000 (100.0000)
+Epoch 65/100 - Train Loss: 0.0886 - Val Acc: 99.0000 - Best Acc: 99.2500 (epoch 59) - Val Loss: 0.0274 (best: 0.0270) - Patience: 6/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 65 [   0/50 (  0%)] Loss: 0.08826 (0.0883) Acc@1: 98.4 (98.4) Time: 1.335s LR: 1.401e-04 Data: 0.221s
+Train: 65 [  10/50 ( 20%)] Loss: 0.08521 (0.0922) Acc@1: 100. (99.3) Time: 1.436s LR: 1.401e-04 Data: 0.002s
+Train: 65 [  20/50 ( 41%)] Loss: 0.08219 (0.0910) Acc@1: 100. (99.5) Time: 0.696s LR: 1.401e-04 Data: 0.001s
+Train: 65 [  30/50 ( 61%)] Loss: 0.09204 (0.0887) Acc@1: 100. (99.6) Time: 1.381s LR: 1.401e-04 Data: 0.001s
+Train: 65 [  40/50 ( 82%)] Loss: 0.07730 (0.0901) Acc@1: 100. (99.6) Time: 0.684s LR: 1.401e-04 Data: 0.001s
+Test: [   0/6] Time: 0.606 (0.606) Loss:  0.0382 (0.0382) Acc@1: 100.0000 (100.0000)
+Epoch 66/100 - Train Loss: 0.0906 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 59) - Val Loss: 0.0293 (best: 0.0270) - Patience: 7/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 66 [   0/50 (  0%)] Loss: 0.08891 (0.0889) Acc@1: 100. (100.) Time: 1.330s LR: 1.333e-04 Data: 0.227s
+Train: 66 [  10/50 ( 20%)] Loss: 0.1020 (0.0893) Acc@1: 100. (99.9) Time: 1.402s LR: 1.333e-04 Data: 0.001s
+Train: 66 [  20/50 ( 41%)] Loss: 0.09025 (0.0900) Acc@1: 100. (99.8) Time: 0.694s LR: 1.333e-04 Data: 0.001s
+Train: 66 [  30/50 ( 61%)] Loss: 0.09481 (0.0899) Acc@1: 100. (99.7) Time: 1.387s LR: 1.333e-04 Data: 0.001s
+Train: 66 [  40/50 ( 82%)] Loss: 0.08162 (0.0880) Acc@1: 100. (99.8) Time: 0.687s LR: 1.333e-04 Data: 0.001s
+Test: [   0/6] Time: 0.620 (0.620) Loss:  0.0153 (0.0153) Acc@1: 100.0000 (100.0000)
+Current checkpoints:
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-66.pth.tar', 0.02263273149728775)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-58.pth.tar', 0.026990113556385042)
+ ('results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/checkpoint-56.pth.tar', 0.0314897808432579)
+
+Epoch 67/100 - Train Loss: 0.0878 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0226 (best: 0.0226) - Patience: 0/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 67 [   0/50 (  0%)] Loss: 0.08123 (0.0812) Acc@1: 100. (100.) Time: 1.168s LR: 1.265e-04 Data: 0.246s
+Train: 67 [  10/50 ( 20%)] Loss: 0.08663 (0.0920) Acc@1: 100. (99.4) Time: 1.379s LR: 1.265e-04 Data: 0.001s
+Train: 67 [  20/50 ( 41%)] Loss: 0.1617 (0.0906) Acc@1: 95.3 (99.5) Time: 0.688s LR: 1.265e-04 Data: 0.000s
+Train: 67 [  30/50 ( 61%)] Loss: 0.09068 (0.0889) Acc@1: 100. (99.6) Time: 1.402s LR: 1.265e-04 Data: 0.002s
+Train: 67 [  40/50 ( 82%)] Loss: 0.07690 (0.0895) Acc@1: 100. (99.6) Time: 0.699s LR: 1.265e-04 Data: 0.001s
+Test: [   0/6] Time: 0.656 (0.656) Loss:  0.0333 (0.0333) Acc@1: 100.0000 (100.0000)
+Epoch 68/100 - Train Loss: 0.0902 - Val Acc: 99.7500 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0252 (best: 0.0226) - Patience: 1/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 68 [   0/50 (  0%)] Loss: 0.08540 (0.0854) Acc@1: 100. (100.) Time: 1.142s LR: 1.199e-04 Data: 0.232s
+Train: 68 [  10/50 ( 20%)] Loss: 0.08487 (0.0867) Acc@1: 100. (99.9) Time: 1.411s LR: 1.199e-04 Data: 0.002s
+Train: 68 [  20/50 ( 41%)] Loss: 0.08012 (0.0887) Acc@1: 100. (99.8) Time: 0.700s LR: 1.199e-04 Data: 0.001s
+Train: 68 [  30/50 ( 61%)] Loss: 0.08120 (0.0877) Acc@1: 100. (99.7) Time: 1.390s LR: 1.199e-04 Data: 0.001s
+Train: 68 [  40/50 ( 82%)] Loss: 0.1233 (0.0886) Acc@1: 98.4 (99.7) Time: 0.460s LR: 1.199e-04 Data: 0.001s
+Test: [   0/6] Time: 0.378 (0.378) Loss:  0.0279 (0.0279) Acc@1: 100.0000 (100.0000)
+Epoch 69/100 - Train Loss: 0.0877 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0266 (best: 0.0226) - Patience: 2/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 69 [   0/50 (  0%)] Loss: 0.07578 (0.0758) Acc@1: 100. (100.) Time: 0.987s LR: 1.134e-04 Data: 0.227s
+Train: 69 [  10/50 ( 20%)] Loss: 0.08026 (0.0830) Acc@1: 100. (99.9) Time: 1.407s LR: 1.134e-04 Data: 0.001s
+Train: 69 [  20/50 ( 41%)] Loss: 0.1129 (0.0881) Acc@1: 96.9 (99.6) Time: 0.694s LR: 1.134e-04 Data: 0.001s
+Train: 69 [  30/50 ( 61%)] Loss: 0.1032 (0.0877) Acc@1: 98.4 (99.6) Time: 1.395s LR: 1.134e-04 Data: 0.001s
+Train: 69 [  40/50 ( 82%)] Loss: 0.07731 (0.0888) Acc@1: 100. (99.7) Time: 0.688s LR: 1.134e-04 Data: 0.001s
+Test: [   0/6] Time: 0.653 (0.653) Loss:  0.0247 (0.0247) Acc@1: 100.0000 (100.0000)
+Epoch 70/100 - Train Loss: 0.0875 - Val Acc: 99.0000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0330 (best: 0.0226) - Patience: 3/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 70 [   0/50 (  0%)] Loss: 0.08246 (0.0825) Acc@1: 100. (100.) Time: 1.376s LR: 1.070e-04 Data: 0.238s
+Train: 70 [  10/50 ( 20%)] Loss: 0.08034 (0.0884) Acc@1: 100. (99.6) Time: 1.403s LR: 1.070e-04 Data: 0.001s
+Train: 70 [  20/50 ( 41%)] Loss: 0.08067 (0.0903) Acc@1: 100. (99.5) Time: 0.701s LR: 1.070e-04 Data: 0.001s
+Train: 70 [  30/50 ( 61%)] Loss: 0.08779 (0.0876) Acc@1: 100. (99.6) Time: 0.931s LR: 1.070e-04 Data: 0.002s
+Train: 70 [  40/50 ( 82%)] Loss: 0.07700 (0.0874) Acc@1: 100. (99.7) Time: 0.459s LR: 1.070e-04 Data: 0.001s
+Test: [   0/6] Time: 0.404 (0.404) Loss:  0.0192 (0.0192) Acc@1: 100.0000 (100.0000)
+Epoch 71/100 - Train Loss: 0.0870 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0236 (best: 0.0226) - Patience: 4/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 71 [   0/50 (  0%)] Loss: 0.07820 (0.0782) Acc@1: 100. (100.) Time: 1.227s LR: 1.008e-04 Data: 0.191s
+Train: 71 [  10/50 ( 20%)] Loss: 0.07582 (0.0867) Acc@1: 100. (99.7) Time: 1.395s LR: 1.008e-04 Data: 0.002s
+Train: 71 [  20/50 ( 41%)] Loss: 0.1193 (0.0857) Acc@1: 98.4 (99.8) Time: 0.712s LR: 1.008e-04 Data: 0.002s
+Train: 71 [  30/50 ( 61%)] Loss: 0.07961 (0.0838) Acc@1: 100. (99.8) Time: 1.407s LR: 1.008e-04 Data: 0.001s
+Train: 71 [  40/50 ( 82%)] Loss: 0.07762 (0.0838) Acc@1: 100. (99.9) Time: 0.701s LR: 1.008e-04 Data: 0.001s
+Test: [   0/6] Time: 0.620 (0.620) Loss:  0.0135 (0.0135) Acc@1: 100.0000 (100.0000)
+Epoch 72/100 - Train Loss: 0.0843 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0245 (best: 0.0226) - Patience: 5/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 72 [   0/50 (  0%)] Loss: 0.07820 (0.0782) Acc@1: 100. (100.) Time: 1.306s LR: 9.474e-05 Data: 0.256s
+Train: 72 [  10/50 ( 20%)] Loss: 0.07810 (0.0855) Acc@1: 100. (99.7) Time: 1.390s LR: 9.474e-05 Data: 0.002s
+Train: 72 [  20/50 ( 41%)] Loss: 0.08061 (0.0845) Acc@1: 100. (99.9) Time: 0.467s LR: 9.474e-05 Data: 0.001s
+Train: 72 [  30/50 ( 61%)] Loss: 0.1014 (0.0854) Acc@1: 98.4 (99.7) Time: 1.395s LR: 9.474e-05 Data: 0.002s
+Train: 72 [  40/50 ( 82%)] Loss: 0.08367 (0.0862) Acc@1: 100. (99.7) Time: 0.694s LR: 9.474e-05 Data: 0.001s
+Test: [   0/6] Time: 0.628 (0.628) Loss:  0.0301 (0.0301) Acc@1: 98.4375 (98.4375)
+Epoch 73/100 - Train Loss: 0.0880 - Val Acc: 99.0000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0266 (best: 0.0226) - Patience: 6/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 73 [   0/50 (  0%)] Loss: 0.07770 (0.0777) Acc@1: 100. (100.) Time: 0.989s LR: 8.883e-05 Data: 0.204s
+Train: 73 [  10/50 ( 20%)] Loss: 0.07810 (0.0822) Acc@1: 100. (100.) Time: 1.396s LR: 8.883e-05 Data: 0.001s
+Train: 73 [  20/50 ( 41%)] Loss: 0.09806 (0.0856) Acc@1: 98.4 (99.7) Time: 0.690s LR: 8.883e-05 Data: 0.002s
+Train: 73 [  30/50 ( 61%)] Loss: 0.1138 (0.0890) Acc@1: 98.4 (99.5) Time: 1.410s LR: 8.883e-05 Data: 0.002s
+Train: 73 [  40/50 ( 82%)] Loss: 0.07990 (0.0876) Acc@1: 100. (99.6) Time: 0.710s LR: 8.883e-05 Data: 0.001s
+Test: [   0/6] Time: 0.654 (0.654) Loss:  0.0274 (0.0274) Acc@1: 100.0000 (100.0000)
+Epoch 74/100 - Train Loss: 0.0872 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0337 (best: 0.0226) - Patience: 7/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 74 [   0/50 (  0%)] Loss: 0.09969 (0.0997) Acc@1: 100. (100.) Time: 1.318s LR: 8.307e-05 Data: 0.249s
+Train: 74 [  10/50 ( 20%)] Loss: 0.08834 (0.0834) Acc@1: 100. (99.9) Time: 1.403s LR: 8.307e-05 Data: 0.001s
+Train: 74 [  20/50 ( 41%)] Loss: 0.09064 (0.0842) Acc@1: 100. (99.9) Time: 0.694s LR: 8.307e-05 Data: 0.001s
+Train: 74 [  30/50 ( 61%)] Loss: 0.07792 (0.0851) Acc@1: 100. (99.8) Time: 1.408s LR: 8.307e-05 Data: 0.002s
+Train: 74 [  40/50 ( 82%)] Loss: 0.07590 (0.0865) Acc@1: 100. (99.8) Time: 0.460s LR: 8.307e-05 Data: 0.001s
+Test: [   0/6] Time: 0.466 (0.466) Loss:  0.0235 (0.0235) Acc@1: 100.0000 (100.0000)
+Epoch 75/100 - Train Loss: 0.0870 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0290 (best: 0.0226) - Patience: 8/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 75 [   0/50 (  0%)] Loss: 0.1027 (0.103) Acc@1: 98.4 (98.4) Time: 0.996s LR: 7.749e-05 Data: 0.177s
+Train: 75 [  10/50 ( 20%)] Loss: 0.09513 (0.0894) Acc@1: 100. (99.6) Time: 1.398s LR: 7.749e-05 Data: 0.001s
+Train: 75 [  20/50 ( 41%)] Loss: 0.09252 (0.0871) Acc@1: 100. (99.8) Time: 0.699s LR: 7.749e-05 Data: 0.001s
+Train: 75 [  30/50 ( 61%)] Loss: 0.07901 (0.0858) Acc@1: 100. (99.8) Time: 1.409s LR: 7.749e-05 Data: 0.002s
+Train: 75 [  40/50 ( 82%)] Loss: 0.08188 (0.0851) Acc@1: 100. (99.9) Time: 0.696s LR: 7.749e-05 Data: 0.001s
+Test: [   0/6] Time: 0.454 (0.454) Loss:  0.0265 (0.0265) Acc@1: 100.0000 (100.0000)
+Epoch 76/100 - Train Loss: 0.0851 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0239 (best: 0.0226) - Patience: 9/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 76 [   0/50 (  0%)] Loss: 0.08923 (0.0892) Acc@1: 100. (100.) Time: 1.003s LR: 7.208e-05 Data: 0.176s
+Train: 76 [  10/50 ( 20%)] Loss: 0.07952 (0.0852) Acc@1: 100. (99.9) Time: 0.941s LR: 7.208e-05 Data: 0.002s
+Train: 76 [  20/50 ( 41%)] Loss: 0.07792 (0.0828) Acc@1: 100. (99.9) Time: 0.457s LR: 7.208e-05 Data: 0.000s
+Train: 76 [  30/50 ( 61%)] Loss: 0.08970 (0.0841) Acc@1: 100. (99.8) Time: 0.927s LR: 7.208e-05 Data: 0.002s
+Train: 76 [  40/50 ( 82%)] Loss: 0.08042 (0.0836) Acc@1: 100. (99.8) Time: 0.465s LR: 7.208e-05 Data: 0.001s
+Test: [   0/6] Time: 0.433 (0.433) Loss:  0.0307 (0.0307) Acc@1: 98.4375 (98.4375)
+Epoch 77/100 - Train Loss: 0.0827 - Val Acc: 99.0000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0289 (best: 0.0226) - Patience: 10/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 77 [   0/50 (  0%)] Loss: 0.08053 (0.0805) Acc@1: 100. (100.) Time: 0.937s LR: 6.685e-05 Data: 0.174s
+Train: 77 [  10/50 ( 20%)] Loss: 0.07981 (0.0802) Acc@1: 100. (100.) Time: 1.184s LR: 6.685e-05 Data: 0.001s
+Train: 77 [  20/50 ( 41%)] Loss: 0.08337 (0.0811) Acc@1: 100. (100.) Time: 0.702s LR: 6.685e-05 Data: 0.001s
+Train: 77 [  30/50 ( 61%)] Loss: 0.07666 (0.0814) Acc@1: 100. (99.9) Time: 1.396s LR: 6.685e-05 Data: 0.001s
+Train: 77 [  40/50 ( 82%)] Loss: 0.07947 (0.0812) Acc@1: 100. (100.) Time: 0.709s LR: 6.685e-05 Data: 0.001s
+Test: [   0/6] Time: 0.731 (0.731) Loss:  0.0277 (0.0277) Acc@1: 98.4375 (98.4375)
+Epoch 78/100 - Train Loss: 0.0833 - Val Acc: 99.0000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0286 (best: 0.0226) - Patience: 11/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 78 [   0/50 (  0%)] Loss: 0.08081 (0.0808) Acc@1: 100. (100.) Time: 1.238s LR: 6.180e-05 Data: 0.194s
+Train: 78 [  10/50 ( 20%)] Loss: 0.08040 (0.0808) Acc@1: 100. (100.) Time: 1.403s LR: 6.180e-05 Data: 0.001s
+Train: 78 [  20/50 ( 41%)] Loss: 0.07796 (0.0824) Acc@1: 100. (99.9) Time: 0.689s LR: 6.180e-05 Data: 0.001s
+Train: 78 [  30/50 ( 61%)] Loss: 0.09759 (0.0855) Acc@1: 100. (99.8) Time: 1.400s LR: 6.180e-05 Data: 0.001s
+Train: 78 [  40/50 ( 82%)] Loss: 0.07870 (0.0843) Acc@1: 100. (99.8) Time: 0.463s LR: 6.180e-05 Data: 0.001s
+Test: [   0/6] Time: 0.448 (0.448) Loss:  0.0302 (0.0302) Acc@1: 100.0000 (100.0000)
+Epoch 79/100 - Train Loss: 0.0836 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0281 (best: 0.0226) - Patience: 12/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 79 [   0/50 (  0%)] Loss: 0.07553 (0.0755) Acc@1: 100. (100.) Time: 1.393s LR: 5.694e-05 Data: 0.245s
+Train: 79 [  10/50 ( 20%)] Loss: 0.07716 (0.0821) Acc@1: 100. (99.9) Time: 1.436s LR: 5.694e-05 Data: 0.001s
+Train: 79 [  20/50 ( 41%)] Loss: 0.07791 (0.0841) Acc@1: 100. (99.9) Time: 0.699s LR: 5.694e-05 Data: 0.001s
+Train: 79 [  30/50 ( 61%)] Loss: 0.08668 (0.0850) Acc@1: 100. (99.8) Time: 1.404s LR: 5.694e-05 Data: 0.002s
+Train: 79 [  40/50 ( 82%)] Loss: 0.08332 (0.0839) Acc@1: 100. (99.8) Time: 0.694s LR: 5.694e-05 Data: 0.001s
+Test: [   0/6] Time: 0.460 (0.460) Loss:  0.0177 (0.0177) Acc@1: 100.0000 (100.0000)
+Epoch 80/100 - Train Loss: 0.0831 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0248 (best: 0.0226) - Patience: 13/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 80 [   0/50 (  0%)] Loss: 0.08749 (0.0875) Acc@1: 100. (100.) Time: 0.960s LR: 5.227e-05 Data: 0.176s
+Train: 80 [  10/50 ( 20%)] Loss: 0.09509 (0.0867) Acc@1: 100. (99.9) Time: 1.402s LR: 5.227e-05 Data: 0.001s
+Train: 80 [  20/50 ( 41%)] Loss: 0.08517 (0.0858) Acc@1: 100. (99.8) Time: 0.688s LR: 5.227e-05 Data: 0.001s
+Train: 80 [  30/50 ( 61%)] Loss: 0.08559 (0.0855) Acc@1: 100. (99.7) Time: 1.387s LR: 5.227e-05 Data: 0.001s
+Train: 80 [  40/50 ( 82%)] Loss: 0.08045 (0.0849) Acc@1: 100. (99.7) Time: 0.472s LR: 5.227e-05 Data: 0.002s
+Test: [   0/6] Time: 0.576 (0.576) Loss:  0.0347 (0.0347) Acc@1: 98.4375 (98.4375)
+Epoch 81/100 - Train Loss: 0.0853 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0251 (best: 0.0226) - Patience: 14/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 81 [   0/50 (  0%)] Loss: 0.07957 (0.0796) Acc@1: 100. (100.) Time: 1.330s LR: 4.780e-05 Data: 0.242s
+Train: 81 [  10/50 ( 20%)] Loss: 0.08577 (0.0881) Acc@1: 100. (99.9) Time: 1.389s LR: 4.780e-05 Data: 0.001s
+Train: 81 [  20/50 ( 41%)] Loss: 0.07630 (0.0842) Acc@1: 100. (99.9) Time: 0.694s LR: 4.780e-05 Data: 0.001s
+Train: 81 [  30/50 ( 61%)] Loss: 0.08400 (0.0846) Acc@1: 100. (99.8) Time: 1.394s LR: 4.780e-05 Data: 0.001s
+Train: 81 [  40/50 ( 82%)] Loss: 0.07949 (0.0838) Acc@1: 100. (99.9) Time: 0.687s LR: 4.780e-05 Data: 0.001s
+Test: [   0/6] Time: 0.640 (0.640) Loss:  0.0221 (0.0221) Acc@1: 100.0000 (100.0000)
+Epoch 82/100 - Train Loss: 0.0843 - Val Acc: 99.5000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0254 (best: 0.0226) - Patience: 15/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 82 [   0/50 (  0%)] Loss: 0.09224 (0.0922) Acc@1: 100. (100.) Time: 1.278s LR: 4.353e-05 Data: 0.211s
+Train: 82 [  10/50 ( 20%)] Loss: 0.08154 (0.0812) Acc@1: 100. (100.) Time: 1.395s LR: 4.353e-05 Data: 0.002s
+Train: 82 [  20/50 ( 41%)] Loss: 0.07550 (0.0843) Acc@1: 100. (99.9) Time: 0.696s LR: 4.353e-05 Data: 0.001s
+Train: 82 [  30/50 ( 61%)] Loss: 0.08587 (0.0856) Acc@1: 100. (99.8) Time: 1.394s LR: 4.353e-05 Data: 0.002s
+Train: 82 [  40/50 ( 82%)] Loss: 0.07487 (0.0857) Acc@1: 100. (99.8) Time: 0.697s LR: 4.353e-05 Data: 0.001s
+Test: [   0/6] Time: 0.602 (0.602) Loss:  0.0335 (0.0335) Acc@1: 98.4375 (98.4375)
+Epoch 83/100 - Train Loss: 0.0854 - Val Acc: 99.0000 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0298 (best: 0.0226) - Patience: 16/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 83 [   0/50 (  0%)] Loss: 0.07932 (0.0793) Acc@1: 100. (100.) Time: 1.287s LR: 3.947e-05 Data: 0.243s
+Train: 83 [  10/50 ( 20%)] Loss: 0.08737 (0.0805) Acc@1: 100. (100.) Time: 1.394s LR: 3.947e-05 Data: 0.001s
+Train: 83 [  20/50 ( 41%)] Loss: 0.07851 (0.0838) Acc@1: 100. (99.9) Time: 0.694s LR: 3.947e-05 Data: 0.001s
+Train: 83 [  30/50 ( 61%)] Loss: 0.07849 (0.0825) Acc@1: 100. (99.9) Time: 0.931s LR: 3.947e-05 Data: 0.001s
+Train: 83 [  40/50 ( 82%)] Loss: 0.08107 (0.0819) Acc@1: 100. (99.9) Time: 0.717s LR: 3.947e-05 Data: 0.001s
+Test: [   0/6] Time: 0.745 (0.745) Loss:  0.0167 (0.0167) Acc@1: 100.0000 (100.0000)
+Epoch 84/100 - Train Loss: 0.0816 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0271 (best: 0.0226) - Patience: 17/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 84 [   0/50 (  0%)] Loss: 0.07478 (0.0748) Acc@1: 100. (100.) Time: 1.467s LR: 3.561e-05 Data: 0.304s
+Train: 84 [  10/50 ( 20%)] Loss: 0.08219 (0.0825) Acc@1: 100. (99.9) Time: 1.374s LR: 3.561e-05 Data: 0.001s
+Train: 84 [  20/50 ( 41%)] Loss: 0.07656 (0.0823) Acc@1: 100. (99.9) Time: 0.695s LR: 3.561e-05 Data: 0.001s
+Train: 84 [  30/50 ( 61%)] Loss: 0.07858 (0.0849) Acc@1: 100. (99.9) Time: 1.394s LR: 3.561e-05 Data: 0.002s
+Train: 84 [  40/50 ( 82%)] Loss: 0.08653 (0.0839) Acc@1: 100. (99.9) Time: 0.695s LR: 3.561e-05 Data: 0.001s
+Test: [   0/6] Time: 0.462 (0.462) Loss:  0.0254 (0.0254) Acc@1: 100.0000 (100.0000)
+Epoch 85/100 - Train Loss: 0.0839 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0267 (best: 0.0226) - Patience: 18/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 85 [   0/50 (  0%)] Loss: 0.07967 (0.0797) Acc@1: 100. (100.) Time: 1.661s LR: 3.198e-05 Data: 0.252s
+Train: 85 [  10/50 ( 20%)] Loss: 0.08194 (0.0837) Acc@1: 100. (99.9) Time: 1.405s LR: 3.198e-05 Data: 0.001s
+Train: 85 [  20/50 ( 41%)] Loss: 0.08015 (0.0837) Acc@1: 100. (99.8) Time: 0.689s LR: 3.198e-05 Data: 0.001s
+Train: 85 [  30/50 ( 61%)] Loss: 0.1151 (0.0831) Acc@1: 98.4 (99.8) Time: 1.401s LR: 3.198e-05 Data: 0.002s
+Train: 85 [  40/50 ( 82%)] Loss: 0.07998 (0.0841) Acc@1: 100. (99.8) Time: 0.687s LR: 3.198e-05 Data: 0.001s
+Test: [   0/6] Time: 0.458 (0.458) Loss:  0.0142 (0.0142) Acc@1: 100.0000 (100.0000)
+Epoch 86/100 - Train Loss: 0.0838 - Val Acc: 99.2500 - Best Acc: 99.2500 (epoch 67) - Val Loss: 0.0247 (best: 0.0226) - Patience: 19/20
+GPU Memory - Allocated: 0.30 GB, Reserved: 0.54 GB
+Train: 86 [   0/50 (  0%)] Loss: 0.08651 (0.0865) Acc@1: 100. (100.) Time: 0.987s LR: 2.856e-05 Data: 0.169s
+Train: 86 [  10/50 ( 20%)] Loss: 0.07449 (0.0852) Acc@1: 100. (99.7) Time: 1.394s LR: 2.856e-05 Data: 0.001s
+Train: 86 [  20/50 ( 41%)] Loss: 0.07607 (0.0836) Acc@1: 100. (99.7) Time: 0.696s LR: 2.856e-05 Data: 0.001s
+Train: 86 [  30/50 ( 61%)] Loss: 0.08544 (0.0847) Acc@1: 100. (99.7) Time: 1.386s LR: 2.856e-05 Data: 0.001s
+Train: 86 [  40/50 ( 82%)] Loss: 0.08549 (0.0836) Acc@1: 100. (99.8) Time: 0.681s LR: 2.856e-05 Data: 0.002s
+Test: [   0/6] Time: 0.631 (0.631) Loss:  0.0192 (0.0192) Acc@1: 100.0000 (100.0000)
+Early stopping triggered at epoch 87. No improvement in validation loss for 20 epochs.
+Evaluating on test set...
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best_inference.pth
+Lightweight checkpoint saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_last_inference.pth
+Training curves saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/training_curves.png
+Test: [   0/6] Time: 1.005 (1.005) Loss:  0.0187 (0.0187) Acc@1: 100.0000 (100.0000)
+Test: [   0/6] Time: 0.598 (0.598) Loss:  0.0195 (0.0195) Acc@1: 100.0000 (100.0000)
+Training completed! Best validation accuracy: 99.2500 (epoch 67)
+Total training time: 1h 43m 10s
+Model parameters: 5,824,420 trainable / 5,824,420 total
+Early stopping: Triggered (patience: 20 epochs, monitor: loss)
+Last-epoch metrics - Train Acc: 99.72% | Val Acc: 99.25% | Test Acc: 100.00%
+Last-epoch metrics - Train Loss: 0.0843 | Val Loss: 0.0255 | Test Loss: 0.0215
+Validation metrics - Accuracy: 0.9925 | Precision: 0.9927 | Recall: 0.9925 | F1: 0.9925
+Best-checkpoint test metrics - Loss: 0.0188 | Accuracy: 1.0000 | Precision: 1.0000 | Recall: 1.0000 | F1: 1.0000
+Training results saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/training_results.json
+Checkpoints saved: Full (model_best.pth.tar, last.pth.tar) | Lightweight (model_best_inference.pth, model_last_inference.pth)
+Visualizations generated: Grad-CAM heatmaps, Token pruning progressive sparsification
+Loading best model from epoch 67 for final evaluation...
+Best model loaded successfully. Best accuracy: 99.2500
+Confusion matrix saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/confusion_matrix_val.png
+Confusion matrix saved to: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/confusion_matrix_test.png
+Generating Grad-CAM visualizations...
+Using target layer: BatchNorm2d(384, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+Grad-CAM initialized successfully with model wrapper
+Generating Grad-CAM for class Anthracnose (class 0)
+Generated Grad-CAM visualization for class Anthracnose
+Generating Grad-CAM for class Bacterial Canker (class 1)
+Generated Grad-CAM visualization for class Bacterial Canker
+Generating Grad-CAM for class Cutting Weevil (class 2)
+Generated Grad-CAM visualization for class Cutting Weevil
+Generating Grad-CAM for class Die Back (class 3)
+Generated Grad-CAM visualization for class Die Back
+Generating Grad-CAM for class Gall Midge (class 4)
+Generated Grad-CAM visualization for class Gall Midge
+Generating Grad-CAM for class Healthy (class 5)
+Generated Grad-CAM visualization for class Healthy
+Generating Grad-CAM for class Powdery Mildew (class 6)
+Generated Grad-CAM visualization for class Powdery Mildew
+Generating Grad-CAM for class Sooty Mould (class 7)
+Generated Grad-CAM visualization for class Sooty Mould
+Grad-CAM visualizations completed.

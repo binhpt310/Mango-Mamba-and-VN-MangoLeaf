@@ -1,0 +1,6 @@
+{
+  "task": "direct-vn",
+  "seed": 2024,
+  "source_h3": "/home/admincsc/workspace/binh/reproduce_mm/results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_2024-20260910-013944/model_best.pth.tar",
+  "result": "/home/admincsc/workspace/binh/reproduce_mm/results/h3_320_aligned_followup/no_curriculum_vn/h3_no_curriculum_vn_seed_2024-20260911-055629/model_best.pth.tar"
+}
