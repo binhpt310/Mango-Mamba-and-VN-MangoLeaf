@@ -14,7 +14,7 @@ This index identifies the immutable evidence behind the Final V3 updates made on
 - Configuration: Final V3 320px, `[8,8,5,5]`, stage-0 inter-window Mamba; curriculum seed 42.
 - Result: 695/700 correct, 99.286% accuracy, 99.280% macro-F1, five Anthracnose errors.
 - Selected checkpoint SHA-256: `208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae`.
-- Git-safe outputs: summary, per-class metrics, misclassification index, confusion matrix, scripts, source arguments, and logs. The five raw source test images and image-containing CAM panels remain in the local/host evidence store to avoid republishing dataset images.
+- Published outputs: summary, per-class metrics, misclassification index, confusion matrix, scripts, source arguments, log, and the five selected source-image/CAM panels. The full raw dataset remains only in the local/host evidence store.
 
 ## Android CAM export
 
