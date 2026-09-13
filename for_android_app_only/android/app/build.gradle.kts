@@ -11,8 +11,8 @@ android {
         applicationId = "com.mangomamba.benchmark"
         minSdk = 26
         targetSdk = 34
-        versionCode = 2
-        versionName = "0.2-mixed"
+        versionCode = 3
+        versionName = "0.3-v3-cam"
     }
 
     // Model is fp32 and >20MB; don't let AGP compress it away from being

@@ -157,6 +157,20 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/camToggleButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:enabled="false"
+            android:text="@string/show_cam"
+            android:textAllCaps="false"
+            android:textColor="@color/mm_primary"
+            android:textSize="16sp"
+            app:cornerRadius="16dp"
+            app:strokeColor="@color/mm_primary" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -8,7 +8,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -35,31 +38,30 @@ import com.google.android.material.progressindicator.LinearProgressIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.io.File
 import java.nio.FloatBuffer
 import java.util.Locale
 import kotlin.math.exp
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToLong
 
 class MainActivity : AppCompatActivity() {
 
-    private val modelAssetName = "mango_mamba_7class.onnx"
-    private val labelsAssetName = "mango_mamba_7class_labels.json"
-    private val inputName = "image"
-    private val imageSize = 224
-    private val resizeShortSide = 256
+    private val modelAssetName = "mango_mamba_v3_phase3_320_cam.onnx"
+    private val manifestAssetName = "mango_mamba_v3_phase3_320_cam_manifest.json"
     private val testImageExtra = "test_image_path"
     private val testBatchManifestExtra = "test_batch_manifest_path"
     private val captureIntervalMs = 800L
     private val expectedModelLabels = listOf(
         "Anthracnose",
         "Dieback",
-        "Gall Midge",
+        "Gall_Midge",
         "Healthy",
-        "Powdery Mildew",
-        "Red Rust",
-        "Sooty Mold"
+        "Powdery_Mildew",
+        "Red_Rust",
+        "Sooty_Mold"
     )
     private lateinit var cameraPreview: PreviewView
     private lateinit var cameraScreen: LinearLayout
@@ -75,6 +77,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pickImageButton: MaterialButton
     private lateinit var continuousButton: MaterialButton
     private lateinit var informationButton: MaterialButton
+    private lateinit var camToggleButton: MaterialButton
     private lateinit var informationSubtitle: TextView
     private lateinit var informationEnglishName: TextView
     private lateinit var diseaseGuideImage: ImageView
@@ -83,13 +86,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var referenceButton: MaterialButton
     private lateinit var referenceButtonSecondary: MaterialButton
 
-    private val labels by lazy { loadLabels() }
     private val mainHandler = Handler(Looper.getMainLooper())
     private var imageCapture: ImageCapture? = null
     private var isCaptureOrInferenceRunning = false
     private var continuousCaptureEnabled = false
     private var latestPrediction: Prediction? = null
+    private var latestCaptured: CapturedPrediction? = null
+    private var isCamVisible = false
 
+    private val modelSpec by lazy { loadModelSpec() }
     private val continuousRunnable = object : Runnable {
         override fun run() {
             if (!continuousCaptureEnabled) return
@@ -174,6 +179,7 @@ class MainActivity : AppCompatActivity() {
         pickImageButton = findViewById(R.id.pickImageButton)
         continuousButton = findViewById(R.id.continuousButton)
         informationButton = findViewById(R.id.informationButton)
+        camToggleButton = findViewById(R.id.camToggleButton)
         informationSubtitle = findViewById(R.id.informationSubtitle)
         informationEnglishName = findViewById(R.id.informationEnglishName)
         diseaseGuideImage = findViewById(R.id.diseaseGuideImage)
@@ -190,6 +196,7 @@ class MainActivity : AppCompatActivity() {
             if (continuousCaptureEnabled) stopContinuousCapture() else startContinuousCapture()
         }
         informationButton.setOnClickListener { latestPrediction?.let { showInformation(it) } }
+        camToggleButton.setOnClickListener { toggleCam() }
         findViewById<MaterialToolbar>(R.id.informationTopAppBar)
             .setNavigationOnClickListener { showCameraScreen() }
     }
@@ -310,7 +317,7 @@ class MainActivity : AppCompatActivity() {
             .mapNotNull { line ->
                 val fields = line.split('\t', limit = 2)
                 val expectedLabel = fields.firstOrNull()?.removePrefix("\uFEFF")
-                if (fields.size == 2 && expectedLabel != null && expectedLabel in labels && File(fields[1]).isFile) {
+                if (fields.size == 2 && expectedLabel != null && expectedLabel in modelSpec.classNames && File(fields[1]).isFile) {
                     BatchEntry(expectedLabel, File(fields[1]))
                 } else {
                     null
@@ -347,6 +354,7 @@ class MainActivity : AppCompatActivity() {
                             )
                         } finally {
                             captured.previewBitmap.recycle()
+                            captured.camBitmap.recycle()
                         }
                         if ((index + 1) % 25 == 0 && index + 1 < entries.size) {
                             runOnUiThread { setStatus("Đang kiểm tra ${index + 1}/${entries.size} ảnh") }
@@ -388,8 +396,13 @@ class MainActivity : AppCompatActivity() {
     private fun classifyFile(file: File): CapturedPrediction {
         val source = decodeBitmapWithOrientation(file)
         try {
-            val prediction = classifyBitmap(source)
-            return CapturedPrediction(prediction, createPreviewBitmap(source))
+            val prepared = bitmapToInput(source)
+            return try {
+                classifyPreparedInput(prepared)
+            } catch (error: Throwable) {
+                prepared.croppedBitmap.recycle()
+                throw error
+            }
         } finally {
             source.recycle()
         }
@@ -416,46 +429,33 @@ class MainActivity : AppCompatActivity() {
             .also { original.recycle() }
     }
 
-    private fun createPreviewBitmap(source: Bitmap): Bitmap {
-        val maxSide = 512
-        val largestSide = maxOf(source.width, source.height)
-        val scale = min(1f, maxSide.toFloat() / largestSide.toFloat())
-        val width = (source.width * scale).roundToLong().toInt().coerceAtLeast(1)
-        val height = (source.height * scale).roundToLong().toInt().coerceAtLeast(1)
-        val scaled = Bitmap.createScaledBitmap(source, width, height, true)
-        return if (scaled === source) {
-            source.copy(Bitmap.Config.ARGB_8888, false)
-        } else {
-            scaled
-        }
-    }
-
-    private fun classifyBitmap(bitmap: Bitmap): Prediction {
+    private fun classifyPreparedInput(prepared: PreparedInput): CapturedPrediction {
         val env = OrtEnvironment.getEnvironment()
         val session = getInferenceSession(env)
-        val tensorData = bitmapToTensor(bitmap)
         OnnxTensor.createTensor(
             env,
-            FloatBuffer.wrap(tensorData),
-            longArrayOf(1, 3, imageSize.toLong(), imageSize.toLong())
+            FloatBuffer.wrap(prepared.tensorData),
+            longArrayOf(1, 3, modelSpec.imageSize.toLong(), modelSpec.imageSize.toLong())
         ).use { tensor ->
             val startedAt = System.nanoTime()
-            session.run(mapOf(inputName to tensor)).use { result ->
+            session.run(mapOf(modelSpec.inputName to tensor)).use { result ->
                 val latencyMs = (System.nanoTime() - startedAt) / 1_000_000.0
-                val rawOutput = result[0].value
-                val logits = when (rawOutput) {
-                    is FloatArray -> rawOutput
-                    is Array<*> -> rawOutput.firstOrNull() as? FloatArray
-                        ?: error("Output model không hợp lệ")
-                    else -> error("Output model không hỗ trợ")
-                }
-                require(logits.size == labels.size) { "Số lớp model không khớp nhãn" }
+                require(result.size() == 2) { "Model phải trả về logits và feature_map" }
+                val logits = readLogits(result[0].value)
+                val featureMap = readFeatureMap(result[1].value)
+                require(logits.size == modelSpec.classNames.size) { "Số lớp model không khớp manifest" }
                 val probabilities = softmax(logits)
                 val ranking = probabilities.indices.sortedByDescending { probabilities[it] }
-                return Prediction(
-                    modelLabel = labels[ranking.first()],
+                val classIndex = ranking.first()
+                val prediction = Prediction(
+                    modelLabel = modelSpec.classNames[classIndex],
                     confidence = probabilities[ranking.first()],
                     latencyMs = latencyMs
+                )
+                return CapturedPrediction(
+                    prediction = prediction,
+                    previewBitmap = prepared.croppedBitmap,
+                    camBitmap = createCamOverlay(prepared.croppedBitmap, featureMap, classIndex)
                 )
             }
         }
@@ -473,44 +473,100 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadLabels(): List<String> {
-        val json = assets.open(labelsAssetName).bufferedReader().use { it.readText() }
-        return Regex("\\\"([^\\\"]+)\\\"").findAll(json)
-            .map { it.groupValues[1] }
-            .filter { it != "class_names" }
-            .toList()
-            .also {
-                require(it == expectedModelLabels) {
-                    "Nhãn model phải đúng thứ tự 7 lớp đã được app hỗ trợ"
-                }
+    private fun loadModelSpec(): ModelSpec {
+        val root = JSONObject(assets.open(manifestAssetName).bufferedReader().use { it.readText() })
+        val input = root.getJSONObject("input")
+        val shape = input.getJSONArray("shape")
+        val classNames = root.getJSONArray("class_names").let { array ->
+            List(array.length()) { index -> array.getString(index) }
+        }
+        require(classNames == expectedModelLabels) { "Manifest phải đúng thứ tự 7 lớp đã được app hỗ trợ" }
+        val weights = root.getJSONObject("classifier").getJSONArray("weight").let { rows ->
+            Array(rows.length()) { row ->
+                rows.getJSONArray(row).let { values -> FloatArray(values.length()) { values.getDouble(it).toFloat() } }
             }
+        }
+        return ModelSpec(
+            inputName = input.getString("name"),
+            imageSize = shape.getInt(2),
+            resizeShortSide = input.getInt("resize_shorter_side"),
+            classNames = classNames,
+            classifierWeights = weights
+        )
     }
 
-    private fun bitmapToTensor(bitmap: Bitmap): FloatArray {
-        val scale = resizeShortSide.toFloat() / min(bitmap.width, bitmap.height)
+    private fun bitmapToInput(bitmap: Bitmap): PreparedInput {
+        val scale = modelSpec.resizeShortSide.toFloat() / min(bitmap.width, bitmap.height)
         val resizedWidth = (bitmap.width * scale).roundToLong().toInt()
         val resizedHeight = (bitmap.height * scale).roundToLong().toInt()
         val resized = Bitmap.createScaledBitmap(bitmap, resizedWidth, resizedHeight, true)
-        val left = (resizedWidth - imageSize) / 2
-        val top = (resizedHeight - imageSize) / 2
-        val cropped = Bitmap.createBitmap(resized, left, top, imageSize, imageSize)
-        val tensor = FloatArray(3 * imageSize * imageSize)
+        val left = (resizedWidth - modelSpec.imageSize) / 2
+        val top = (resizedHeight - modelSpec.imageSize) / 2
+        val cropped = Bitmap.createBitmap(resized, left, top, modelSpec.imageSize, modelSpec.imageSize)
+        val tensor = FloatArray(3 * modelSpec.imageSize * modelSpec.imageSize)
         val means = floatArrayOf(0.485f, 0.456f, 0.406f)
         val stds = floatArrayOf(0.229f, 0.224f, 0.225f)
-        for (y in 0 until imageSize) {
-            for (x in 0 until imageSize) {
+        for (y in 0 until modelSpec.imageSize) {
+            for (x in 0 until modelSpec.imageSize) {
                 val color = cropped.getPixel(x, y)
-                val offset = y * imageSize + x
+                val offset = y * modelSpec.imageSize + x
                 tensor[offset] = ((android.graphics.Color.red(color) / 255f) - means[0]) / stds[0]
-                tensor[imageSize * imageSize + offset] =
+                tensor[modelSpec.imageSize * modelSpec.imageSize + offset] =
                     ((android.graphics.Color.green(color) / 255f) - means[1]) / stds[1]
-                tensor[2 * imageSize * imageSize + offset] =
+                tensor[2 * modelSpec.imageSize * modelSpec.imageSize + offset] =
                     ((android.graphics.Color.blue(color) / 255f) - means[2]) / stds[2]
             }
         }
-        if (resized !== cropped) resized.recycle()
-        cropped.recycle()
-        return tensor
+        resized.recycle()
+        return PreparedInput(tensor, cropped)
+    }
+
+    private fun readLogits(value: Any): FloatArray = when (value) {
+        is FloatArray -> value
+        is Array<*> -> value.firstOrNull() as? FloatArray ?: error("Logits model không hợp lệ")
+        else -> error("Logits model không hỗ trợ")
+    }
+
+    private fun readFeatureMap(value: Any): Array<Array<FloatArray>> {
+        val batch = value as? Array<*> ?: error("Feature map model không hợp lệ")
+        val channels = batch.firstOrNull() as? Array<*> ?: error("Feature map thiếu batch")
+        require(channels.size == 384) { "Feature map phải có 384 kênh" }
+        return Array(channels.size) { channel ->
+            val rows = channels[channel] as? Array<*> ?: error("Feature map thiếu hàng")
+            require(rows.size == 10) { "Feature map phải có 10 hàng" }
+            Array(rows.size) { row ->
+                val values = rows[row] as? FloatArray ?: error("Feature map thiếu giá trị")
+                require(values.size == 10) { "Feature map phải có 10 cột" }
+                values
+            }
+        }
+    }
+
+    private fun createCamOverlay(
+        croppedBitmap: Bitmap,
+        featureMap: Array<Array<FloatArray>>,
+        classIndex: Int
+    ): Bitmap {
+        val weights = modelSpec.classifierWeights[classIndex]
+        require(weights.size == featureMap.size) { "Trọng số CAM không khớp feature map" }
+        val cam = FloatArray(100)
+        for (channel in featureMap.indices) {
+            for (y in 0 until 10) for (x in 0 until 10) {
+                cam[y * 10 + x] += featureMap[channel][y][x] * weights[channel]
+            }
+        }
+        val maximum = cam.maxOrNull()?.coerceAtLeast(0f) ?: 0f
+        val heatmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888)
+        for (y in 0 until 10) for (x in 0 until 10) {
+            val value = if (maximum > 0f) max(0f, cam[y * 10 + x]) / maximum else 0f
+            val red = (255 * value).toInt()
+            val green = (255 * (1f - kotlin.math.abs(2f * value - 1f))).toInt()
+            heatmap.setPixel(x, y, Color.argb((150 * value).toInt(), red, green, 0))
+        }
+        val overlay = croppedBitmap.copy(Bitmap.Config.ARGB_8888, true)
+        Canvas(overlay).drawBitmap(heatmap, null, android.graphics.Rect(0, 0, overlay.width, overlay.height), Paint(Paint.FILTER_BITMAP_FLAG))
+        heatmap.recycle()
+        return overlay
     }
 
     private fun softmax(logits: FloatArray): FloatArray {
@@ -521,7 +577,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showPrediction(captured: CapturedPrediction) {
+        latestCaptured?.let { previous ->
+            if (previous.previewBitmap !== captured.previewBitmap) previous.previewBitmap.recycle()
+            if (previous.camBitmap !== captured.camBitmap) previous.camBitmap.recycle()
+        }
         latestPrediction = captured.prediction
+        latestCaptured = captured
+        isCamVisible = false
         resultImage.setImageBitmap(captured.previewBitmap)
         resultImage.visibility = View.VISIBLE
         resultPlaceholderIcon.visibility = View.GONE
@@ -530,6 +592,16 @@ class MainActivity : AppCompatActivity() {
         resultConfidence.visibility = View.VISIBLE
         resultMessage.text = confidenceMessage(captured.prediction.confidence)
         informationButton.isEnabled = true
+        camToggleButton.isEnabled = true
+        camToggleButton.text = getString(R.string.show_cam)
+    }
+
+    private fun toggleCam() {
+        val captured = latestCaptured ?: return
+        isCamVisible = !isCamVisible
+        resultImage.setImageBitmap(if (isCamVisible) captured.camBitmap else captured.previewBitmap)
+        camToggleButton.text = getString(if (isCamVisible) R.string.hide_cam else R.string.show_cam)
+        resultMessage.text = if (isCamVisible) getString(R.string.cam_explanation) else confidenceMessage(captured.prediction.confidence)
     }
 
     private fun confidenceMessage(confidence: Float): String = when {
@@ -596,7 +668,7 @@ class MainActivity : AppCompatActivity() {
                 ReferenceLink("Cổng TTĐT Tiền Giang", "https://tiengiang.gov.vn/hoi-dap/-/qa/3?_questionmvcportletcontentdgaction_WAR_Iportal_Hoi_Dap_Manageportlet_cur=30")
             )
         )
-        "Gall Midge" -> FactCheckedDiseaseContent(
+        "Gall_Midge" -> FactCheckedDiseaseContent(
             englishName = "Gall Midge",
             guideImageRes = R.drawable.guide_gall_midge,
             symptoms = "• Trên lá có thể thấy nốt u hoặc mụn, phần mô lá sưng phồng.\n• Lá non bị hại nặng dễ vàng, biến dạng hoặc phát triển không đều.\n• Cần kiểm tra kỹ đợt lá non vì đây là giai đoạn dễ nhìn thấy dấu hiệu nhất.\n• Tổn thương tương tự có thể xuất hiện ở chồi, hoa hoặc quả non.",
@@ -613,7 +685,7 @@ class MainActivity : AppCompatActivity() {
             prevention = "• Giữ tán cây thông thoáng và dọn lá, cành già sau thu hoạch.\n• Theo dõi lá non, mặt dưới lá và các côn trùng chích hút định kỳ.\n• Bón phân, tưới và thoát nước phù hợp với điều kiện vườn.\n• Tiếp tục ghi nhận ảnh ở cùng vị trí để phát hiện thay đổi sớm.",
             references = listOf(ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo.html"))
         )
-        "Powdery Mildew" -> FactCheckedDiseaseContent(
+        "Powdery_Mildew" -> FactCheckedDiseaseContent(
             englishName = "Powdery Mildew",
             guideImageRes = R.drawable.guide_powdery_mildew,
             symptoms = "• Mặt lá, hoa hoặc chùm quả non có thể phủ lớp phấn trắng như bột.\n• Phần mô non bị hại suy yếu, hoa dễ khô và giảm khả năng đậu quả.\n• Dấu hiệu thường rõ trong giai đoạn cây ra hoa, đậu quả.\n• Khi phấn lan rộng, kiểm tra cả chồi non và chùm hoa để đánh giá mức độ.",
@@ -623,7 +695,7 @@ class MainActivity : AppCompatActivity() {
                 ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/tin-tuc/quy-trinh-khoa-hoc-cong-nghe/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo-745.html?download=2&id=0")
             )
         )
-        "Red Rust" -> FactCheckedDiseaseContent(
+        "Red_Rust" -> FactCheckedDiseaseContent(
             englishName = "Red Rust / Algal Leaf Spot",
             guideImageRes = R.drawable.guide_red_rust,
             symptoms = "• Trên lá có đốm tròn cam, nâu đỏ hoặc màu rỉ sắt.\n• Đốm thường hơi nhô lên, bề mặt có cảm giác như lớp nhung và dễ thấy ở mặt trên lá.\n• Các đốm có thể liên kết thành mảng khi bệnh nặng.\n• Mảng bệnh rộng làm giảm diện tích quang hợp của lá.",
@@ -648,10 +720,10 @@ class MainActivity : AppCompatActivity() {
     private fun displayName(modelLabel: String): String = when (modelLabel) {
         "Anthracnose" -> getString(R.string.anthracnose_name)
         "Dieback" -> getString(R.string.dieback_name)
-        "Gall Midge" -> getString(R.string.gall_midge_name)
+        "Gall_Midge" -> getString(R.string.gall_midge_name)
         "Healthy" -> getString(R.string.healthy_name)
-        "Powdery Mildew" -> getString(R.string.powdery_mildew_name)
-        "Red Rust" -> getString(R.string.red_rust_name)
+        "Powdery_Mildew" -> getString(R.string.powdery_mildew_name)
+        "Red_Rust" -> getString(R.string.red_rust_name)
         else -> getString(R.string.sooty_mold_name)
     }
 
@@ -671,7 +743,18 @@ class MainActivity : AppCompatActivity() {
 
     private data class CapturedPrediction(
         val prediction: Prediction,
-        val previewBitmap: Bitmap
+        val previewBitmap: Bitmap,
+        val camBitmap: Bitmap
+    )
+
+    private data class PreparedInput(val tensorData: FloatArray, val croppedBitmap: Bitmap)
+
+    private data class ModelSpec(
+        val inputName: String,
+        val imageSize: Int,
+        val resizeShortSide: Int,
+        val classNames: List<String>,
+        val classifierWeights: Array<FloatArray>
     )
 
     private data class BatchEntry(val expectedLabel: String, val file: File)

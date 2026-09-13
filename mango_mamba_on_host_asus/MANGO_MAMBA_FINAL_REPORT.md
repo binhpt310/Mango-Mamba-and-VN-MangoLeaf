@@ -1,6 +1,6 @@
 # Mango Mamba Final — Evidence Report
 
-Updated: 2026-09-12. This is the only Markdown report in this workspace.
+Updated: 2026-09-14. This is the only Markdown report in this workspace.
 
 ## Naming and protocol
 
@@ -53,7 +53,7 @@ This table retains every external comparison row from Table 6 in the reference P
 | **Mango Mamba Final V3 - Phase 1** | **99.6875 +/- 0.2394** | MangoLeafBD | 4,000 | **0.0268 +/- 0.0067** | **4.566 ms mean, GPU model-forward (batch 1, FP32, 320px; n=500)** | Not measured locally | 5.824 M | 22.218 MB | 8:1:1 | `02_Mango Mamba Final V3 320px [8-8-5-5]/Phase 1 Evidence/Artifacts/Weights - 4 Seeds/`; `06_Host Synced Evidence/table6_completion_20260913_051241/v3_phase1_seed3333_simple/` |
 | Mango Mamba Final V3 - direct-to-VN control | 98.1071 +/- 0.5517 | VN-MangoLeaf | 7,000 | 0.0718 +/- 0.0114 | Not measured locally | Not measured locally | 5.824 M | 22.217 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Direct to VN-MangoLeaf Control/` |
 | Mango Mamba Final V3 - Phase 2 | 99.4813 +/- 0.0657 | Combined | 40,000 | 0.0159 +/- 0.0021 | Not measured locally | Not measured locally | 5.824 M | 22.218 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Three-Phase Curriculum/` |
-| Mango Mamba Final V3 - Phase 3 | 98.8929 +/- 0.2945 | VN-MangoLeaf | 7,000 | 0.0583 +/- 0.0173 | Not measured locally | Not measured locally | 5.824 M | 22.217 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Three-Phase Curriculum/` |
+| Mango Mamba Final V3 - Phase 3 | 98.8929 +/- 0.2945 | VN-MangoLeaf | 7,000 | 0.0583 +/- 0.0173 | Not measured locally | **612.80 ms mean, Android `OrtSession.run()` (batch 1, FP32, 320px; n=50; Redmi Note 11S)** | 5.824 M | 22.217 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Three-Phase Curriculum/`; `for_android_app_only/artifacts/device_cam_v3_20260914/` |
 
 External rows are paper-reported results, whereas V0/V3 rows are four-seed local aggregates. They are useful context but not a fresh, controlled head-to-head benchmark. On the common VN-MangoLeaf target, V3 three-phase curriculum improves test accuracy by `+0.7857` percentage points over the V3 direct-to-VN control (`98.8929%` versus `98.1071%`).
 
@@ -76,6 +76,14 @@ For each error, the evidence package contains the original image, a true-class C
 The selected Phase-3 seed-42 checkpoint was exported without retraining to a static batch-1 ONNX model at the native 320px input. It returns `logits [1,7]` and the final normalized `feature_map [1,384,10,10]`; the accompanying Android CAM manifest stores class order, resize/crop and normalization contract, classifier weight/bias, checkpoint hash, and the explicit CAM formula. This supports a user-uploaded or camera-captured image flow in which the Android app predicts a class and overlays its coarse class-activation map.
 
 The 24.12 MiB ONNX file passed `onnx.checker`. On the fixed parity input, maximum absolute PyTorch-to-ONNX-Runtime differences were `1.19e-6` for logits and `6.44e-6` for the feature map, below the predeclared `1e-3` tolerance. This verifies the desktop export, not a completed Android-app integration or on-device speed result; those still require app-side preprocessing/output wiring and named-device tests. Artifact: `06_Host Synced Evidence/table6_completion_20260913_051241/android_v3_phase3_seed42/`.
+
+## Android V3 CAM deployment and device evidence
+
+On 2026-09-14, APK `com.mangomamba.benchmark` version `0.3-v3-cam` (version code 3) was built and installed through ADB on the connected Xiaomi Redmi Note 11S (`2201117SG`, Android 13, `arm64-v8a`). The APK SHA-256 is `cd24bb92aedd9250a58468aa373e329be0d92e2e68e9c342b2004740648ce774`. Its packaged assets include the 320px two-output V3 ONNX model (`f312db7a8046e8481063752393450dc985d85ef2ac59aec3131cbbd8a081e3a4`) and manifest for checkpoint `208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae`.
+
+The app received the non-user test image `Anthracnose_0.jpg` through its test-image intent, predicted Anthracnose at 99.67% (the UI rounds to 100%), and left CAM hidden by default. Tapping **Hiển thị CAM** displayed the CAM overlay and changed the control to **Ẩn CAM**, while the visible class and confidence remained Anthracnose / 100%. The overlay is labeled “CAM (tương đương Grad-CAM)” and explicitly says it is model attention, not lesion segmentation. Physical-device screenshots and UI dumps are retained as `for_android_app_only/artifacts/device_cam_v3_20260914/cam_hidden.png`, `cam_shown.png`, `ui_cam_hidden.xml`, and `ui_cam_shown.xml`.
+
+For runtime evidence, the app ran 50 repeated batch-1 inferences of that same fixed image. The timer covers `OrtSession.run()` only: it excludes decode, resize/normalization, UI rendering, camera capture, and session construction. Mean latency was **612.80 ms** (SD 48.47 ms), median **598.48 ms**, p95 **718.51 ms**, p99 **783.42 ms**, range **553.95–783.42 ms**, or **1.632 images/s**. All 50 outputs were Anthracnose (99.67%). This is a repeatability/speed measurement, not a 50-image accuracy or desktop-agreement validation. The raw CSV is `for_android_app_only/artifacts/device_cam_v3_20260914/latency_50_raw.csv`; after the run, app memory was 286,429 KB total PSS.
 
 ## Artefact integrity and lineage
 
