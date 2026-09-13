@@ -1,0 +1,211 @@
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+{
+  "purpose": "Single-checkpoint Final V3 descriptive latency and held-out test error analysis",
+  "selection_note": "Selected as strongest current checkpoint by previously recorded held-out test accuracy; descriptive post-hoc selection.",
+  "timestamp_unix": 1789276374.2321684,
+  "checkpoint": "/home/admincsc/workspace/binh/reproduce_mm/results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5/phase2_window_8_8_5_5_seed_3333-20260910-013944/model_best.pth.tar",
+  "checkpoint_sha256": "973d6d4f2c0f50aa1d27e9990b7cfecd41e31adddfe55442a3961427c757b1d1",
+  "model_config": {
+    "num_classes": 8,
+    "drop_path_rate": 0.01,
+    "mixer_mode": "hybrid",
+    "use_eca": true,
+    "use_grn": true,
+    "use_swiglu": true,
+    "window_size": [
+      8,
+      8,
+      5,
+      5
+    ],
+    "inter_window_mamba_stages": [
+      0
+    ]
+  },
+  "input_size": [
+    3,
+    320,
+    320
+  ],
+  "latency_ms_model_forward_batch_1_fp32": {
+    "warmup": 100,
+    "samples": 500,
+    "mean": 4.566204163551331,
+    "median": 4.545264005661011,
+    "p95": 4.593825554847717,
+    "std": 0.12985383899281813,
+    "raw_csv": "latency_samples_ms.csv"
+  },
+  "environment": {
+    "gpu": "NVIDIA GB10",
+    "gpu_memory_gib": 119.63182067871094,
+    "torch": "2.13.0+cu130",
+    "cuda": "13.0",
+    "precision": "FP32"
+  },
+  "error_analysis": {
+    "test_images": 400,
+    "test_accuracy": 1.0,
+    "error_count": 0,
+    "class_names": [
+      "Anthracnose",
+      "Bacterial Canker",
+      "Cutting Weevil",
+      "Die Back",
+      "Gall Midge",
+      "Healthy",
+      "Powdery Mildew",
+      "Sooty Mould"
+    ],
+    "classification_report": {
+      "Anthracnose": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 50.0
+      },
+      "Bacterial Canker": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 50.0
+      },
+      "Cutting Weevil": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 50.0
+      },
+      "Die Back": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 50.0
+      },
+      "Gall Midge": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 50.0
+      },
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 50.0
+      },
+      "Powdery Mildew": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 50.0
+      },
+      "Sooty Mould": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 50.0
+      },
+      "accuracy": 1.0,
+      "macro avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 400.0
+      },
+      "weighted avg": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 400.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        50,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        50,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        50,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        50,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        50,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        50,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        50,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        50
+      ]
+    ],
+    "misclassification_csv": "misclassifications.csv",
+    "confusion_matrix_png": "confusion_matrix_test.png"
+  }
+}

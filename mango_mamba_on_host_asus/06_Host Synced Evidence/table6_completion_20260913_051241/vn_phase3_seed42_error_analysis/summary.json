@@ -1,0 +1,177 @@
+{
+  "purpose": "Held-out VN-MangoLeaf error analysis for one Final V3 Phase-3 curriculum checkpoint",
+  "selection_note": "Selected post-hoc as the strongest currently recorded Phase-3 curriculum seed by held-out test accuracy; descriptive only, not an unbiased selection protocol.",
+  "timestamp_unix": 1789280297.3184428,
+  "checkpoint": "/home/admincsc/workspace/binh/reproduce_mm/results/h3_320_aligned_followup/curriculum/seed_42/vn_mangoleaf/h3_vn_curriculum_seed_42-20260910-195016/model_best.pth.tar",
+  "checkpoint_sha256": "208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae",
+  "model_config": {
+    "num_classes": 7,
+    "drop_path_rate": 0.01,
+    "mixer_mode": "hybrid",
+    "use_eca": true,
+    "use_grn": true,
+    "use_swiglu": true,
+    "window_size": [
+      8,
+      8,
+      5,
+      5
+    ],
+    "inter_window_mamba_stages": [
+      0
+    ]
+  },
+  "input_size": [
+    3,
+    320,
+    320
+  ],
+  "environment": {
+    "gpu": "NVIDIA GB10",
+    "gpu_memory_gib": 119.63182067871094,
+    "torch": "2.13.0+cu130",
+    "cuda": "13.0",
+    "precision": "FP32"
+  },
+  "error_analysis": {
+    "test_images": 700,
+    "test_accuracy": 0.9928571428571429,
+    "error_count": 5,
+    "class_names": [
+      "Anthracnose",
+      "Dieback",
+      "Gall_Midge",
+      "Healthy",
+      "Powdery_Mildew",
+      "Red_Rust",
+      "Sooty_Mold"
+    ],
+    "classification_report": {
+      "Anthracnose": {
+        "precision": 1.0,
+        "recall": 0.95,
+        "f1-score": 0.9743589743589743,
+        "support": 100.0
+      },
+      "Dieback": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      },
+      "Gall_Midge": {
+        "precision": 0.9900990099009901,
+        "recall": 1.0,
+        "f1-score": 0.9950248756218906,
+        "support": 100.0
+      },
+      "Healthy": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      },
+      "Powdery_Mildew": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 100.0
+      },
+      "Red_Rust": {
+        "precision": 0.9803921568627451,
+        "recall": 1.0,
+        "f1-score": 0.9900990099009901,
+        "support": 100.0
+      },
+      "Sooty_Mold": {
+        "precision": 0.9803921568627451,
+        "recall": 1.0,
+        "f1-score": 0.9900990099009901,
+        "support": 100.0
+      },
+      "accuracy": 0.9928571428571429,
+      "macro avg": {
+        "precision": 0.99298333194664,
+        "recall": 0.9928571428571429,
+        "f1-score": 0.9927974099689779,
+        "support": 700.0
+      },
+      "weighted avg": {
+        "precision": 0.99298333194664,
+        "recall": 0.9928571428571429,
+        "f1-score": 0.9927974099689779,
+        "support": 700.0
+      }
+    },
+    "confusion_matrix": [
+      [
+        95,
+        0,
+        1,
+        0,
+        0,
+        2,
+        2
+      ],
+      [
+        0,
+        100,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        100,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        100,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        100,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        100,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        100
+      ]
+    ],
+    "misclassification_csv": "misclassifications.csv",
+    "per_class_metrics_csv": "per_class_metrics.csv",
+    "confusion_matrix_png": "confusion_matrix_test.png",
+    "error_images_directory": "error_images",
+    "cam_method": "Final normalized feature map \u00d7 linear classifier weight (GAP + linear Grad-CAM equivalent up to a positive scalar)."
+  }
+}

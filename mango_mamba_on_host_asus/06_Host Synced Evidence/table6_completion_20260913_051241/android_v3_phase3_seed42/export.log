@@ -1,0 +1,30 @@
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+/home/admincsc/workspace/binh/reproduce_mm/scripts/export_v3_cam_onnx.py:103: DeprecationWarning: You are using the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter has become the default. Learn more about the new export logic: https://docs.pytorch.org/docs/stable/onnx_export.html. For exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html
+  torch.onnx.export(
+/home/admincsc/workspace/binh/reproduce_mm/models/mango_mamba.py:391: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if pad_r > 0 or pad_b > 0:
+/home/admincsc/workspace/binh/reproduce_mm/models/mango_mamba.py:221: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  S = int(L ** 0.5)
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/mamba_ssm/ops/selective_scan_interface.py:171: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if i == u.shape[2] - 1:
+/home/admincsc/workspace/binh/reproduce_mm/models/mango_mamba.py:252: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  S = int(L ** 0.5)
+/home/admincsc/workspace/binh/reproduce_mm/models/mango_mamba.py:35: TracerWarning: Converting a tensor to a Python integer might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  B = int(windows.shape[0] / (H * W / window_size / window_size))
+/home/admincsc/workspace/binh/reproduce_mm/models/mango_mamba.py:406: TracerWarning: Converting a tensor to a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  if pad_r > 0 or pad_b > 0:
+{
+  "onnx": "results/table6_completion_20260913_051241/android_v3_phase3_seed42/mango_mamba_v3_phase3_320_cam.onnx",
+  "manifest": "results/table6_completion_20260913_051241/android_v3_phase3_seed42/mango_mamba_v3_phase3_320_cam_android_cam_manifest.json",
+  "validation": {
+    "onnx_checker": "passed",
+    "onnxruntime_provider": "CPUExecutionProvider",
+    "max_abs_logit_difference": 1.1920928955078125e-06,
+    "max_abs_feature_map_difference": 6.4373016357421875e-06,
+    "atol": 0.001
+  },
+  "onnx_size_mib": 24.118919372558594
+}

@@ -32,7 +32,7 @@ The matched V3 inter-window minus no-inter differences are `-0.2500`, `+0.0000`,
 
 ## Rebuilt Table 6 - Paper baselines and current Mango Mamba versions
 
-This table retains every external comparison row from Table 6 in the reference PDF. The former `MangoMamba` and `Our proposed model` rows are replaced with completed local V0/V3 evidence. Paper rows did not report validation loss, so those cells are `Not reported`. Local runs did not measure latency or mobile inference time, so the old paper timing figures are not reused for V0/V3.
+This table retains every external comparison row from Table 6 in the reference PDF. The former `MangoMamba` and `Our proposed model` rows are replaced with completed local V0/V3 evidence. Paper rows did not report validation loss, so those cells are `Not reported`. Most local rows have no latency measurement; the one Final V3 Phase-1 GPU model-forward measurement below is newly measured and the old paper timing figures are not reused for V0/V3.
 
 | Model | Test accuracy (%) | Dataset | Images | Val loss | Inference / image | Mobile inference | Params | Model size | Split | Source |
 |---|---:|---|---:|---:|---|---|---:|---|---|---|
@@ -50,12 +50,32 @@ This table retains every external comparison row from Table 6 in the reference P
 | ViX-MangoEFormer [9] | 99.78 | Combined | 25,530 | Not reported | 120 ms (GPU) | Not reported | Not reported | Not reported | 9:1 | PDF Table 6 |
 | Mango Mamba [Original] V0 - Full Hybrid | 99.4375 +/- 0.2394 | MangoLeafBD | 4,000 | 0.0300 +/- 0.0111 | Not measured locally | Not measured locally | 5.810 M | 22.165 MB | 8:1:1 | `01_Ablations/Mango Mamba [Original] V0 224px [8-8-14-7]/original_window/` |
 | Mango Mamba Final V3 - no-inter control | 99.3125 +/- 0.4270 | MangoLeafBD | 4,000 | 0.0345 +/- 0.0046 | Not measured locally | Not measured locally | 5.810 M | 22.165 MB | 8:1:1 | `01_Ablations/Mango Mamba Final V3 320px [8-8-5-5] No-InterWindow Control/` |
-| **Mango Mamba Final V3 - Phase 1** | **99.6875 +/- 0.2394** | MangoLeafBD | 4,000 | **0.0268 +/- 0.0067** | Not measured locally | Not measured locally | 5.824 M | 22.218 MB | 8:1:1 | `02_Mango Mamba Final V3 320px [8-8-5-5]/Phase 1 Evidence/Artifacts/Weights - 4 Seeds/` |
+| **Mango Mamba Final V3 - Phase 1** | **99.6875 +/- 0.2394** | MangoLeafBD | 4,000 | **0.0268 +/- 0.0067** | **4.566 ms mean, GPU model-forward (batch 1, FP32, 320px; n=500)** | Not measured locally | 5.824 M | 22.218 MB | 8:1:1 | `02_Mango Mamba Final V3 320px [8-8-5-5]/Phase 1 Evidence/Artifacts/Weights - 4 Seeds/`; `06_Host Synced Evidence/table6_completion_20260913_051241/v3_phase1_seed3333_simple/` |
 | Mango Mamba Final V3 - direct-to-VN control | 98.1071 +/- 0.5517 | VN-MangoLeaf | 7,000 | 0.0718 +/- 0.0114 | Not measured locally | Not measured locally | 5.824 M | 22.217 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Direct to VN-MangoLeaf Control/` |
 | Mango Mamba Final V3 - Phase 2 | 99.4813 +/- 0.0657 | Combined | 40,000 | 0.0159 +/- 0.0021 | Not measured locally | Not measured locally | 5.824 M | 22.218 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Three-Phase Curriculum/` |
 | Mango Mamba Final V3 - Phase 3 | 98.8929 +/- 0.2945 | VN-MangoLeaf | 7,000 | 0.0583 +/- 0.0173 | Not measured locally | Not measured locally | 5.824 M | 22.217 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Three-Phase Curriculum/` |
 
 External rows are paper-reported results, whereas V0/V3 rows are four-seed local aggregates. They are useful context but not a fresh, controlled head-to-head benchmark. On the common VN-MangoLeaf target, V3 three-phase curriculum improves test accuracy by `+0.7857` percentage points over the V3 direct-to-VN control (`98.8929%` versus `98.1071%`).
+
+## Measured Final V3 inference speed
+
+The strongest currently recorded Phase-1 Final V3 checkpoint (seed 3333, selected post-hoc by its existing held-out MangoLeafBD result) was measured on the host NVIDIA GB10 with PyTorch 2.13.0/CUDA 13.0. With the exact 320px `[8,8,5,5]` configuration and stage-0 inter-window Mamba, 100 warm-up forwards followed by 500 CUDA-event timed batch-1 FP32 forwards yielded **4.566 ms mean**, 4.545 ms median, 4.594 ms p95, and 0.130 ms standard deviation per image—about **219 model forwards/second**. The checkpoint SHA-256 is `973d6d4f2c0f50aa1d27e9990b7cfecd41e31adddfe55442a3961427c757b1d1`.
+
+This is a controlled accelerator *model-forward* measurement. It excludes image decode, preprocessing, host/device transfer, UI rendering, and Android runtime, so it demonstrates that the trained V3 is fast on this GPU but must not be compared numerically with the paper's CPU/GPU rows or claimed as Android latency. Raw samples, command log, environment fields, and checksum are retained in `06_Host Synced Evidence/table6_completion_20260913_051241/v3_phase1_seed3333_simple/`.
+
+## VN-MangoLeaf Phase-3 error analysis
+
+To make the curriculum result falsifiable rather than presenting accuracy alone, the strongest currently recorded Phase-3 curriculum checkpoint (seed 42, selected post-hoc from existing held-out test accuracy) was re-evaluated without any training or test-set tuning. It uses the Final V3 architecture at 320px with `[8,8,5,5]` windows and stage-0 inter-window Mamba. On the 700-image VN-MangoLeaf held-out test split, it produced **99.286% accuracy** and **99.280% macro-F1**: 695 correct predictions and **5 errors**. Its checkpoint SHA-256 is `208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae`.
+
+All five errors originate from the 100-image Anthracnose class, giving it 95.0% recall and 97.44% F1 while every other class has 100% recall in this selected run. The false predictions are one Gall_Midge, two Red_Rust, and two Sooty_Mold; three are high-confidence errors (91.1%, 87.6%, and 87.2%), so the limitation is not merely low-confidence indecision. This concentrates the error burden on visually ambiguous Anthracnose examples and demonstrates that the model is not uniformly reliable despite high aggregate accuracy. The analysis deliberately does not infer a clinical cause from class labels or a heatmap alone; expert lesion annotation would be needed for that claim.
+
+For each error, the evidence package contains the original image, a true-class CAM, a predicted-class CAM, and the prediction probabilities. The CAM is calculated from the final normalized feature map and classifier weights; for this global-average-pooling plus linear head, it is Grad-CAM-equivalent up to a positive scalar. The panels also show that activations can extend to leaf borders/background, so they are evidence of model attention rather than a lesion segmentation mask. See `06_Host Synced Evidence/table6_completion_20260913_051241/vn_phase3_seed42_error_analysis/error_images/`, with index and confidence values in `misclassifications.csv`, per-class metrics in `per_class_metrics.csv`, and the full matrix in `confusion_matrix_test.png`.
+
+## Android CAM-ready V3 export
+
+The selected Phase-3 seed-42 checkpoint was exported without retraining to a static batch-1 ONNX model at the native 320px input. It returns `logits [1,7]` and the final normalized `feature_map [1,384,10,10]`; the accompanying Android CAM manifest stores class order, resize/crop and normalization contract, classifier weight/bias, checkpoint hash, and the explicit CAM formula. This supports a user-uploaded or camera-captured image flow in which the Android app predicts a class and overlays its coarse class-activation map.
+
+The 24.12 MiB ONNX file passed `onnx.checker`. On the fixed parity input, maximum absolute PyTorch-to-ONNX-Runtime differences were `1.19e-6` for logits and `6.44e-6` for the feature map, below the predeclared `1e-3` tolerance. This verifies the desktop export, not a completed Android-app integration or on-device speed result; those still require app-side preprocessing/output wiring and named-device tests. Artifact: `06_Host Synced Evidence/table6_completion_20260913_051241/android_v3_phase3_seed42/`.
 
 ## Artefact integrity and lineage
 
