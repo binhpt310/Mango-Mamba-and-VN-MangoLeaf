@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var cameraPreview: PreviewView
     private lateinit var cameraScreen: LinearLayout
     private lateinit var informationScreen: LinearLayout
+    private lateinit var diseaseBrowserScreen: LinearLayout
     private lateinit var statusText: TextView
     private lateinit var inferenceProgress: LinearProgressIndicator
     private lateinit var resultImage: ImageView
@@ -77,10 +78,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pickImageButton: MaterialButton
     private lateinit var continuousButton: MaterialButton
     private lateinit var informationButton: MaterialButton
+    private lateinit var allDiseasesButton: MaterialButton
     private lateinit var camToggleButton: MaterialButton
     private lateinit var informationSubtitle: TextView
     private lateinit var informationEnglishName: TextView
     private lateinit var diseaseGuideImage: ImageView
+    private lateinit var diseaseImageGallery: LinearLayout
+    private lateinit var diseaseListContainer: LinearLayout
     private lateinit var symptomsText: TextView
     private lateinit var preventionText: TextView
     private lateinit var referenceButton: MaterialButton
@@ -93,6 +97,7 @@ class MainActivity : AppCompatActivity() {
     private var latestPrediction: Prediction? = null
     private var latestCaptured: CapturedPrediction? = null
     private var isCamVisible = false
+    private var detailReturnsToBrowser = false
 
     private val modelSpec by lazy { loadModelSpec() }
     private val continuousRunnable = object : Runnable {
@@ -157,10 +162,11 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Back navigation for the embedded information screen")
     override fun onBackPressed() {
-        if (informationScreen.visibility == View.VISIBLE) {
-            showCameraScreen()
-        } else {
-            super.onBackPressed()
+        when {
+            informationScreen.visibility == View.VISIBLE && detailReturnsToBrowser -> showDiseaseBrowser()
+            informationScreen.visibility == View.VISIBLE -> showCameraScreen()
+            diseaseBrowserScreen.visibility == View.VISIBLE -> showCameraScreen()
+            else -> super.onBackPressed()
         }
     }
 
@@ -168,6 +174,7 @@ class MainActivity : AppCompatActivity() {
         cameraPreview = findViewById(R.id.cameraPreview)
         cameraScreen = findViewById(R.id.cameraScreen)
         informationScreen = findViewById(R.id.informationScreen)
+        diseaseBrowserScreen = findViewById(R.id.diseaseBrowserScreen)
         statusText = findViewById(R.id.statusText)
         inferenceProgress = findViewById(R.id.inferenceProgress)
         resultImage = findViewById(R.id.resultImage)
@@ -179,10 +186,13 @@ class MainActivity : AppCompatActivity() {
         pickImageButton = findViewById(R.id.pickImageButton)
         continuousButton = findViewById(R.id.continuousButton)
         informationButton = findViewById(R.id.informationButton)
+        allDiseasesButton = findViewById(R.id.allDiseasesButton)
         camToggleButton = findViewById(R.id.camToggleButton)
         informationSubtitle = findViewById(R.id.informationSubtitle)
         informationEnglishName = findViewById(R.id.informationEnglishName)
         diseaseGuideImage = findViewById(R.id.diseaseGuideImage)
+        diseaseImageGallery = findViewById(R.id.diseaseImageGallery)
+        diseaseListContainer = findViewById(R.id.diseaseListContainer)
         symptomsText = findViewById(R.id.symptomsText)
         preventionText = findViewById(R.id.preventionText)
         referenceButton = findViewById(R.id.referenceButton)
@@ -196,9 +206,13 @@ class MainActivity : AppCompatActivity() {
             if (continuousCaptureEnabled) stopContinuousCapture() else startContinuousCapture()
         }
         informationButton.setOnClickListener { latestPrediction?.let { showInformation(it) } }
+        allDiseasesButton.setOnClickListener { showDiseaseBrowser() }
         camToggleButton.setOnClickListener { toggleCam() }
         findViewById<MaterialToolbar>(R.id.informationTopAppBar)
+            .setNavigationOnClickListener { onBackPressed() }
+        findViewById<MaterialToolbar>(R.id.diseaseBrowserTopAppBar)
             .setNavigationOnClickListener { showCameraScreen() }
+        populateDiseaseBrowser()
     }
 
     private fun requestCameraWhenNeeded() {
@@ -611,11 +625,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showInformation(prediction: Prediction) {
+        showDiseaseDetail(prediction.modelLabel, returnToBrowser = false)
+    }
+
+    private fun showDiseaseDetail(modelLabel: String, returnToBrowser: Boolean) {
         stopContinuousCapture()
-        val content = factCheckedContentFor(prediction.modelLabel)
-        informationSubtitle.text = displayName(prediction.modelLabel)
+        detailReturnsToBrowser = returnToBrowser
+        val content = factCheckedContentFor(modelLabel)
+        informationSubtitle.text = displayName(modelLabel)
         informationEnglishName.text = content.englishName
-        diseaseGuideImage.setImageResource(content.guideImageRes)
+        diseaseGuideImage.setImageResource(content.galleryImages.first())
+        diseaseImageGallery.removeAllViews()
+        val thumbnailSize = (96 * resources.displayMetrics.density).toInt()
+        val thumbnailMargin = (8 * resources.displayMetrics.density).toInt()
+        content.galleryImages.forEach { imageRes ->
+            val thumbnail = ImageView(this).apply {
+                layoutParams = LinearLayout.LayoutParams(thumbnailSize, thumbnailSize).apply {
+                    marginEnd = thumbnailMargin
+                }
+                contentDescription = getString(R.string.gallery_title)
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setImageResource(imageRes)
+                setOnClickListener { diseaseGuideImage.setImageResource(imageRes) }
+            }
+            diseaseImageGallery.addView(thumbnail)
+        }
         symptomsText.text = content.symptoms
         preventionText.text = content.prevention
         bindReferenceButton(referenceButton, content.references.first())
@@ -626,11 +660,37 @@ class MainActivity : AppCompatActivity() {
             referenceButtonSecondary.visibility = View.GONE
         }
         cameraScreen.visibility = View.GONE
+        diseaseBrowserScreen.visibility = View.GONE
         informationScreen.visibility = View.VISIBLE
+    }
+
+    private fun populateDiseaseBrowser() {
+        diseaseListContainer.removeAllViews()
+        expectedModelLabels.forEach { modelLabel ->
+            val content = factCheckedContentFor(modelLabel)
+            val button = MaterialButton(this).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply { bottomMargin = (8 * resources.displayMetrics.density).toInt() }
+                text = "${displayName(modelLabel)}\n${content.englishName}"
+                textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                isAllCaps = false
+                setOnClickListener { showDiseaseDetail(modelLabel, returnToBrowser = true) }
+            }
+            diseaseListContainer.addView(button)
+        }
+    }
+
+    private fun showDiseaseBrowser() {
+        informationScreen.visibility = View.GONE
+        cameraScreen.visibility = View.GONE
+        diseaseBrowserScreen.visibility = View.VISIBLE
     }
 
     private fun showCameraScreen() {
         informationScreen.visibility = View.GONE
+        diseaseBrowserScreen.visibility = View.GONE
         cameraScreen.visibility = View.VISIBLE
     }
 
@@ -651,6 +711,7 @@ class MainActivity : AppCompatActivity() {
         "Anthracnose" -> FactCheckedDiseaseContent(
             englishName = "Anthracnose",
             guideImageRes = R.drawable.guide_anthracnose,
+            galleryImages = intArrayOf(R.drawable.sample_anthracnose_1, R.drawable.sample_anthracnose_2, R.drawable.sample_anthracnose_3, R.drawable.sample_anthracnose_4, R.drawable.sample_anthracnose_5),
             symptoms = "• Đốm nâu đen thường xuất hiện trước trên lá non; vùng lá lành quanh vết có thể vàng.\n• Vết bệnh lớn dần, liên kết với nhau và làm phần lá bị cháy hoặc khô.\n• Cành non có thể có vết nâu đen hơi lõm và khô dần.\n• Bệnh dễ phát triển khi vườn ẩm, nhiều sương hoặc mưa kéo dài.",
             prevention = "• Thu gom và tiêu hủy lá, cành bệnh; dọn cỏ và tàn dư trong vườn.\n• Cắt tỉa cành vô hiệu để tán nhận ánh sáng và nhanh khô sau mưa.\n• Bón phân cân đối, tránh bón thừa đạm làm tán quá rậm.\n• Theo dõi sớm ở đợt lộc non, nụ và quả non; chỉ dùng thuốc nằm trong danh mục và theo nhãn.",
             references = listOf(
@@ -661,6 +722,7 @@ class MainActivity : AppCompatActivity() {
         "Dieback" -> FactCheckedDiseaseContent(
             englishName = "Dieback",
             guideImageRes = R.drawable.guide_dieback,
+            galleryImages = intArrayOf(R.drawable.sample_dieback_1, R.drawable.sample_dieback_2, R.drawable.sample_dieback_3, R.drawable.sample_dieback_4, R.drawable.sample_dieback_5),
             symptoms = "• Đọt hoặc cành non có vết sậm màu, sau đó khô dần từ phần ngọn.\n• Lá trên cành bị hại chuyển nâu, có thể cuốn mép và rụng sớm.\n• Vết hại có thể lan xuống cành; cành nặng bị nhăn hoặc chết khô.\n• Cần phân biệt với khô cành do thiếu nước hay tổn thương cơ giới bằng cách theo dõi vết mới.",
             prevention = "• Dùng giống, cành ghép khỏe và vệ sinh dao kéo trước, sau khi cắt tỉa.\n• Cắt bỏ phần cành bệnh vào lúc khô ráo, thu gom và tiêu hủy ngoài vườn.\n• Giữ đất thoát nước, tránh để vùng rễ ngập úng kéo dài.\n• Bón phân cân đối và theo dõi sớm các đọt mới để xử lý ổ bệnh nhỏ.",
             references = listOf(
@@ -671,6 +733,7 @@ class MainActivity : AppCompatActivity() {
         "Gall_Midge" -> FactCheckedDiseaseContent(
             englishName = "Gall Midge",
             guideImageRes = R.drawable.guide_gall_midge,
+            galleryImages = intArrayOf(R.drawable.sample_gall_midge_1, R.drawable.sample_gall_midge_2, R.drawable.sample_gall_midge_3, R.drawable.sample_gall_midge_4, R.drawable.sample_gall_midge_5),
             symptoms = "• Trên lá có thể thấy nốt u hoặc mụn, phần mô lá sưng phồng.\n• Lá non bị hại nặng dễ vàng, biến dạng hoặc phát triển không đều.\n• Cần kiểm tra kỹ đợt lá non vì đây là giai đoạn dễ nhìn thấy dấu hiệu nhất.\n• Tổn thương tương tự có thể xuất hiện ở chồi, hoa hoặc quả non.",
             prevention = "• Cắt tỉa tạo tán thông thoáng để dễ quan sát đợt lộc non.\n• Điều khiển cây ra đọt tập trung, tránh nhiều đợt lá non chồng chéo khó quản lý.\n• Theo dõi thường xuyên ngay khi lá non mới mở; loại bỏ bộ phận hại nặng.\n• Khi cần dùng biện pháp bảo vệ thực vật, chọn sản phẩm được phép cho cây xoài và theo đúng nhãn.",
             references = listOf(
@@ -681,6 +744,7 @@ class MainActivity : AppCompatActivity() {
         "Healthy" -> FactCheckedDiseaseContent(
             englishName = "Healthy leaf",
             guideImageRes = R.drawable.guide_healthy,
+            galleryImages = intArrayOf(R.drawable.sample_healthy_1, R.drawable.sample_healthy_2, R.drawable.sample_healthy_3, R.drawable.sample_healthy_4, R.drawable.sample_healthy_5),
             symptoms = "• Ảnh hiện tại không có dấu hiệu nổi bật của sáu nhóm bệnh còn lại trong model.\n• Lá khỏe thường có màu tương đối đồng đều, không có lớp phấn trắng hay mảng muội đen.\n• Không nên coi kết quả này là chẩn đoán toàn bộ cây vì ảnh chỉ phản ánh phần lá đã chụp.\n• Chụp lại khi lá xuất hiện đốm, mốc, mụn hoặc biến dạng mới.",
             prevention = "• Giữ tán cây thông thoáng và dọn lá, cành già sau thu hoạch.\n• Theo dõi lá non, mặt dưới lá và các côn trùng chích hút định kỳ.\n• Bón phân, tưới và thoát nước phù hợp với điều kiện vườn.\n• Tiếp tục ghi nhận ảnh ở cùng vị trí để phát hiện thay đổi sớm.",
             references = listOf(ReferenceLink("Viện Cây ăn quả miền Nam", "https://sofri.org.vn/vi/quy-trinh-ky-thuat-tham-canh-tong-hop-cay-xoai-cho-cac-tinh-nam-bo.html"))
@@ -688,6 +752,7 @@ class MainActivity : AppCompatActivity() {
         "Powdery_Mildew" -> FactCheckedDiseaseContent(
             englishName = "Powdery Mildew",
             guideImageRes = R.drawable.guide_powdery_mildew,
+            galleryImages = intArrayOf(R.drawable.sample_powdery_mildew_1, R.drawable.sample_powdery_mildew_2, R.drawable.sample_powdery_mildew_3, R.drawable.sample_powdery_mildew_4, R.drawable.sample_powdery_mildew_5),
             symptoms = "• Mặt lá, hoa hoặc chùm quả non có thể phủ lớp phấn trắng như bột.\n• Phần mô non bị hại suy yếu, hoa dễ khô và giảm khả năng đậu quả.\n• Dấu hiệu thường rõ trong giai đoạn cây ra hoa, đậu quả.\n• Khi phấn lan rộng, kiểm tra cả chồi non và chùm hoa để đánh giá mức độ.",
             prevention = "• Thu gom bộ phận rụng, cắt bỏ cành già và phần nhiễm bệnh sau thu hoạch.\n• Tạo tán thoáng, giảm nơi giữ ẩm và giúp kiểm tra phát hoa dễ hơn.\n• Bón phân cân đối, không thúc đạm quá mức.\n• Theo dõi từ lúc phát hoa; nếu cần xử lý thuốc, dùng theo nhãn và tránh ảnh hưởng thụ phấn.",
             references = listOf(
@@ -698,6 +763,7 @@ class MainActivity : AppCompatActivity() {
         "Red_Rust" -> FactCheckedDiseaseContent(
             englishName = "Red Rust / Algal Leaf Spot",
             guideImageRes = R.drawable.guide_red_rust,
+            galleryImages = intArrayOf(R.drawable.sample_red_rust_1, R.drawable.sample_red_rust_2, R.drawable.sample_red_rust_3, R.drawable.sample_red_rust_4, R.drawable.sample_red_rust_5),
             symptoms = "• Trên lá có đốm tròn cam, nâu đỏ hoặc màu rỉ sắt.\n• Đốm thường hơi nhô lên, bề mặt có cảm giác như lớp nhung và dễ thấy ở mặt trên lá.\n• Các đốm có thể liên kết thành mảng khi bệnh nặng.\n• Mảng bệnh rộng làm giảm diện tích quang hợp của lá.",
             prevention = "• Trồng với mật độ hợp lý, cắt tỉa để ánh sáng và gió đi qua tán.\n• Thoát nước tốt trong mùa mưa, không để vườn ẩm kéo dài.\n• Tỉa và tiêu hủy lá, cành bị nặng để giảm nguồn bệnh.\n• Duy trì chăm sóc và dinh dưỡng cân đối để cây phục hồi tốt.",
             references = listOf(
@@ -708,6 +774,7 @@ class MainActivity : AppCompatActivity() {
         else -> FactCheckedDiseaseContent(
             englishName = "Sooty Mold",
             guideImageRes = R.drawable.guide_sooty_mold,
+            galleryImages = intArrayOf(R.drawable.sample_sooty_mold_1, R.drawable.sample_sooty_mold_2, R.drawable.sample_sooty_mold_3, R.drawable.sample_sooty_mold_4, R.drawable.sample_sooty_mold_5),
             symptoms = "• Bề mặt lá có lớp muội đen hoặc mảng đen như bồ hóng.\n• Lớp nấm thường phát triển trên mật ngọt do rầy, rệp hay côn trùng chích hút tiết ra.\n• Lá bị phủ dày nhận ánh sáng kém và giảm quang hợp.\n• Nên kiểm tra mặt dưới lá, chồi và cuống lá để tìm rầy, rệp đi kèm.",
             prevention = "• Ưu tiên quản lý rầy, rệp và các côn trùng chích hút tạo mật ngọt.\n• Cắt tỉa cành để tán thông thoáng và thuận tiện kiểm tra ổ dịch.\n• Theo dõi lá non, chồi non và cuống lá, nơi côn trùng thường tập trung.\n• Chăm sóc cây khỏe, chỉ chọn biện pháp bảo vệ thực vật theo danh mục và hướng dẫn trên nhãn.",
             references = listOf(
@@ -768,6 +835,7 @@ class MainActivity : AppCompatActivity() {
     private data class FactCheckedDiseaseContent(
         val englishName: String,
         val guideImageRes: Int,
+        val galleryImages: IntArray,
         val symptoms: String,
         val prevention: String,
         val references: List<ReferenceLink>

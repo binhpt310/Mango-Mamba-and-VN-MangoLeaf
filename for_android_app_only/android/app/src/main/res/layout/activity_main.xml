@@ -234,6 +234,16 @@
             android:textAllCaps="false"
             android:textColor="@color/mm_primary"
             android:textSize="17sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/allDiseasesButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:text="@string/view_all_diseases"
+            android:textAllCaps="false"
+            android:textColor="@color/mm_primary"
+            android:textSize="17sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -315,6 +325,29 @@
                             android:textSize="14sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/gallery_title"
+                    android:textColor="@color/mm_text"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="112dp"
+                    android:layout_marginTop="8dp"
+                    android:fillViewport="true"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/diseaseImageGallery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
@@ -461,6 +494,49 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/diseaseBrowserScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/mm_background"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="16dp"
+        android:visibility="gone">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/diseaseBrowserTopAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/all_diseases_title"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.MangoMamba.InfoToolbarTitle"
+            app:titleTextColor="@color/mm_text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/all_diseases_hint"
+            android:textColor="@color/mm_text_secondary"
+            android:textSize="16sp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/diseaseListContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="12dp" />
         </ScrollView>
     </LinearLayout>
 </FrameLayout>

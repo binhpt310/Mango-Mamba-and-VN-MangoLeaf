@@ -19,6 +19,10 @@
     <string name="confidence_medium">Nên chụp lại để kiểm tra</string>
     <string name="confidence_low">Kết quả chưa đủ chắc chắn. Hãy chụp gần hơn và đủ sáng.</string>
     <string name="view_information">Xem triệu chứng và cách phòng</string>
+    <string name="view_all_diseases">Xem tất cả bệnh</string>
+    <string name="all_diseases_title">Tất cả bệnh</string>
+    <string name="all_diseases_hint">Chọn một nhóm để xem dấu hiệu, cách phòng và 5 ảnh minh hoạ từ VN-MangoLeaf.</string>
+    <string name="gallery_title">5 ảnh minh hoạ VN-MangoLeaf</string>
     <string name="show_cam">Hiển thị CAM</string>
     <string name="hide_cam">Ẩn CAM</string>
     <string name="cam_explanation">CAM (tương đương Grad-CAM): vùng mô hình chú ý, không phải phân đoạn tổn thương.</string>
@@ -32,8 +36,8 @@
     <string name="healthy_name">Lá khỏe</string>
     <string name="anthracnose_name">Thán thư</string>
     <string name="dieback_name">Khô cành</string>
-    <string name="gall_midge_name">Muỗi đục lá</string>
+    <string name="gall_midge_name">Ghẻ xoài</string>
     <string name="powdery_mildew_name">Phấn trắng</string>
-    <string name="red_rust_name">Rỉ sắt đỏ</string>
+    <string name="red_rust_name">Rỉ sắt</string>
     <string name="sooty_mold_name">Nấm bồ hóng</string>
 </resources>
