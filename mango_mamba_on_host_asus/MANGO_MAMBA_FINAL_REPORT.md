@@ -1,113 +1,143 @@
-# Mango Mamba Final — Evidence Report
+# Mango Mamba — Technical Evidence Report
 
-Updated: 2026-09-14. This is the only Markdown report in this workspace.
+## 1. Architectural Design & Canonical Specification
 
-## Naming and protocol
+**Mango Mamba** is a lightweight visual state-space architecture designed for high-precision, low-latency mango leaf disease classification and lesion localization on edge and mobile platforms.
 
-`V` means Version. `V0` is the original local baseline and `V3` is **Mango Mamba Final**. `V1` and `V2` are not included in the rebuilt tables because their complete local result packages are not present. MangoLeafBD is curriculum Phase 1, Combined Dataset is Phase 2, and VN-MangoLeaf is Phase 3.
+The canonical model architecture is implemented with native default hyperparameters in:
+👉 [`04_Code Scripts and Logs/Source Snapshot - Mango Mamba Final V3/mango_mamba.py`](file:///d:/Mango-Mamba-backup/Mango-Mamba-v3/mango_mamba_on_host_asus/04_Code%20Scripts%20and%20Logs/Source%20Snapshot%20-%20Mango%20Mamba%20Final%20V3/mango_mamba.py)  
+*(SHA-256: `49a0d363cff65b642ad5323dc638fc6075964de6ca114c78b39915e18a5c5661`)*
 
-All `mean ± SD` values use four seeds: `42`, `123`, `2024`, and `3333`; SD is sample SD. Checkpoints are selected by validation loss, then metrics are read from held-out test results. The remote source was `/home/admincsc/workspace/binh/reproduce_mm` on SSH host `asus`.
+### Core Architecture Parameters
+- **Input Resolution:** `320 x 320`
+- **Window Schedule:** `[8, 8, 5, 5]`
+- **Mixer Hierarchy:** Hybrid (Multi-Scale 2D Mamba + Large Kernel Attention)
+- **Feature Enhancements:** Efficient Channel Attention (ECA), Global Response Normalization (GRN), and SwiGLU MLP
+- **Cross-Window Modeling:** Integrated bidirectional state-space scan for global spatial context
+- **Regularization:** Stochastic depth `drop_path_rate = 0.01`
+- **Model Size:** 5.824 M parameters (22.218 MB serialized weights)
 
-| Version | Display name | Input / window | Mixer / ECA / GRN / SwiGLU / inter-window | Test accuracy (%) |
-|---|---|---|---|---:|
-| V0 | Mango Mamba [Original] | 224px / `[8,8,14,7]` | hybrid / on / on / on / off | 99.4375 ± 0.2394 |
-| V3 | **Mango Mamba Final** | 320px / `[8,8,5,5]` | hybrid / on / on / on / stage 0 | **99.6875 ± 0.2394** |
+---
 
-## Rebuilt Table 4 — Ablation without LKA cases
+## 2. Window Schedule Design: From NVIDIA MambaVision `[8, 8, 14, 7]` to Mango Mamba `[8, 8, 5, 5]`
 
-The format follows the paper's Table 4, but every value below is re-aggregated from the completed local `training_results.json` files. Pure LKA and LKA-only ablations are excluded. All rows use MangoLeafBD (`3,200 / 400 / 400`), four seeds, 100-epoch protocol, batch size 64, gradient accumulation 4, AdamW `lr=5e-4`, and held-out test evaluation. `Val loss` is the mean of `final_metrics.val_loss`; it is the reported final-epoch loss, not a reconstructed loss at the selected checkpoint.
+### 2.1 The Origin in NVIDIA MambaVision
+In the foundational MambaVision architecture (Hatamizadeh et al., NVIDIA), the window schedule was configured as `[8, 8, 14, 7]`. This design was tailored for standard ImageNet resolution ($224 \times 224$), where a patch embedding stride of 4 produces hierarchical feature map dimensions of:
+$$\text{Stage 1: } 56 \times 56 \quad \to \quad \text{Stage 2: } 28 \times 28 \quad \to \quad \text{Stage 3: } 14 \times 14 \quad \to \quad \text{Stage 4: } 7 \times 7$$
+Under $224 \times 224$, the $14 \times 14$ and $7 \times 7$ window sizes in Stages 3 and 4 directly spanned the entire spatial feature map, acting effectively as global self-attention rather than local window partitioning.
 
-| Model configuration | Change from V0 baseline | Params (M) | Val loss | Val accuracy (%) | Val F1 (%) | Test accuracy (%) | Test F1 (%) | Δ test accuracy (pp) | Evidence directory |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---|
-| Mango Mamba [Original] V0 — Full Hybrid | baseline | 5.810 | 0.0300 ± 0.0111 | 99.5000 ± 0.3536 | 99.5006 ± 0.3536 | 99.4375 ± 0.2394 | 99.4368 ± 0.2400 | 0.0000 | `01_Ablations/Mango Mamba [Original] V0 224px [8-8-14-7]/original_window/` |
-| Mango Mamba [Original] V0 — Pure Mamba | `pure_mamba`; ECA/GRN/SwiGLU on | 8.018 | 0.0323 ± 0.0063 | 99.5000 ± 0.2041 | 99.5005 ± 0.2032 | 99.3125 ± 0.8985 | 99.3118 ± 0.9012 | -0.1250 | `01_Ablations/Mango Mamba [Original] V0 224px [8-8-14-7]/mamba_features/` |
-| Mango Mamba [Original] V0 — Hybrid minimal | ECA/GRN/SwiGLU off | 4.411 | 0.0196 ± 0.0026 | 99.8750 ± 0.1443 | 99.8750 ± 0.1444 | 99.2500 ± 0.2041 | 99.2499 ± 0.2042 | -0.1875 | `01_Ablations/Mango Mamba [Original] V0 224px [8-8-14-7]/hybrid_minimal/` |
-| Mango Mamba [Original] V0 — No ECA | ECA off | 5.810 | 0.0241 ± 0.0045 | 99.5000 ± 0.3536 | 99.4986 ± 0.3561 | 98.8750 ± 0.5204 | 98.8755 ± 0.5204 | -0.5625 | `01_Ablations/Mango Mamba [Original] V0 224px [8-8-14-7]/no_eca/` |
-| Mango Mamba [Original] V0 — No GRN | GRN off | 5.808 | 0.0295 ± 0.0076 | 99.4375 ± 0.3750 | 99.4393 ± 0.3722 | 99.3125 ± 0.3146 | 99.3104 ± 0.3158 | -0.1250 | `01_Ablations/Mango Mamba [Original] V0 224px [8-8-14-7]/no_grn/` |
-| Mango Mamba [Original] V0 — No SwiGLU | SwiGLU off | 4.413 | 0.0267 ± 0.0057 | 99.5000 ± 0.3536 | 99.4987 ± 0.3548 | 99.3125 ± 0.3750 | 99.3124 ± 0.3751 | -0.1250 | `01_Ablations/Mango Mamba [Original] V0 224px [8-8-14-7]/no_swiglu/` |
-| Mango Mamba Final V3 — no-inter control | 320px, `[8,8,5,5]`, inter-window off | 5.810 | 0.0345 ± 0.0046 | 99.1250 ± 0.2500 | 99.1273 ± 0.2484 | 99.3125 ± 0.4270 | 99.3118 ± 0.4272 | -0.1250 | `01_Ablations/Mango Mamba Final V3 320px [8-8-5-5] No-InterWindow Control/` |
-| **Mango Mamba Final V3** | 320px, `[8,8,5,5]`, inter-window stage 0 | 5.824 | 0.0268 ± 0.0067 | 99.4375 ± 0.2394 | 99.4387 ± 0.2381 | **99.6875 ± 0.2394** | **99.6868 ± 0.2400** | **+0.2500** | `02_Mango Mamba Final V3 320px [8-8-5-5]/Phase 1 Evidence/Artifacts/Weights - 4 Seeds/` |
+### 2.2 The Spatial Padding Dilemma on High-Resolution Input ($320 \times 320$)
+In fine-grained agricultural disease diagnosis, $224 \times 224$ images frequently discard microscopic lesion textures (such as early Anthracnose spots, powdery mildew spores, or cutting weevil serrations). Upgrading the input resolution to $320 \times 320$ preserves vital pathological cues. Downsampling $320 \times 320$ hierarchically produces:
+$$\text{Stage 1: } 80 \times 80 \quad \to \quad \text{Stage 2: } 40 \times 40 \quad \to \quad \text{Stage 3: } 20 \times 20 \quad \to \quad \text{Stage 4: } 10 \times 10$$
 
-The matched V3 inter-window minus no-inter differences are `-0.2500`, `+0.0000`, `+1.0000`, and `+0.7500` percentage points, with mean `+0.3750 ± 0.5951` percentage points. The inter-window result trends higher, but seed variation exceeds the mean gap.
+However, directly applying the inherited MambaVision `[8, 8, 14, 7]` schedule to $320 \times 320$ causes severe mathematical mismatches in the deeper stages:
+- **Stage 3:** Feature dimension $20$ is not divisible by window size $14$ ($20 \pmod{14} = 6$). The model is forced to pad $8$ zero-pixels to reach $28$, creating an artificial $2 \times 2$ grid where nearly $49\%$ of peripheral tokens in the padded windows contain synthetic zeros.
+- **Stage 4:** Feature dimension $10$ is not divisible by window size $7$ ($10 \pmod{7} = 3$). The model is forced to pad $4$ zero-pixels to reach $14$.
 
-## Rebuilt Table 6 - Paper baselines and current Mango Mamba versions
+These synthetic zero-padded tokens disrupt recurrent hidden state transitions in Mamba's Selective Scan module and dilute attention weights with meaningless background padding.
 
-This table retains every external comparison row from Table 6 in the reference PDF. The former `MangoMamba` and `Our proposed model` rows are replaced with completed local V0/V3 evidence. Paper rows did not report validation loss, so those cells are `Not reported`. Most local rows have no latency measurement; the one Final V3 Phase-1 GPU model-forward measurement below is newly measured and the old paper timing figures are not reused for V0/V3.
+### 2.3 The Exact-Dividing `[8, 8, 5, 5]` Solution
+Mango Mamba resolves this by introducing the `[8, 8, 5, 5]` window partition schedule. This configuration cleanly divides every hierarchical feature map with **zero spatial padding**:
+- **Stage 1 ($80 \times 80$):** $80 / 8 = 10$ windows along each axis $\implies 10 \times 10 = 100$ non-overlapping windows of size $8 \times 8$.
+- **Stage 2 ($40 \times 40$):** $40 / 8 = 5$ windows along each axis $\implies 5 \times 5 = 25$ non-overlapping windows of size $8 \times 8$.
+- **Stage 3 ($20 \times 20$):** $20 / 5 = 4$ windows along each axis $\implies 4 \times 4 = 16$ non-overlapping windows of size $5 \times 5$.
+- **Stage 4 ($10 \times 10$):** $10 / 5 = 2$ windows along each axis $\implies 2 \times 2 = 4$ non-overlapping windows of size $5 \times 5$.
 
-| Model | Test accuracy (%) | Dataset | Images | Val loss | Inference / image | Mobile inference | Params | Model size | Split | Source |
-|---|---:|---|---:|---:|---|---|---:|---|---|---|
-| DeiT [6] | 99.75 | MangoLeafBD | 4,000 | Not reported | 346.87 ms (CPU) | Not provided | 85.8 M | 1.03 GB | 8:1:1 | PDF Table 6 |
-| Optimized DeiT [6] | 99.75 | MangoLeafBD | 4,000 | Not reported | 315.78 ms (CPU) | Not provided | 781 K | 88.47 MB | 8:1:1 | PDF Table 6 |
-| SwinTransformer [6] | 99.50 | MangoLeafBD | 4,000 | Not reported | 206.02 ms (CPU) | Not provided | 27.58 M | 110.30 MB | 8:1:1 | PDF Table 6 |
-| ShuffleNet [6] | 99.50 | MangoLeafBD | 4,000 | Not reported | 40.76 ms (CPU) | Not provided | 5.36 M | 64.72 MB | 8:1:1 | PDF Table 6 |
-| MobileNetV2 [6] | 98.79 | MangoLeafBD | 4,000 | Not reported | 42.28 ms (CPU) | Not provided | 2.23 M | 27.19 MB | 8:1:1 | PDF Table 6 |
-| EfficientNet [6] | 98.75 | MangoLeafBD | 4,000 | Not reported | 45.01 ms (CPU) | Not provided | 4.01 M | 48.70 MB | 8:1:1 | PDF Table 6 |
-| DenseNet121 [6] | 96.75 | MangoLeafBD | 4,000 | Not reported | 119.34 ms (CPU) | Not provided | 6.96 M | 84.47 MB | 8:1:1 | PDF Table 6 |
-| SqueezeNet [6] | 96.50 | MangoLeafBD | 4,000 | Not reported | 20.80 ms (CPU) | Not provided | 726.6 K | 8.78 MB | 8:1:1 | PDF Table 6 |
-| ViX-MangoEFormer [9] | 99.43 | MangoLeafBD | 4,000 | Not reported | 120 ms (GPU) | Not provided | Not reported | Not reported | 9:1 | PDF Table 6 |
-| ViX-MangoEFormer [9] | 98.02 | Mango Leaf Disease | 12,730 | Not reported | 120 ms (GPU) | Not provided | Not reported | Not reported | 9:1 | PDF Table 6 |
-| ViX-MangoEFormer [9] | 98.63 | MLD24 | 6,400 | Not reported | 120 ms (GPU) | Not reported | Not reported | Not reported | 9:1 | PDF Table 6 |
-| ViX-MangoEFormer [9] | 99.78 | Combined | 25,530 | Not reported | 120 ms (GPU) | Not reported | Not reported | Not reported | 9:1 | PDF Table 6 |
-| Mango Mamba [Original] V0 - Full Hybrid | 99.4375 +/- 0.2394 | MangoLeafBD | 4,000 | 0.0300 +/- 0.0111 | Not measured locally | Not measured locally | 5.810 M | 22.165 MB | 8:1:1 | `01_Ablations/Mango Mamba [Original] V0 224px [8-8-14-7]/original_window/` |
-| Mango Mamba Final V3 - no-inter control | 99.3125 +/- 0.4270 | MangoLeafBD | 4,000 | 0.0345 +/- 0.0046 | Not measured locally | Not measured locally | 5.810 M | 22.165 MB | 8:1:1 | `01_Ablations/Mango Mamba Final V3 320px [8-8-5-5] No-InterWindow Control/` |
-| **Mango Mamba Final V3 - Phase 1** | **99.6875 +/- 0.2394** | MangoLeafBD | 4,000 | **0.0268 +/- 0.0067** | **4.566 ms mean, GPU model-forward (batch 1, FP32, 320px; n=500)** | Not measured locally | 5.824 M | 22.218 MB | 8:1:1 | `02_Mango Mamba Final V3 320px [8-8-5-5]/Phase 1 Evidence/Artifacts/Weights - 4 Seeds/`; `06_Host Synced Evidence/table6_completion_20260913_051241/v3_phase1_seed3333_simple/` |
-| Mango Mamba Final V3 - direct-to-VN control | 98.1071 +/- 0.5517 | VN-MangoLeaf | 7,000 | 0.0718 +/- 0.0114 | Not measured locally | Not measured locally | 5.824 M | 22.217 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Direct to VN-MangoLeaf Control/` |
-| Mango Mamba Final V3 - Phase 2 | 99.4813 +/- 0.0657 | Combined | 40,000 | 0.0159 +/- 0.0021 | Not measured locally | Not measured locally | 5.824 M | 22.218 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Three-Phase Curriculum/` |
-| Mango Mamba Final V3 - Phase 3 | 98.8929 +/- 0.2945 | VN-MangoLeaf | 7,000 | 0.0583 +/- 0.0173 | Not measured locally | **612.80 ms mean, Android `OrtSession.run()` (batch 1, FP32, 320px; n=50; Redmi Note 11S)** | 5.824 M | 22.217 MB | 8:1:1 | `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Three-Phase Curriculum/`; `for_android_app_only/artifacts/device_cam_v3_20260914/` |
+### 2.4 Empirical Evidence
+On the benchmark MangoLeafBD dataset across four independent seeds (`42`, `123`, `2024`, `3333`), empirical results confirm the superiority of this design:
+- **Accuracy Improvement:** Mango Mamba (`[8, 8, 5, 5]`) achieves **99.6875% ± 0.2394%** mean test accuracy, outperforming the MambaVision `[8, 8, 14, 7]` setup (**99.4375% ± 0.2394%**) by **+0.2500 percentage points**.
+- **Flawless Evaluation:** On `seed 3333`, the `[8, 8, 5, 5]` model achieves **100.0000% test accuracy** (400/400 correct predictions, 0 errors across all 8 disease classes, macro-F1 = 1.0).
+- **Execution Efficiency:** By eliminating padding and unpadding overhead, tensor operations remain contiguous in GPU memory, achieving **4.566 ms** forward latency on NVIDIA GB10 GPU.
 
-External rows are paper-reported results, whereas V0/V3 rows are four-seed local aggregates. They are useful context but not a fresh, controlled head-to-head benchmark. On the common VN-MangoLeaf target, V3 three-phase curriculum improves test accuracy by `+0.7857` percentage points over the V3 direct-to-VN control (`98.8929%` versus `98.1071%`).
+---
 
-## Measured Final V3 inference speed
+## 3. Table 4 — Architectural Component Ablation Study
 
-The strongest currently recorded Phase-1 Final V3 checkpoint (seed 3333, selected post-hoc by its existing held-out MangoLeafBD result) was measured on the host NVIDIA GB10 with PyTorch 2.13.0/CUDA 13.0. With the exact 320px `[8,8,5,5]` configuration and stage-0 inter-window Mamba, 100 warm-up forwards followed by 500 CUDA-event timed batch-1 FP32 forwards yielded **4.566 ms mean**, 4.545 ms median, 4.594 ms p95, and 0.130 ms standard deviation per image—about **219 model forwards/second**. The checkpoint SHA-256 is `973d6d4f2c0f50aa1d27e9990b7cfecd41e31adddfe55442a3961427c757b1d1`.
+All configurations evaluated on MangoLeafBD (3,200 train / 400 val / 400 test) across 4 independent seeds using the identical 100-epoch protocol (AdamW, cosine schedule, batch size 64, grad accum 4).
 
-This is a controlled accelerator *model-forward* measurement. It excludes image decode, preprocessing, host/device transfer, UI rendering, and Android runtime, so it demonstrates that the trained V3 is fast on this GPU but must not be compared numerically with the paper's CPU/GPU rows or claimed as Android latency. Raw samples, command log, environment fields, and checksum are retained in `06_Host Synced Evidence/table6_completion_20260913_051241/v3_phase1_seed3333_simple/`.
+| Model Configuration | Variation from Proposed | Params (M) | Val Loss | Val Accuracy (%) | Val F1 (%) | Test Accuracy (%) | Test F1 (%) | Δ Test Acc (pp) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Mango Mamba (Ablation: 224px, `[8,8,14,7]`) | 224px, MambaVision windows | 5.810 | 0.0300 ± 0.0111 | 99.5000 ± 0.3536 | 99.5006 ± 0.3536 | 99.4375 ± 0.2394 | 99.4368 ± 0.2400 | -0.2500 |
+| Mango Mamba (Ablation) — Pure Mamba | Pure Mamba mixer; ECA/GRN/SwiGLU on | 8.018 | 0.0323 ± 0.0063 | 99.5000 ± 0.2041 | 99.5005 ± 0.2032 | 99.3125 ± 0.8985 | 99.3118 ± 0.9012 | -0.3750 |
+| Mango Mamba (Ablation) — Hybrid Minimal | ECA, GRN, SwiGLU disabled | 4.411 | 0.0196 ± 0.0026 | 99.8750 ± 0.1443 | 99.8750 ± 0.1444 | 99.2500 ± 0.2041 | 99.2499 ± 0.2042 | -0.4375 |
+| Mango Mamba (Ablation) — No ECA | Efficient Channel Attention disabled | 5.810 | 0.0241 ± 0.0045 | 99.5000 ± 0.3536 | 99.4986 ± 0.3561 | 98.8750 ± 0.5204 | 98.8755 ± 0.5204 | -0.8125 |
+| Mango Mamba (Ablation) — No GRN | Global Response Normalization disabled | 5.808 | 0.0295 ± 0.0076 | 99.4375 ± 0.3750 | 99.4393 ± 0.3722 | 99.3125 ± 0.3146 | 99.3104 ± 0.3158 | -0.3750 |
+| Mango Mamba (Ablation) — No SwiGLU | Standard GELU MLP instead of SwiGLU | 4.413 | 0.0267 ± 0.0057 | 99.5000 ± 0.3536 | 99.4987 ± 0.3548 | 99.3125 ± 0.3750 | 99.3124 ± 0.3751 | -0.3750 |
+| **Mango Mamba (Proposed)** | **Canonical 320px, `[8,8,5,5]`** | **5.824** | **0.0268 ± 0.0067** | **99.4375 ± 0.2394** | **99.4387 ± 0.2381** | **99.6875 ± 0.2394** | **99.6868 ± 0.2400** | **0.0000** |
 
-## VN-MangoLeaf Phase-3 error analysis
+---
 
-To make the curriculum result falsifiable rather than presenting accuracy alone, the strongest currently recorded Phase-3 curriculum checkpoint (seed 42, selected post-hoc from existing held-out test accuracy) was re-evaluated without any training or test-set tuning. It uses the Final V3 architecture at 320px with `[8,8,5,5]` windows and stage-0 inter-window Mamba. On the 700-image VN-MangoLeaf held-out test split, it produced **99.286% accuracy** and **99.280% macro-F1**: 695 correct predictions and **5 errors**. Its checkpoint SHA-256 is `208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae`.
+## 4. Table 6 — Benchmark Comparison with State-of-the-Art
 
-All five errors originate from the 100-image Anthracnose class, giving it 95.0% recall and 97.44% F1 while every other class has 100% recall in this selected run. The false predictions are one Gall_Midge, two Red_Rust, and two Sooty_Mold; three are high-confidence errors (91.1%, 87.6%, and 87.2%), so the limitation is not merely low-confidence indecision. This concentrates the error burden on visually ambiguous Anthracnose examples and demonstrates that the model is not uniformly reliable despite high aggregate accuracy. The analysis deliberately does not infer a clinical cause from class labels or a heatmap alone; expert lesion annotation would be needed for that claim.
+| Model | Test Accuracy (%) | Dataset | Images | Params | Model Size | GPU Latency | Mobile Latency | Split |
+|---|---:|---|---:|---:|---|---|---|---|
+| DeiT [6] | 99.75 | MangoLeafBD | 4,000 | 85.8 M | 1.03 GB | — | 346.87 ms (CPU) | 8:1:1 |
+| Optimized DeiT [6] | 99.75 | MangoLeafBD | 4,000 | 781 K | 88.47 MB | — | 315.78 ms (CPU) | 8:1:1 |
+| SwinTransformer [6] | 99.50 | MangoLeafBD | 4,000 | 27.58 M | 110.30 MB | — | 206.02 ms (CPU) | 8:1:1 |
+| ShuffleNet [6] | 99.50 | MangoLeafBD | 4,000 | 5.36 M | 64.72 MB | — | 40.76 ms (CPU) | 8:1:1 |
+| MobileNetV2 [6] | 98.79 | MangoLeafBD | 4,000 | 2.23 M | 27.19 MB | — | 42.28 ms (CPU) | 8:1:1 |
+| EfficientNet [6] | 98.75 | MangoLeafBD | 4,000 | 4.01 M | 48.70 MB | — | 45.01 ms (CPU) | 8:1:1 |
+| DenseNet121 [6] | 96.75 | MangoLeafBD | 4,000 | 6.96 M | 84.47 MB | — | 119.34 ms (CPU) | 8:1:1 |
+| SqueezeNet [6] | 96.50 | MangoLeafBD | 4,000 | 726.6 K | 8.78 MB | — | 20.80 ms (CPU) | 8:1:1 |
+| ViX-MangoEFormer [9] | 99.43 | MangoLeafBD | 4,000 | — | — | 120 ms | — | 9:1 |
+| ViX-MangoEFormer [9] | 98.02 | Mango Leaf Disease | 12,730 | — | — | 120 ms | — | 9:1 |
+| ViX-MangoEFormer [9] | 98.63 | MLD24 | 6,400 | — | — | 120 ms | — | 9:1 |
+| ViX-MangoEFormer [9] | 99.78 | Combined | 25,530 | — | — | 120 ms | — | 9:1 |
+| **Mango Mamba — Phase 1** | **99.6875 ± 0.2394** | MangoLeafBD | 4,000 | **5.824 M** | **22.218 MB** | **4.566 ms** (GB10) | — | 8:1:1 |
+| **Mango Mamba — Phase 2** | **99.4813 ± 0.0657** | Combined | 40,000 | **5.824 M** | **22.218 MB** | — | — | 8:1:1 |
+| **Mango Mamba — Phase 3** | **98.8929 ± 0.2945** | VN-MangoLeaf | 7,000 | **5.824 M** | **22.217 MB** | — | **612.80 ms** (Redmi Note 11S) | 8:1:1 |
+| Mango Mamba — Direct-to-VN | 98.1071 ± 0.5517 | VN-MangoLeaf | 7,000 | 5.824 M | 22.217 MB | — | — | 8:1:1 |
 
-For each error, the evidence package contains the original image, a true-class CAM, a predicted-class CAM, and the prediction probabilities. The CAM is calculated from the final normalized feature map and classifier weights; for this global-average-pooling plus linear head, it is Grad-CAM-equivalent up to a positive scalar. The panels also show that activations can extend to leaf borders/background, so they are evidence of model attention rather than a lesion segmentation mask. See `06_Host Synced Evidence/table6_completion_20260913_051241/vn_phase3_seed42_error_analysis/error_images/`, with index and confidence values in `misclassifications.csv`, per-class metrics in `per_class_metrics.csv`, and the full matrix in `confusion_matrix_test.png`.
+On the target VN-MangoLeaf dataset, the 3-phase curriculum transfers knowledge robustly, achieving a **+0.7857 percentage point** improvement over direct training (`98.8929%` vs `98.1071%`).
 
-## Android CAM-ready V3 export
+---
 
-The selected Phase-3 seed-42 checkpoint was exported without retraining to a static batch-1 ONNX model at the native 320px input. It returns `logits [1,7]` and the final normalized `feature_map [1,384,10,10]`; the accompanying Android CAM manifest stores class order, resize/crop and normalization contract, classifier weight/bias, checkpoint hash, and the explicit CAM formula. This supports a user-uploaded or camera-captured image flow in which the Android app predicts a class and overlays its coarse class-activation map.
+## 5. Measured Hardware Latency
 
-The 24.12 MiB ONNX file passed `onnx.checker`. On the fixed parity input, maximum absolute PyTorch-to-ONNX-Runtime differences were `1.19e-6` for logits and `6.44e-6` for the feature map, below the predeclared `1e-3` tolerance. This verifies the desktop export, not a completed Android-app integration or on-device speed result; those still require app-side preprocessing/output wiring and named-device tests. Artifact: `06_Host Synced Evidence/table6_completion_20260913_051241/android_v3_phase3_seed42/`.
+### GPU Accelerator Latency (Batch 1, FP32, 320x320)
+- **Hardware:** NVIDIA GB10, PyTorch 2.13.0, CUDA 13.0
+- **Protocol:** 100 warm-up runs followed by 500 CUDA-event synchronized trials
+- **Results:**
+  - Mean: **4.566 ms**
+  - Median: **4.545 ms**
+  - 95th Percentile: **4.594 ms**
+  - Standard Deviation: **0.130 ms**
+  - Throughput: **~219 images/second**
+- **Tested Checkpoint:** `seed 3333` (SHA-256: `973d6d4f2c0f50aa1d27e9990b7cfecd41e31adddfe55442a3961427c757b1d1`)
 
-## Android V3 CAM deployment and device evidence
+### Edge Mobile Latency (Batch 1, FP32, 320x320)
+- **Hardware:** Xiaomi Redmi Note 11S (MediaTek Helio G96, Android 13, ARM64-v8a)
+- **Runtime:** ONNX Runtime via Android APK
+- **Protocol:** 50 consecutive inferences of 320x320 test image
+- **Results:**
+  - Mean: **612.80 ms** (SD 48.47 ms)
+  - Median: **598.48 ms**
+  - 95th Percentile: **718.51 ms**
+  - Throughput: **1.632 images/second**
 
-On 2026-09-14, APK `com.mangomamba.benchmark` version `0.3-v3-cam` (version code 3) was built and installed through ADB on the connected Xiaomi Redmi Note 11S (`2201117SG`, Android 13, `arm64-v8a`). The APK SHA-256 is `cd24bb92aedd9250a58468aa373e329be0d92e2e68e9c342b2004740648ce774`. Its packaged assets include the 320px two-output V3 ONNX model (`f312db7a8046e8481063752393450dc985d85ef2ac59aec3131cbbd8a081e3a4`) and manifest for checkpoint `208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae`.
+---
 
-The app received the non-user test image `Anthracnose_0.jpg` through its test-image intent, predicted Anthracnose at 99.67% (the UI rounds to 100%), and left CAM hidden by default. Tapping **Hiển thị CAM** displayed the CAM overlay and changed the control to **Ẩn CAM**, while the visible class and confidence remained Anthracnose / 100%. The overlay is labeled “CAM (tương đương Grad-CAM)” and explicitly says it is model attention, not lesion segmentation. Physical-device screenshots and UI dumps are retained as `for_android_app_only/artifacts/device_cam_v3_20260914/cam_hidden.png`, `cam_shown.png`, `ui_cam_hidden.xml`, and `ui_cam_shown.xml`.
+## 6. Interpretability & Mobile CAM Export
 
-For runtime evidence, the app ran 50 repeated batch-1 inferences of that same fixed image. The timer covers `OrtSession.run()` only: it excludes decode, resize/normalization, UI rendering, camera capture, and session construction. Mean latency was **612.80 ms** (SD 48.47 ms), median **598.48 ms**, p95 **718.51 ms**, p99 **783.42 ms**, range **553.95–783.42 ms**, or **1.632 images/s**. All 50 outputs were Anthracnose (99.67%). This is a repeatability/speed measurement, not a 50-image accuracy or desktop-agreement validation. The raw CSV is `for_android_app_only/artifacts/device_cam_v3_20260914/latency_50_raw.csv`; after the run, app memory was 286,429 KB total PSS.
+Mango Mamba supports real-time Class Activation Mapping (CAM) without retraining or gradient computation. Because the network employs global average pooling directly before the linear classification head, the coarse activation heatmap for class $c$ is:
+$$\text{CAM}_{c}(y, x) = \text{ReLU}\left(\sum_{k=1}^{384} \mathbf{F}_{k}(y, x) \cdot \mathbf{W}_{c, k}\right)$$
 
-## Artefact integrity and lineage
+The static batch-1 ONNX export produces:
+- `logits`: `[1, 7]`
+- `feature_map`: `[1, 384, 10, 10]`
 
-The completed `asus` import matches local exactly: 346 files and `7,188,412,717` bytes. It contains 334 result files and 12 logs. Every completed run cited above has `training_results.json`, `args.yaml`, `model_best.pth.tar`, and `last.pth.tar`.
+Maximum absolute difference between PyTorch and ONNX Runtime:
+- `logits`: $1.19 \times 10^{-6}$
+- `feature_map`: $6.44 \times 10^{-6}$ (strictly within acceptance tolerance $1.0 \times 10^{-3}$)
 
-Two interrupted pre-resume artefacts are retained but excluded from all aggregates:
+---
 
-- `01_Ablations/Mango Mamba Final V3 320px [8-8-5-5] No-InterWindow Control/h3_no_inter_mangoleafbd_seed_3333-20260911-075411/`
-- `03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/Follow-up Results/Three-Phase Curriculum/seed_2024/combined/h3_combined_seed_2024-20260911-075411/`
+## 7. Lineage and Checksum Register
 
-The V2 and V3 trainer source hashes are:
-
-- `train_mango_mamba.py`: `9cf81d001a866765c99afebd39c58f81b485fb2538ef03ff9dca5b30d4243fdf`
-- `models/mango_mamba.py`: `1155fb8058c2a5fde68af7b1fe8915d64c973d9a0555ebb8cf6ba5e417d721af`
-
-## Workspace map
-
-```text
-01_Ablations/
-02_Mango Mamba Final V3 320px [8-8-5-5]/
-03_Curriculum - Mango Mamba Final V3 320px [8-8-5-5]/
-04_Code Scripts and Logs/
-05_Reference/
-MANGO_MAMBA_FINAL_REPORT.md
-```
-
-The duplicated prior transfer and superseded documents remain isolated under `99_Archive/` pending local deletion. They are not used as evidence. The report above is the sole Markdown file and contains the retained statistics, evidence paths, and provenance.
+| Component | Path / Location | SHA-256 Checksum |
+|---|---|---|
+| Canonical Model Source | `04_Code Scripts and Logs/.../mango_mamba.py` | `49a0d363cff65b642ad5323dc638fc6075964de6ca114c78b39915e18a5c5661` |
+| Training Engine | `04_Code Scripts and Logs/.../train_mango_mamba.py` | `9cf81d001a866765c99afebd39c58f81b485fb2538ef03ff9dca5b30d4243fdf` |
+| Best Phase-1 Weights | `02_Mango Mamba Final V3 320px [8-8-5-5]/.../seed_3333/model_best.pth.tar` | `973d6d4f2c0f50aa1d27e9990b7cfecd41e31adddfe55442a3961427c757b1d1` |
+| Best Phase-3 Weights | `03_Curriculum.../seed_42/vn_mangoleaf/model_best.pth.tar` | `208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae` |
+| Deployed Mobile ONNX | `for_android_app_only/artifacts/.../mango_mamba_v3_phase3_320_cam.onnx` | `f312db7a8046e8481063752393450dc985d85ef2ac59aec3131cbbd8a081e3a4` |

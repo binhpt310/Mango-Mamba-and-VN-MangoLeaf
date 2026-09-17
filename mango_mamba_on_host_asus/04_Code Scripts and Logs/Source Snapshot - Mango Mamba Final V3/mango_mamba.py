@@ -14,7 +14,7 @@ from einops import rearrange, repeat
 def _cfg(url='', **kwargs):
     return {'url': url,
             'num_classes': 8,
-            'input_size': (3, 224, 224),
+            'input_size': (3, 320, 320),
             'pool_size': None,
             'crop_pct': 0.875,
             'interpolation': 'bicubic',
@@ -418,11 +418,11 @@ class MangoMambaStage(nn.Module):
 class MangoMamba(nn.Module):
     """Lightweight MambaVision for plant disease classification"""
     
-    def __init__(self, dim=48, in_dim=16, depths=[2, 3, 6, 3], window_size=[8, 8, 14, 7],
-                 mlp_ratio=2., num_heads=[2, 4, 8, 8], drop_path_rate=0.1,
+    def __init__(self, dim=48, in_dim=16, depths=[2, 3, 6, 3], window_size=[8, 8, 5, 5],
+                 mlp_ratio=2.5, num_heads=[2, 4, 8, 8], drop_path_rate=0.01,
                  in_chans=3, num_classes=8, drop_rate=0., attn_drop_rate=0., layer_scale=1e-5,
                  mixer_mode='hybrid', use_eca=True, use_grn=True, use_swiglu=True,
-                 inter_window_mamba_stages=()):
+                 inter_window_mamba_stages=(0,)):
         super().__init__()
         
         self.num_classes = num_classes
@@ -510,11 +510,12 @@ def mango_mamba_tiny(**kwargs):
     kwargs.pop('cache_dir', None)
     # Set default values, allow override from kwargs
     defaults = {
-        'dim': 48, 'in_dim': 16, 'depths': [2,3,6,3], 
-        'window_size': [7, 7, 7, 7], 'mlp_ratio': 2.5,
-        'num_heads': [2, 4, 8, 8], 'drop_path_rate': 0.15,
+        'dim': 48, 'in_dim': 16, 'depths': [2, 3, 6, 3], 
+        'window_size': [8, 8, 5, 5], 'mlp_ratio': 2.5,
+        'num_heads': [2, 4, 8, 8], 'drop_path_rate': 0.01,
         'layer_scale': 1e-5,
-        'mixer_mode': 'hybrid', 'use_eca': True, 'use_grn': True, 'use_swiglu': True
+        'mixer_mode': 'hybrid', 'use_eca': True, 'use_grn': True, 'use_swiglu': True,
+        'inter_window_mamba_stages': (0,)
     }
     # Update defaults with kwargs, kwargs take precedence
     defaults.update(kwargs)

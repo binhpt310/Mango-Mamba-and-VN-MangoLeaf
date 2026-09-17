@@ -4,8 +4,7 @@
 - Local destination: `D:/mango_mamba_on_host_asus/06_Host Synced Evidence/table6_completion_20260913_051241/`
 - Transfer status: complete
 - Verification: SHA-256 matched for all seven transferred files on 2026-09-13.
-- Scope: Final V3 Phase-1 seed 3333 simple latency measurement and held-out MangoLeafBD error analysis.
-- Note: The first transfer attempt was interrupted before any local files were created; the second transfer completed and is the verified copy.
+- Scope: Mango Mamba Phase-1 seed 3333 latency measurement and held-out MangoLeafBD evaluation.
 
 ## Subsequent completed packages
 

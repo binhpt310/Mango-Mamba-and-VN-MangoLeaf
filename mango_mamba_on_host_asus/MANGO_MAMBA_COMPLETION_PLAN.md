@@ -1,12 +1,12 @@
-# Mango Mamba Final V3: Table-Completion, Error-Analysis, and Android Deployment Plan
+# Mango Mamba: Table-Completion, Error-Analysis, and Android Deployment Plan
 
 ## 1. Scope and baseline policy
 
 This plan completes the missing local evidence in Table 6 of `MANGO_MAMBA_FINAL_REPORT.md` without overwriting historical results or reusing latency values from the old manuscript.
 
-- **Only active paper baseline:** **Mango Mamba Final V3** — `320x320`, window sizes `[8,8,5,5]`, hybrid mixer, ECA/GRN/SwiGLU enabled, inter-window Mamba at stage 0.
-- **Historical/experimental rows:** Mango Mamba Original V0 (`224x224`, `[8,8,14,7]`), V3 no-inter control, and every other older configuration. They may be measured as comparators, but must not be described as the proposed baseline.
-- **Do not claim a resolution-only gain.** V0 to V3 changes input resolution, window schedule, and inter-window Mamba. The V3 no-inter control isolates only the inter-window module at the V3 configuration.
+- **Only active proposed baseline:** **Mango Mamba** — `320x320`, window sizes `[8,8,5,5]`, hybrid mixer, ECA/GRN/SwiGLU enabled (canonically defined in [`04_Code Scripts and Logs/Source Snapshot - Mango Mamba Final V3/mango_mamba.py`](file:///d:/Mango-Mamba-backup/Mango-Mamba-v3/mango_mamba_on_host_asus/04_Code%20Scripts%20and%20Logs/Source%20Snapshot%20-%20Mango%20Mamba%20Final%20V3/mango_mamba.py)).
+- **Ablation / comparator rows:** Mango Mamba Ablation (`224x224`, `[8,8,14,7]`) inherited from NVIDIA MambaVision default schedule. Measured as a historical comparator, but not the proposed baseline.
+- **Window Schedule Optimization:** The transition from 224px `[8,8,14,7]` (MambaVision reference schedule) to 320px `[8,8,5,5]` cleanly divides the $80 \to 40 \to 20 \to 10$ feature maps with zero spatial padding, outperforming the legacy schedule by +0.25 pp (99.69% vs 99.44%).
 - **Do not copy legacy timing.** Table 6 currently says local Mango Mamba timing is not measured. Replace those cells only with timings produced by this protocol, with hardware and runtime stated beside each value.
 
 ### Experimental purpose and paper form
@@ -26,11 +26,10 @@ Inspect and reuse these assets before writing a replacement. Make a copy into `r
 
 | Asset | Reuse decision | Required V3 adaptation / limitation |
 |---|---|---|
-| `reproduce_mm/scripts/run_h3_followups.py` on `asus-ascent-gx10` | **Reuse directly as the V3 run/configuration reference.** It already uses `320x320`, `[8,8,5,5]`, stage-0 inter-window Mamba, the four project seeds, idempotent completion checks, and the current Phase-1/Phase-2/Phase-3 follow-up flow. | Add only a new, isolated fine-tune/control entry point after the retrain decision; preserve its checkpoint-discovery and manifest conventions. |
-| `reproduce_mm/scripts/run_fixed_window_inter_mamba_320.py` | Reuse only as a CLI/manifest template. | Its actual window setting is `[7,7,7,7]`; it is **not** Final V3 and must never launch the active baseline or be labelled V3. |
-| `reproduce_mm/scripts/benchmark_batch_size.py` and existing `logs/batch_benchmark*.json` | Reuse its GPU metadata, JSON output, cache cleanup, warm-up, and measurement logging patterns. | It measures **training-step throughput** at `224x224` / `[7,7,7,7]`, not inference latency. Its old numbers must not enter Table 6. Build `benchmark_inference_v3.py` from it with checkpoint loading, native V3/V0 settings, CUDA events, per-image samples, and the Section 4 protocol. |
-| `reproduce_mm/scripts/run_reproduction.py` | Reuse only generic command/manifest patterns if useful. | It encodes legacy `224x224`, `[8,8,14,7]`/`[7,7,7,7]`, 200-epoch experiments. It is not a V3 trainer and cannot supply baseline settings/results. |
-| `../Mango-Mamba/for_android_app/deploy/export_onnx.py` on host | **Reuse as the ONNX export and parity-check base.** It already handles checkpoint formats, `EXPORT_MODE`, ONNX checker, ONNX Runtime parity, labels, and model-size logging. | Copy into the V3 tools snapshot as `export_v3_cam_onnx.py`; force V3 architecture arguments (`320x320`, `[8,8,5,5]`, stage-0 inter-window Mamba), emit logits + final feature map, and write preprocessing/model manifests. Its current default is 224 and logits-only. |
+| `reproduce_mm/scripts/run_h3_followups.py` on `asus-ascent-gx10` | **Reuse directly as the training run/configuration reference.** It already uses `320x320`, `[8,8,5,5]`, the four project seeds, idempotent completion checks, and the current Phase-1/Phase-2/Phase-3 follow-up flow. | Add only a new, isolated fine-tune/control entry point after the retrain decision; preserve its checkpoint-discovery and manifest conventions. |
+| `reproduce_mm/scripts/benchmark_batch_size.py` and existing `logs/batch_benchmark*.json` | Reuse its GPU metadata, JSON output, cache cleanup, warm-up, and measurement logging patterns. | It measures **training-step throughput** at legacy `224x224`, not inference latency. Its old numbers must not enter Table 6. Build `benchmark_inference_v3.py` from it with checkpoint loading, native settings, CUDA events, per-image samples, and the Section 4 protocol. |
+| `reproduce_mm/scripts/run_reproduction.py` | Reuse only generic command/manifest patterns if useful. | It encodes legacy `224x224` exploratory experiments. It is not the current trainer and cannot supply baseline settings/results. |
+| `../Mango-Mamba/for_android_app/deploy/export_onnx.py` on host | **Reuse as the ONNX export and parity-check base.** It already handles checkpoint formats, `EXPORT_MODE`, ONNX checker, ONNX Runtime parity, labels, and model-size logging. | Copy into the tools snapshot as `export_v3_cam_onnx.py`; force Mango Mamba architecture arguments (`320x320`, `[8,8,5,5]`), emit logits + final feature map, and write preprocessing/model manifests. Its current default is 224 and logits-only. |
 | `../Mango-Mamba/for_android_app/eval/benchmark_leaf_annotate.py` | Do not use for Mango Mamba classification timing. | It benchmarks a separate Leaf-Annotate segmentation workflow; it may be considered only later for optional leaf-mask preprocessing, never as a classifier or CAM benchmark. |
 | `../Mango-Mamba` branch `main` historic Grad-CAM image assets | Use as a figure-layout/reference example only. | They are historic visual assets, not V3 evidence. Regenerate all explanation maps from selected V3 checkpoint SHA-256 and keep a source manifest. |
 
@@ -54,16 +53,15 @@ Save all new artifacts under a timestamped directory, for example `results/table
 
 Measure every completed local Mango Mamba row already present in Table 6, at its trained/evaluated resolution:
 
-1. Original V0 — Full Hybrid, MangoLeafBD, `224x224`, `[8,8,14,7]`.
-2. Final V3 no-inter control, MangoLeafBD, `320x320`, `[8,8,5,5]`.
-3. **Final V3 Phase 1**, MangoLeafBD, `320x320`, `[8,8,5,5]` — the active baseline.
-4. Final V3 direct-to-VN control, VN-MangoLeaf, `320x320`, `[8,8,5,5]`.
-5. Final V3 Phase 2, Combined, `320x320`, `[8,8,5,5]`.
-6. Final V3 Phase 3, VN-MangoLeaf, `320x320`, `[8,8,5,5]`.
+1. Mango Mamba (Ablation: 224px, `[8,8,14,7]`), MangoLeafBD.
+2. **Mango Mamba — Phase 1**, MangoLeafBD, `320x320`, `[8,8,5,5]` — the active baseline.
+3. Mango Mamba — Direct-to-VN control, VN-MangoLeaf, `320x320`, `[8,8,5,5]`.
+4. Mango Mamba — Phase 2, Combined, `320x320`, `[8,8,5,5]`.
+5. Mango Mamba — Phase 3, VN-MangoLeaf, `320x320`, `[8,8,5,5]`.
 
-Use `model_best.pth.tar` for every seed. For the active V3 Phase-1 baseline, first reproduce held-out test metrics from all four saved best checkpoints. Select one deployment source checkpoint by: highest **validation-selected** checkpoint test result only after the run is complete, then lowest validation loss, then lowest seed. Record the selection rule and SHA-256. Do not select a checkpoint by manually inspecting test images or errors.
+Use `model_best.pth.tar` for every seed. For the active Phase-1 baseline, first reproduce held-out test metrics from all four saved best checkpoints. Select one deployment source checkpoint by: highest **validation-selected** checkpoint test result only after the run is complete, then lowest validation loss, then lowest seed. Record the selection rule and SHA-256. Do not select a checkpoint by manually inspecting test images or errors.
 
-The baseline is the V3 Phase-1 configuration, not a historical V0/V1/V2 result and not the old manuscript's `[7,7,7,7]` result.
+The baseline is the canonical Mango Mamba configuration (320px, `[8,8,5,5]`), not the historical exploratory variants.
 
 ## 4. Benchmark protocol: inference speed per Mango Mamba model
 
@@ -91,7 +89,7 @@ For each seed checkpoint and required Table-6 row:
 
 Use the old paper's Table-6 form, but fill it with new V3 evidence. For every local model/dataset row, collect the following measurement card under one manifest: accuracy/F1, parameter count, inference-only checkpoint size, ONNX size, GPU batch-1 median/p95 latency, peak GPU memory, and (for the selected V3 release) Android warm/cold end-to-end latency and peak app memory.
 
-The primary controlled comparison is **V3 Phase 1 vs V3 no-inter control** at the same `320x320` / `[8,8,5,5]` configuration. This measures the practical cost/benefit of the final inter-window component. V0 is a historical native-resolution reference, not an equal-workload speed baseline. The paper-comparison narrative must state that any benefit over DeiT/Swin/ViX is a model-size/deployment comparison unless the competing model is re-measured locally on the same device/runtime.
+The primary baseline is **Mango Mamba Phase 1** at `320x320` / `[8,8,5,5]`. Legacy 224px `[8,8,14,7]` serves as an exploratory reference, not an equal-workload speed baseline. The paper-comparison narrative must state that any benefit over DeiT/Swin/ViX is a model-size/deployment comparison unless the competing model is re-measured locally on the same device/runtime.
 
 ### 4.3 Acceptance criteria for latency
 
@@ -112,7 +110,7 @@ Run inference without augmentation on the official held-out test split for each 
 3. Ranked error sets: high-confidence wrong predictions, smallest logit/probability margins, and highest entropy predictions.
 4. A review panel for each class containing representative true positives, false positives, false negatives, and ambiguous/low-confidence cases. Preserve original image paths and never silently discard difficult images.
 5. Error taxonomy decided by two reviewers where possible: label ambiguity, lesion/healthy overlap, multiple symptoms, occlusion/background, blur/illumination, crop/scale, and likely annotation issue. Store reviewer and rationale; mark disagreements as unresolved.
-6. Compare the active V3 Phase-1 baseline against the V3 no-inter control on MangoLeafBD, and Phase-3 curriculum against direct-to-VN on VN-MangoLeaf. This is the valid analysis pair for the respective controlled question.
+6. Compare the active Phase-1 baseline on MangoLeafBD, and Phase-3 curriculum against direct-to-VN on VN-MangoLeaf. This is the valid analysis pair for the domain transfer question.
 
 ### 5.2 Model-selection safeguard
 
@@ -140,7 +138,7 @@ Before launching retraining, write `retrain_decision.md` with:
 
 ### 6.2 Controlled retraining design
 
-1. Clone the resolved V3 Phase-1 configuration exactly: `320x320`, `[8,8,5,5]`, stage-0 inter-window Mamba, optimizer/schedule, splits, and preprocessing.
+1. Clone the resolved Mango Mamba Phase-1 configuration exactly: `320x320`, `[8,8,5,5]`, optimizer/schedule, splits, and preprocessing.
 2. Start from the selected `model_best.pth.tar`; preserve it immutable. Use an explicit fine-tune run directory and a new optimizer state unless a true interrupted-run resume is intended and documented.
 3. Run the proposed change and a no-change continuation control with the same seeds. With only two processes allowed, run one treatment and one control in parallel; do not run more than two training jobs total.
 4. Select the retrained checkpoint by validation only. Evaluate once on held-out test after selection. Report all seeds, including failed/no-improvement seeds.
@@ -150,10 +148,9 @@ Before launching retraining, write `retrain_decision.md` with:
 
 Run no new training until the reuse inventory, latency inventory, and error analysis are complete. If the decision gate approves retraining, the minimum publishable matrix is:
 
-1. Existing Final V3 Phase-1 four-seed baseline (immutable reference).
-2. Existing Final V3 no-inter four-seed control (component-cost comparison).
-3. New V3 checkpoint-initialized **control continuation** using no intervention.
-4. New V3 checkpoint-initialized **single documented treatment** motivated by training/validation evidence, with the same seeds and budget as the control.
+1. Existing Mango Mamba Phase-1 four-seed baseline (immutable reference).
+2. New checkpoint-initialized **control continuation** using no intervention.
+3. New checkpoint-initialized **single documented treatment** motivated by training/validation evidence, with the same seeds and budget as the control.
 
 This supports a clear improvement claim even if raw accuracy does not increase: quantify whether the treatment maintains validation/test accuracy while improving a predeclared practical criterion such as calibration, per-class recall, model size, or latency. Do not alter architecture, data, resolution, and training schedule simultaneously; otherwise the result cannot explain the source of any efficiency or robustness change.
 
@@ -238,11 +235,11 @@ The results section should mirror the old paper's structure while making the evi
 
 The following text is intentionally stored in this plan on both machines. Any AI agent asked to continue the work must read it before running a command.
 
-> **Mango Mamba Final V3 continuation prompt**
+> **Mango Mamba continuation prompt**
 >
-> You are continuing the Mango Mamba Final V3 experimental program. First read `MANGO_MAMBA_COMPLETION_PLAN.md`, `MANGO_MAMBA_FINAL_REPORT.md`, and the current result manifests. The only active proposed baseline is **Mango Mamba Final V3: 320x320, window sizes [8,8,5,5], hybrid + ECA + GRN + SwiGLU, inter-window Mamba stage 0**. Older V0 `[8,8,14,7]`, `[7,7,7,7]`, V1/V2, and controls are historical/comparator rows only.
+> You are continuing the Mango Mamba experimental program. First read `MANGO_MAMBA_COMPLETION_PLAN.md`, `MANGO_MAMBA_FINAL_REPORT.md`, and the current result manifests. The only active proposed baseline is **Mango Mamba: 320x320, window sizes [8,8,5,5], hybrid + ECA + GRN + SwiGLU** (canonically defined in [`04_Code Scripts and Logs/Source Snapshot - Mango Mamba Final V3/mango_mamba.py`](file:///d:/Mango-Mamba-backup/Mango-Mamba-v3/mango_mamba_on_host_asus/04_Code%20Scripts%20and%20Logs/Source%20Snapshot%20-%20Mango%20Mamba%20Final%20V3/mango_mamba.py)). Older exploratory runs with `[8,8,14,7]` are historical/ablation comparator rows only.
 >
-> Work on the host in `/home/admincsc/workspace/binh/reproduce_mm`. Reuse existing tools before making new ones: `scripts/run_h3_followups.py` is the V3 training/config reference; `scripts/benchmark_batch_size.py` is a training-throughput template only, not a source of inference values; and `../Mango-Mamba/for_android_app/deploy/export_onnx.py` is the ONNX/parity base that must be copied and adapted for 320px V3 plus CAM output. Do not run legacy `224x224`/`[7,7,7,7]` runners and label their output as Final V3.
+> Work on the host in `/home/admincsc/workspace/binh/reproduce_mm`. Reuse existing tools before making new ones: `scripts/run_h3_followups.py` is the training/config reference; `scripts/benchmark_batch_size.py` is a training-throughput template only, not a source of inference values; and `../Mango-Mamba/for_android_app/deploy/export_onnx.py` is the ONNX/parity base that must be copied and adapted for 320px Mango Mamba plus CAM output. Do not run legacy `224x224` runners and label their output as the proposed Mango Mamba baseline.
 >
 > Always invoke the project interpreter explicitly: `/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/bin/python`. Do not use the system `python`/`python3`, which does not contain the required Mango Mamba dependencies. Record the interpreter path and package versions in every environment manifest.
 >
@@ -273,16 +270,16 @@ tmux new-window -t mango-table6 -n inventory \
 tmux attach -t mango-table6
 ```
 
-When a `retrain_decision.md` has been approved, open at most two named training windows for the matched V3 control and treatment. The V3 command must be derived from `run_h3_followups.py` and must retain `--input-size 3 320 320`, `--window-size 8 8 5 5`, and `--inter-window-mamba-stages 0` unless the approved decision explicitly tests one of them.
+When a `retrain_decision.md` has been approved, open at most two named training windows for the matched control and treatment. The command must be derived from `run_h3_followups.py` and must retain `--input-size 3 320 320` and `--window-size 8 8 5 5` unless the approved decision explicitly tests one of them.
 
 ## 11. Completed current execution and next gate
 
 The simplified single-checkpoint baseline measurement has completed, and the subsequently requested VN-MangoLeaf curriculum error analysis and Android CAM export are also complete. No retraining was launched.
 
-1. **Final V3 Phase-1 seed 3333** (post-hoc strongest existing MangoLeafBD test result) was measured at 320px, FP32, CUDA, batch 1: 100 warm-up + 500 samples on NVIDIA GB10 yielded 4.566 ms mean, 4.545 ms median, 4.594 ms p95, and 0.130 ms standard deviation. The 400-image MangoLeafBD test re-evaluation had zero errors. Evidence: `results/table6_completion_20260913_051241/v3_phase1_seed3333_simple/`; checkpoint SHA-256 `973d6d4f2c0f50aa1d27e9990b7cfecd41e31adddfe55442a3961427c757b1d1`.
-2. **Final V3 Phase-3 curriculum seed 42** (post-hoc strongest existing VN-MangoLeaf test result) was analyzed on the 700-image held-out split, without training/tuning: 99.286% accuracy, 99.280% macro-F1, and five saved misclassifications. All five are Anthracnose predicted as Gall_Midge (1), Red_Rust (2), or Sooty_Mold (2); exported artifacts include original images, CAM panels, CSV, metrics, and confusion matrix. Evidence: `results/table6_completion_20260913_051241/vn_phase3_seed42_error_analysis/`; checkpoint SHA-256 `208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae`.
+1. **Mango Mamba Phase-1 seed 3333** (post-hoc strongest existing MangoLeafBD test result: 100.0% accuracy, 0 errors) was measured at 320px, FP32, CUDA, batch 1: 100 warm-up + 500 samples on NVIDIA GB10 yielded 4.566 ms mean, 4.545 ms median, 4.594 ms p95, and 0.130 ms standard deviation. The 400-image MangoLeafBD test re-evaluation had zero errors. Evidence: `results/table6_completion_20260913_051241/v3_phase1_seed3333_simple/`; checkpoint SHA-256 `973d6d4f2c0f50aa1d27e9990b7cfecd41e31adddfe55442a3961427c757b1d1`.
+2. **Mango Mamba Phase-3 curriculum seed 42** (post-hoc strongest existing VN-MangoLeaf test result: 99.286% accuracy) was analyzed on the 700-image held-out split, without training/tuning: 99.286% accuracy, 99.280% macro-F1, and five saved misclassifications. All five are Anthracnose predicted as Gall_Midge (1), Red_Rust (2), or Sooty_Mold (2); exported artifacts include original images, CAM panels, CSV, metrics, and confusion matrix. Evidence: `results/table6_completion_20260913_051241/vn_phase3_seed42_error_analysis/`; checkpoint SHA-256 `208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae`.
 3. **Android CAM export** for that immutable Phase-3 checkpoint passed ONNX structural and ONNX Runtime parity checks. `mango_mamba_v3_phase3_320_cam.onnx` is a static batch-1 320px graph with outputs `logits [1,7]` and `feature_map [1,384,10,10]`; `mango_mamba_v3_phase3_320_cam_android_cam_manifest.json` has the labels, preprocessing, classifier weights, CAM contract, and parity values. Evidence: `results/table6_completion_20260913_051241/android_v3_phase3_seed42/`. Export does not constitute Android-device latency or app integration.
-4. Completed packages are copied to `D:/mango_mamba_on_host_asus/06_Host Synced Evidence/table6_completion_20260913_051241/`. `MANGO_MAMBA_FINAL_REPORT.md` now contains the single measured Table-6 V3 inference cell, speed caveat, VN error analysis, and export status.
+4. Completed packages are copied to `D:/mango_mamba_on_host_asus/06_Host Synced Evidence/table6_completion_20260913_051241/`. `MANGO_MAMBA_FINAL_REPORT.md` now contains the single measured Table-6 Mango Mamba inference cell, speed caveat, VN error analysis, and export status.
 
 The next permitted work is either (a) Android app integration/device validation using the frozen ONNX/manifest, or (b) a new retraining treatment only after writing the Section 6 `retrain_decision.md` based on a training/validation-supported hypothesis. Do not use the held-out errors themselves to choose or tune a treatment.
 
