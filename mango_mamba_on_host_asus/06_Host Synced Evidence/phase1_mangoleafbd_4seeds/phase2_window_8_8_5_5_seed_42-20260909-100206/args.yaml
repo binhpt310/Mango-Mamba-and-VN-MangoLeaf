@@ -1,0 +1,53 @@
+amp: true
+batch_size: 64
+betas: null
+checkpoint_path: ''
+clip_grad: 1.0
+color_jitter: 0.05
+crop_pct: 0.875
+data_dir: data/mangoleafBD
+depths: null
+drop_path_rate: 0.01
+early_stopping_monitor: loss
+epochs: 100
+eps: 1.0e-08
+experiment: phase2_window_8_8_5_5_seed_42
+grad_accum_steps: 4
+hflip: 0.5
+input_size:
+- 3
+- 320
+- 320
+inter_window_mamba_stages:
+- 0
+log_interval: 10
+lr: 0.0005
+min_lr: 5.0e-06
+mixer_mode: hybrid
+model: mango_mamba_tiny
+momentum: 0.9
+num_classes: 8
+opt: adamw
+output: results/test new mangomamba baseline to surpase 99.75 acc/phase2_window_8_8_5_5
+patience_epochs: 20
+re_prob: 0.05
+resume: false
+sched: cosine
+seed: 42
+smoothing: 0.01
+test_split: test
+train_from_checkpoint: false
+train_split: train
+use_eca: true
+use_grn: true
+use_swiglu: true
+val_split: val
+vflip: 0.2
+warmup_epochs: 5
+weight_decay: 0.01
+window_size:
+- 8
+- 8
+- 5
+- 5
+workers: 4
