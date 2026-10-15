@@ -1,0 +1,96 @@
+{
+  "fig_4_06_accuracy_by_seed.png": [
+    {
+      "path": "experiments/01_phase1_mangoleafbd_320_seed_42/training_results.json",
+      "sha256": "5307792f69ad0fa141c66db776fcfc16de47725681b12d1b8071fd6673408c0c"
+    },
+    {
+      "path": "experiments/01_phase1_mangoleafbd_320_seed_123/training_results.json",
+      "sha256": "300c8e68a432d8f68adcbef9ddcf75c64df61edd7bc4ba12d2bcc9c64cd7bb6f"
+    },
+    {
+      "path": "experiments/01_phase1_mangoleafbd_320_seed_2024/training_results.json",
+      "sha256": "d63116825035713a64b27d7562d36e5ddb46c577c61ef7ed0d7b33ae9acb3339"
+    },
+    {
+      "path": "experiments/01_phase1_mangoleafbd_320_seed_3333/training_results.json",
+      "sha256": "f6d483394e662115fbba84c3246879abfaf0d7fc891c79ce8c1df3fadc07b789"
+    },
+    {
+      "path": "experiments/03_phase2_combined_320_seed_42/training_results.json",
+      "sha256": "0980087d7ba2aa6582e1dc9dd37c45ff5f4dfa777a827a71cb182dc341aa8f7a"
+    },
+    {
+      "path": "experiments/03_phase2_combined_320_seed_123/training_results.json",
+      "sha256": "ffebaa7444062ece1d2a93c781278bf325d4bc5b79e7fc8138f5b7055deca3e2"
+    },
+    {
+      "path": "experiments/03_phase2_combined_320_seed_2024/training_results.json",
+      "sha256": "e0a482a0538d6dcf8bd30762f832a451f7ca34a349bde27d58a6f90851ae5c42"
+    },
+    {
+      "path": "experiments/03_phase2_combined_320_seed_3333/training_results.json",
+      "sha256": "d391ba09b6983acd34aa5ebb1aec8860d6d97c979a9dc10856eabd52e41b425e"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/training_results.json",
+      "sha256": "82185a36d9b611a08f135868f55a1c68aec6e1cacbfc30184d6dbf82ae0bc2fa"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_123/training_results.json",
+      "sha256": "98ddf92b811a9861aabcd473ff48ba1e2fe94ed463706cc9c683ffeb13945685"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_2024/training_results.json",
+      "sha256": "d5175f8817134acfec4fee2d6f946dbd5083c4e9238ec2eb0b557e2b14b85098"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_3333/training_results.json",
+      "sha256": "0b66ba56821b5fe8404ce7b0c06c70c1d1ff73a4689194bedc5f5f1e8403df95"
+    }
+  ],
+  "fig_4_07_gradcam_vn_seed42.png": [
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Healthy.png",
+      "sha256": "a1122806f504b8d07be900c6ab95891738c903a4668f769cdc8bb4862dd5e66f"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Anthracnose.png",
+      "sha256": "33583c5ef24d71670749f49cad9f862dfd2697f55b685ecd8f52017a04b950ae"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Gall_Midge.png",
+      "sha256": "1c2f1f8e893dd3e9dc8605a978165cfd1488640d6fbea90ab7ff78ef95ca383e"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Powdery_Mildew.png",
+      "sha256": "fc1174951f247db7f7afe2b5697862a1de50c935c43ecdb58a406eba6abdf956"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Sooty_Mold.png",
+      "sha256": "ba081b6dcff5c43a353fa504f21e610a311e4e4b90cc1d05a96a31743e3f8e85"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Dieback.png",
+      "sha256": "1ed58c7249c54a26ad824ab3078fa977b469bcf626418a8376c15a8c06d6461a"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Red_Rust.png",
+      "sha256": "f4d300a1a8b6b824703f9dca37df9406404996cbe954e806797502c1b0b87a78"
+    }
+  ],
+  "fig_4_08_errors_vn_seed42.png": [
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/error_001_true_Anthracnose_pred_Gall_Midge_cam.png",
+      "sha256": "a4f063b00bda174026bd10590dd46d04efc77ff6516bf0f130d2b492282c52c5"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/error_002_true_Anthracnose_pred_Sooty_Mold_cam.png",
+      "sha256": "fde0de1d5a024c3cf6c881d6a6ea4c47c8c26946891977bc9ba1f48f4fa49dd7"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/error_003_true_Anthracnose_pred_Red_Rust_cam.png",
+      "sha256": "41ba7092bd65f88d2b31c4f1b37337da50a259a41ed1e5ec7606318b3a01475f"
+    }
+  ]
+}

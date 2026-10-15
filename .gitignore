@@ -1,5 +1,9 @@
-# Rebuildable Android outputs and local device-test data.
-for_android_app_only/android/.gradle/
-for_android_app_only/android/app/build/
-for_android_app_only/artifacts/*
-!for_android_app_only/artifacts/MangoMamba-VNMangoLeaf-7class-debug.apk
+# Rebuildable outputs and local datasets/reruns.
+android/.gradle/
+android/app/build/
+android/local.properties
+data/
+runs/
+__pycache__/
+*.py[cod]
+*.part
