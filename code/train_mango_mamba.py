@@ -26,8 +26,8 @@ from timm.scheduler import create_scheduler
 from timm.utils import NativeScaler
 
 from mango_mamba import mango_mamba_tiny
+from training_checkpoint import TrainingCheckpointSaver
 import torch.nn.functional as F
-import shutil
 
 # Add window functions for token pruning visualization
 def window_partition(x, window_size):
@@ -468,30 +468,6 @@ class ClassificationLoss(nn.Module):
         
         return loss, {'loss': loss.item()}
 
-class NoHardLinkCheckpointSaver(utils.CheckpointSaver):
-    """CheckpointSaver wrapper that uses copy instead of hard link (for Google Drive compatibility)"""
-    
-    def save_checkpoint(self, epoch, metric=None):
-        """Override save_checkpoint to use copy instead of hard link"""
-        # Temporarily replace os.link with shutil.copy2 to avoid hard link issues
-        original_link = os.link
-        def safe_link(src, dst):
-            try:
-                original_link(src, dst)
-            except (OSError, PermissionError):
-                # Fallback to copy if hard link fails (e.g., on Google Drive)
-                shutil.copy2(src, dst)
-        
-        # Monkey patch os.link temporarily
-        os.link = safe_link
-        try:
-            result = super().save_checkpoint(epoch, metric)
-        finally:
-            # Restore original os.link
-            os.link = original_link
-        
-        return result
-
 def _parse_args():
     args_config, remaining = config_parser.parse_known_args()
     if args_config.config:
@@ -885,7 +861,7 @@ def main():
     if args.train_from_checkpoint and args.checkpoint_path:
         if os.path.exists(args.checkpoint_path):
             print(f"Loading checkpoint from: {args.checkpoint_path}")
-            checkpoint = torch.load(args.checkpoint_path, map_location='cuda', weights_only=False)
+            checkpoint = torch.load(args.checkpoint_path, map_location='cpu', weights_only=False)
             
             # Check available keys in checkpoint
             print(f"Checkpoint keys: {list(checkpoint.keys())}")
@@ -917,6 +893,8 @@ def main():
                     
                     # Load with the filtered state dict
                     missing_keys, unexpected_keys = model.load_state_dict(checkpoint_state, strict=False)
+                    if set(missing_keys) != {'head.weight', 'head.bias'} or unexpected_keys:
+                        raise RuntimeError(f'Unexpected transfer mismatch: missing={missing_keys}, unexpected={unexpected_keys}')
                     
                     print(f"Loaded checkpoint with partial weights:")
                     if missing_keys:
@@ -927,15 +905,14 @@ def main():
                     print(f"Note: The classification head layer will be randomly initialized for {args.num_classes} classes.")
                     print(f"This is normal when transferring between datasets with different numbers of classes.")
                 else:
-                    print(f"Error loading checkpoint: {e}")
-                    print("Training from scratch instead.")
+                    raise
         else:
-            print(f"Warning: Checkpoint path {args.checkpoint_path} does not exist. Training from scratch.")
+            raise FileNotFoundError(args.checkpoint_path)
 
     if args.resume:
         if not os.path.exists(args.checkpoint_path):
             raise FileNotFoundError(f'resume checkpoint does not exist: {args.checkpoint_path}')
-        resume_checkpoint = torch.load(args.checkpoint_path, map_location='cuda', weights_only=False)
+        resume_checkpoint = checkpoint
         if 'optimizer' not in resume_checkpoint:
             raise RuntimeError('resume checkpoint is missing optimizer state')
         model.load_state_dict(resume_checkpoint['state_dict'], strict=True)
@@ -995,6 +972,7 @@ def main():
         mean=data_config['mean'],
         std=data_config['std'],
         num_workers=args.workers,
+        persistent_workers=False,
         distributed=args.distributed,
         pin_memory=True,
     )
@@ -1009,6 +987,7 @@ def main():
         mean=data_config['mean'],
         std=data_config['std'],
         num_workers=args.workers,
+        persistent_workers=False,
         distributed=args.distributed,
         crop_pct=data_config['crop_pct'],
         pin_memory=True,
@@ -1024,6 +1003,7 @@ def main():
         mean=data_config['mean'],
         std=data_config['std'],
         num_workers=args.workers,
+        persistent_workers=False,
         distributed=args.distributed,
         crop_pct=data_config['crop_pct'],
         pin_memory=True,
@@ -1035,21 +1015,8 @@ def main():
     
     # Setup learning rate scheduler
     lr_scheduler, num_epochs = create_scheduler(args, optimizer)
-    if resume_checkpoint is not None:
-        optimizer.load_state_dict(resume_checkpoint['optimizer'])
-        if loss_scaler is not None and resume_checkpoint.get('amp_scaler') is not None:
-            loss_scaler.load_state_dict(resume_checkpoint['amp_scaler'])
-        if start_epoch >= num_epochs:
-            raise ValueError(
-                f'resume checkpoint is already at epoch {start_epoch}; --epochs must be greater than {start_epoch}'
-            )
-        if lr_scheduler is not None:
-            # The historical checkpoint has no scheduler state. This aligns the
-            # new 200-epoch cosine schedule with the resumed epoch counter.
-            lr_scheduler.step(start_epoch)
-        _logger.info(
-            f'Resuming from epoch {start_epoch + 1}/{num_epochs}; optimizer restored and scheduler advanced to epoch {start_epoch}.'
-        )
+    if start_epoch > num_epochs:
+        raise ValueError('Resume checkpoint is beyond the requested epoch target')
     
     # Setup output directory
     exp_name = args.experiment
@@ -1059,10 +1026,11 @@ def main():
     
     # Setup checkpoint saver (use custom saver to avoid hard link issues on Google Drive)
     checkpoint_uses_loss = args.early_stopping_monitor == 'loss'
-    saver = NoHardLinkCheckpointSaver(
+    saver = TrainingCheckpointSaver(
         model=model, optimizer=optimizer, args=args,
         amp_scaler=loss_scaler, checkpoint_dir=output_dir,
-        recovery_dir=output_dir, decreasing=checkpoint_uses_loss, max_history=3
+        recovery_dir=output_dir, decreasing=checkpoint_uses_loss, max_history=3,
+        scheduler=lr_scheduler,
     )
     
     with open(os.path.join(output_dir, 'args.yaml'), 'w') as f:
@@ -1077,13 +1045,29 @@ def main():
     # Training loop
     _logger.info(f'Starting training at epoch {start_epoch + 1} of {num_epochs}...')
     
-    best_metric = float(resume_checkpoint.get('metric', 0.0)) if resume_checkpoint is not None else 0.0
-    best_epoch = start_epoch - 1 if resume_checkpoint is not None else 0
+    best_metric = 0.0
+    best_epoch = -1
     patience_counter = 0
     best_val_loss = float('inf')
-    best_val_acc = best_metric if resume_checkpoint is not None and args.early_stopping_monitor == 'accuracy' else 0.0
+    best_val_acc = float('-inf')
+    elapsed_before_resume = 0.0
+    if resume_checkpoint is not None:
+        state = saver.restore(resume_checkpoint, args.checkpoint_path)
+        best_metric = state['best_accuracy']
+        best_epoch = state['best_epoch']
+        best_val_loss = state['best_val_loss']
+        best_val_acc = state['best_val_acc']
+        patience_counter = state['patience_counter']
+        train_losses = list(state['train_losses'])
+        val_losses = list(state['val_losses'])
+        train_accs = list(state['train_accs'])
+        val_accs = list(state['val_accs'])
+        elapsed_before_resume = state['elapsed_seconds']
+    epochs_completed = start_epoch
     
     for epoch in range(start_epoch, num_epochs):
+        if patience_counter >= args.patience_epochs:
+            break
         if args.distributed and hasattr(loader_train.sampler, 'set_epoch'):
             loader_train.sampler.set_epoch(epoch)
         
@@ -1116,6 +1100,8 @@ def main():
             if args.early_stopping_monitor == 'loss'
             else eval_metrics['top1']
         )
+        if not np.isfinite(monitor_value):
+            raise RuntimeError(f'Nonfinite validation metric at epoch {epoch + 1}: {monitor_value}')
         improved = False
         if args.early_stopping_monitor == 'loss':
             if eval_metrics['loss'] < best_val_loss:
@@ -1130,15 +1116,23 @@ def main():
             best_metric = eval_metrics['top1']
             best_epoch = epoch
             patience_counter = 0
-            saver.save_checkpoint(epoch, metric=monitor_value)
             # Save lightweight best checkpoint
             save_lightweight_checkpoint(model, os.path.join(output_dir, 'model_best_inference.pth'))
         else:
             patience_counter += 1
-            if patience_counter >= args.patience_epochs:
-                monitor_metric = 'validation loss' if args.early_stopping_monitor == 'loss' else 'validation accuracy'
-                _logger.info(f"Early stopping triggered at epoch {epoch+1}. No improvement in {monitor_metric} for {args.patience_epochs} epochs.")
-                break
+        epochs_completed = epoch + 1
+        saver.training_state = {
+            'version': 1, 'best_accuracy': best_metric, 'best_epoch': best_epoch,
+            'best_val_loss': best_val_loss, 'best_val_acc': best_val_acc,
+            'patience_counter': patience_counter,
+            'train_losses': train_losses, 'val_losses': val_losses,
+            'train_accs': train_accs, 'val_accs': val_accs,
+            'elapsed_seconds': elapsed_before_resume + time.time() - training_start_time,
+        }
+        saver.save_checkpoint(epoch, metric=monitor_value)
+        if patience_counter >= args.patience_epochs:
+            _logger.info(f'Early stopping at epoch {epoch + 1}; patience {args.patience_epochs}.')
+            break
         
         # Logging
         best_monitor_value = best_val_loss if args.early_stopping_monitor == 'loss' else best_val_acc
@@ -1171,21 +1165,12 @@ def main():
     
     # Load the best model for final evaluation
     best_checkpoint_path = os.path.join(output_dir, 'model_best.pth.tar')
-    if os.path.exists(best_checkpoint_path):
-        print(f"Loading best model from epoch {best_epoch+1} for final evaluation...")
-        checkpoint = torch.load(best_checkpoint_path, map_location='cuda', weights_only=False)
-        
-        # Try to load the best model state dict (should work since it was saved during this training)
-        try:
-            model.load_state_dict(checkpoint['state_dict'])
-            model.eval()
-            print(f"Best model loaded successfully. Best accuracy: {best_metric:.4f}")
-        except RuntimeError as e:
-            print(f"Warning: Error loading best model checkpoint: {e}")
-            print("Using current model for evaluation instead.")
-            model.eval()
-    else:
-        print("Warning: Best model checkpoint not found. Using current model for evaluation.")
+    if not os.path.isfile(best_checkpoint_path):
+        raise FileNotFoundError(best_checkpoint_path)
+    print(f"Loading best model from epoch {best_epoch+1} for final evaluation...")
+    checkpoint = torch.load(best_checkpoint_path, map_location='cpu', weights_only=False)
+    model.load_state_dict(checkpoint['state_dict'], strict=True)
+    model.eval()
 
     best_test_eval_metrics = validate(
         model, loader_test, validate_loss_fn, args,
@@ -1257,7 +1242,7 @@ def main():
 
     
     # Calculate total training time
-    total_training_time = time.time() - training_start_time
+    total_training_time = elapsed_before_resume + time.time() - training_start_time
     
     # Get model parameter count
     total_params = sum(p.numel() for p in model.parameters())
@@ -1274,9 +1259,9 @@ def main():
         'early_stopping': {
             'patience_epochs': args.patience_epochs,
             'monitor_metric': args.early_stopping_monitor,
-            'early_stopping_triggered': start_epoch + len(train_losses) < num_epochs,
-            'epochs_completed_this_run': len(train_losses),
-            'epochs_completed_total': start_epoch + len(train_losses),
+            'early_stopping_triggered': epochs_completed < num_epochs,
+            'epochs_completed_this_run': epochs_completed - start_epoch,
+            'epochs_completed_total': epochs_completed,
             'best_epoch': int(best_epoch + 1)
         },
         'resume': {
@@ -1289,7 +1274,7 @@ def main():
             'train_loss': float(train_losses[-1]) if train_losses else 0.0,
             'val_loss': float(val_losses[-1]) if val_losses else 0.0,
             'train_acc': float(train_accs[-1]) if train_accs else 0.0,
-            'val_acc': float(best_metric),  # Use best accuracy instead of last epoch
+            'val_acc': float(val_accs[-1]) if val_accs else 0.0,
             'test_loss': float(last_epoch_test_metrics['loss']),
             'test_acc': float(last_epoch_test_metrics['top1'])
         },
@@ -1318,7 +1303,7 @@ def main():
             'f1_score': test_f1_per_class.tolist(),
             'class_names': class_names
         },
-        'epochs_completed': start_epoch + len(train_losses),
+        'epochs_completed': epochs_completed,
         'best_epoch': int(best_epoch + 1)
     }
     
@@ -1331,7 +1316,7 @@ def main():
     _logger.info(f'Total training time: {training_results["training_time_formatted"]}')
     _logger.info(f'Model parameters: {trainable_params:,} trainable / {total_params:,} total')
     _logger.info(f'Early stopping: {"Triggered" if training_results["early_stopping"]["early_stopping_triggered"] else "Not triggered"} (patience: {args.patience_epochs} epochs, monitor: {args.early_stopping_monitor})')
-    _logger.info(f'Last-epoch metrics - Train Acc: {training_results["final_metrics"]["train_acc"]:.2f}% | Val Acc: {best_metric:.2f}% | Test Acc: {training_results["final_metrics"]["test_acc"]:.2f}%')
+    _logger.info(f'Last-epoch metrics - Train Acc: {training_results["final_metrics"]["train_acc"]:.2f}% | Val Acc: {training_results["final_metrics"]["val_acc"]:.2f}% | Test Acc: {training_results["final_metrics"]["test_acc"]:.2f}%')
     _logger.info(f'Last-epoch metrics - Train Loss: {training_results["final_metrics"]["train_loss"]:.4f} | Val Loss: {training_results["final_metrics"]["val_loss"]:.4f} | Test Loss: {training_results["final_metrics"]["test_loss"]:.4f}')
     _logger.info(f'Validation metrics - Accuracy: {training_results["validation_metrics"]["accuracy"]:.4f} | Precision: {training_results["validation_metrics"]["precision"]:.4f} | Recall: {training_results["validation_metrics"]["recall"]:.4f} | F1: {training_results["validation_metrics"]["f1_score"]:.4f}')
     _logger.info(f'Best-checkpoint test metrics - Loss: {training_results["test_metrics"]["loss"]:.4f} | Accuracy: {training_results["test_metrics"]["accuracy"]:.4f} | Precision: {training_results["test_metrics"]["precision"]:.4f} | Recall: {training_results["test_metrics"]["recall"]:.4f} | F1: {training_results["test_metrics"]["f1_score"]:.4f}')

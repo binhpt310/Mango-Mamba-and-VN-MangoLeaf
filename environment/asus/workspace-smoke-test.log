@@ -1,0 +1,36 @@
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+{
+  "python": "3.12.3",
+  "machine": "aarch64",
+  "packages": {
+    "torch": "2.13.0+cu130",
+    "torchvision": "0.28.0+cu130",
+    "timm": "1.0.28",
+    "mamba-ssm": "2.3.2.post1",
+    "einops": "0.8.2",
+    "grad-cam": "1.5.5"
+  },
+  "cuda": "13.0",
+  "gpu": "NVIDIA GB10",
+  "selective_scan_extension": "/home/admincsc/workspace/binh/reproduce_mm/.venv-mango/lib/python3.12/site-packages/selective_scan_cuda.cpython-312-aarch64-linux-gnu.so",
+  "checks": [
+    {
+      "resolution": 224,
+      "classes": 8,
+      "amp_forward_backward": "passed",
+      "selective_scan_gradients": "passed",
+      "fp32_forward": "passed"
+    },
+    {
+      "resolution": 320,
+      "classes": 7,
+      "amp_forward_backward": "passed",
+      "selective_scan_gradients": "passed",
+      "fp32_forward": "passed"
+    }
+  ],
+  "scope": "Synthetic batches only; no dataset evaluation or experiment reproduction."
+}

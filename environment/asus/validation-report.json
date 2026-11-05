@@ -1,0 +1,17 @@
+{
+  "source_venv": "/home/admincsc/workspace/binh/reproduce_mm/.venv-mango",
+  "original_venv_model_check": "Passed AMP forward/backward, scan gradients and FP32 forward at 224px/8 classes and 320px/7 classes",
+  "clean_venv": "/tmp/mango_clean_venv_20261105",
+  "clean_packages": 97,
+  "clean_versions_match_host": true,
+  "clean_install_tool": "uv pip install plus pip install --no-deps for the repacked Mamba wheel",
+  "clean_imports_and_cuda_tensor": "passed",
+  "clean_full_model_check": "CUDA out of memory; three vLLM processes used about 99 GiB; CUDA reported about 2.1 GiB free during diagnosis",
+  "pip_check_both_envs": "nvidia-cusparselt-cu13 0.8.1 is not supported on this platform",
+  "wsl2_x86_64_install": "not tested",
+  "full_36_training_rerun": "not performed",
+  "local_runner_tests": 5,
+  "local_aggregation_tests": 2,
+  "retained_figures": "4.6, 4.7, 4.8 re-rendered into tmp output",
+  "existing_inventory_tests": "Two checks cannot run: missing original CHECKPOINT_SYNC_MANIFEST.json and REORGANIZATION_MANIFEST.json; no replacement provenance was fabricated"
+}

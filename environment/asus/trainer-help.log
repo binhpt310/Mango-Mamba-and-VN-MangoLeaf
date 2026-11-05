@@ -1,0 +1,110 @@
+/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+usage: train_mango_mamba.py [-h] [--data_dir DIR] [--train-split NAME]
+                            [--val-split NAME] [--test-split NAME]
+                            [--model MODEL] [--num-classes N]
+                            [--input-size N N N N N N N N N] [--crop-pct N]
+                            [-b N] [--grad-accum-steps N]
+                            [--mixer-mode {hybrid,pure_mamba,pure_lka}]
+                            [--use-eca] [--use-grn] [--use-swiglu]
+                            [--window-size N N N N N N N N N N N N N N N N]
+                            [--depths N N N N N N N N N N N N N N N N]
+                            [--inter-window-mamba-stages [STAGE ...]]
+                            [--opt OPTIMIZER] [--lr LR]
+                            [--weight-decay WEIGHT_DECAY] [--momentum M]
+                            [--eps EPSILON] [--betas BETA BETA]
+                            [--clip-grad NORM] [--sched SCHEDULER]
+                            [--epochs N] [--warmup-epochs N] [--min-lr LR]
+                            [--patience-epochs N]
+                            [--early-stopping-monitor {loss,accuracy}]
+                            [--smoothing SMOOTHING] [--drop-path-rate PCT]
+                            [--re-prob RE_PROB] [--hflip HFLIP]
+                            [--vflip VFLIP] [--color-jitter COLOR_JITTER]
+                            [--seed S] [--log-interval N] [-j N] [--amp]
+                            [--output PATH] [--experiment NAME]
+                            [--train-from-checkpoint] [--checkpoint-path PATH]
+                            [--resume]
+
+MangoMamba Training
+
+options:
+  -h, --help            show this help message and exit
+  --data_dir DIR        path to dataset
+
+Dataset parameters:
+  --train-split NAME    dataset train split (default: train)
+  --val-split NAME      dataset validation split (default: val)
+  --test-split NAME     dataset test split (default: test)
+
+Model parameters:
+  --model MODEL         Name of model to train
+  --num-classes N       number of disease classes
+  --input-size N N N N N N N N N
+                        Input image dimensions (d h w)
+  --crop-pct N          Input image center crop percent
+  -b N, --batch-size N  Input batch size for training
+  --grad-accum-steps N  Gradient accumulation steps (effective batch size =
+                        batch_size * grad_accum_steps)
+  --mixer-mode {hybrid,pure_mamba,pure_lka}
+                        Mixer mode: hybrid (default), pure_mamba, or pure_lka
+  --use-eca             Use Efficient Channel Attention (ECA)
+  --use-grn             Use Global Response Normalization (GRN)
+  --use-swiglu          Use SwiGLU activation in MLP (default: standard GELU
+                        MLP)
+  --window-size N N N N N N N N N N N N N N N N
+                        Window sizes for 4 stages (default: [8,8,14,7])
+  --depths N N N N N N N N N N N N N N N N
+                        Number of mixer blocks in the 4 stages (default: model
+                        setting)
+  --inter-window-mamba-stages [STAGE ...]
+                        Hybrid stage indices receiving pooled inter-window
+                        Mamba
+
+Optimizer parameters:
+  --opt OPTIMIZER       Optimizer
+  --lr LR               learning rate
+  --weight-decay WEIGHT_DECAY
+                        weight decay
+  --momentum M          AdamW momentum (default: 0.9)
+  --eps EPSILON         Optimizer Epsilon (default: 1e-8)
+  --betas BETA BETA     Optimizer Betas (default: None, use opt default)
+  --clip-grad NORM      Clip gradient norm
+
+Learning rate schedule parameters:
+  --sched SCHEDULER     LR scheduler
+  --epochs N            number of epochs to train
+  --warmup-epochs N     epochs to warmup LR
+  --min-lr LR           lower lr bound for cyclic schedulers
+  --patience-epochs N   patience epochs for early stopping (default: 20)
+  --early-stopping-monitor {loss,accuracy}
+                        metric to monitor for early stopping (default: loss)
+
+Loss parameters:
+  --smoothing SMOOTHING
+                        Label smoothing
+
+Augmentation parameters:
+  --drop-path-rate PCT  Drop path rate
+  --re-prob RE_PROB     Random-erasing probability
+  --hflip HFLIP         Horizontal-flip probability
+  --vflip VFLIP         Vertical-flip probability
+  --color-jitter COLOR_JITTER
+                        Color-jitter strength
+
+Miscellaneous parameters:
+  --seed S              random seed
+  --log-interval N      how many batches to wait before logging training
+                        status
+  -j N, --workers N     how many training processes to use
+  --amp                 use Native AMP for mixed precision training
+  --output PATH         path to output folder
+  --experiment NAME     name of train experiment
+  --train-from-checkpoint
+                        train from a pretrained checkpoint
+  --checkpoint-path PATH
+                        path to checkpoint file to load (e.g.,
+                        ./output/model_best.pth.tar)
+  --resume              restore optimizer state and epoch counter from
+                        --checkpoint-path

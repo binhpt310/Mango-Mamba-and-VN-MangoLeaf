@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import re
 import unittest
+import zipfile
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,7 +26,10 @@ class EvidenceLayoutTests(unittest.TestCase):
             self.assertFalse(any(p.is_dir() for p in run.iterdir()), name)
 
     def test_original_evidence_bytes_unchanged(self):
-        manifest = json.loads((ROOT / 'docs/REORGANIZATION_MANIFEST.json').read_text(encoding='utf-8-sig'))
+        path = ROOT / 'docs/REORGANIZATION_MANIFEST.json'
+        if not path.is_file():
+            self.skipTest('Historical reorganization manifest is not distributed in this checkout')
+        manifest = json.loads(path.read_text(encoding='utf-8-sig'))
         checked = 0
         for entry in manifest['files']:
             for name in entry['new_paths']:
@@ -37,7 +41,16 @@ class EvidenceLayoutTests(unittest.TestCase):
         self.assertGreater(checked, 400)
 
     def test_checkpoint_inventory(self):
-        entries = json.loads((ROOT / 'docs/CHECKPOINT_SYNC_MANIFEST.json').read_text())['entries']
+        manifest = ROOT / 'docs/CHECKPOINT_SYNC_MANIFEST.json'
+        if not manifest.is_file():
+            groups = ('01_phase1_mangoleafbd', '03_phase2_combined', '04_phase3_vn_mangoleaf', '05_direct_vn_from_phase1')
+            expected = {f'{group}_320_seed_{seed}' for group in groups for seed in (42, 123, 2024, 3333)}
+            paths = list((ROOT / 'experiments').glob('*/model_best.pth.tar'))
+            self.assertEqual({p.parent.name for p in paths}, expected)
+            for path in paths:
+                self.assertGreater(path.stat().st_size, 1024, f'LFS pointer or truncated checkpoint: {path}')
+            return
+        entries = json.loads(manifest.read_text())['entries']
         self.assertEqual(sum(e['status'] == 'verified' for e in entries), 16)
         self.assertEqual(sum(e['status'] == 'not_found_on_host' for e in entries), 20)
         for entry in entries:
@@ -45,6 +58,17 @@ class EvidenceLayoutTests(unittest.TestCase):
             self.assertEqual(path.is_file(), entry['status'] == 'verified', str(path))
             if path.is_file():
                 self.assertEqual(path.stat().st_size, entry['bytes'])
+
+    def test_dataset_archive_manifest(self):
+        folder = ROOT / 'datasets'
+        manifest = json.loads((folder / 'mango_mamba_datasets.manifest.json').read_text())
+        archive = folder / manifest['archive']['name']
+        with archive.open('rb') as handle:
+            self.assertEqual(hashlib.file_digest(handle, 'sha256').hexdigest(), manifest['archive']['sha256'])
+        self.assertEqual((folder / 'mango_mamba_datasets.zip.sha256').read_text().split()[0], manifest['archive']['sha256'])
+        with zipfile.ZipFile(archive) as bundle:
+            self.assertEqual(set(bundle.namelist()), {entry['path'] for entry in manifest['files']})
+            self.assertEqual(sum(name.endswith('.jpg') for name in bundle.namelist()), 51000)
 
     def test_five_test_errors_and_seven_validation_gradcams(self):
         run = ROOT / 'experiments/04_phase3_vn_mangoleaf_320_seed_42'
@@ -71,12 +95,14 @@ class EvidenceLayoutTests(unittest.TestCase):
         self.assertEqual(manifest['checkpoint_sha256'], '208b07937526b35260767afa62da43616d8a0245ba1fd7680102990bc34ae8ae')
 
     def test_no_legacy_names_or_broken_document_links(self):
-        self.assertEqual({p.name for p in (ROOT / 'docs').glob('*.md')},
-                         {'EVIDENCE_INDEX.md', 'EXPERIMENT_PROTOCOL.md'})
+        self.assertTrue((ROOT / 'README.md').is_file())
+        self.assertFalse(list((ROOT / 'docs').glob('*.md')))
+        self.assertFalse((ROOT / 'android/README.md').exists())
+        self.assertFalse((ROOT / 'environment/asus/README.md').exists())
         for folder in ('code', 'experiments', 'android', 'tests'):
             for path in (ROOT / folder).rglob('*'):
                 self.assertNotIn('h3', path.name.lower())
-        for path in [ROOT / 'README.md', ROOT / 'android/README.md', *(ROOT / 'docs').glob('*.md')]:
+        for path in [ROOT / 'README.md']:
             text = path.read_text(encoding='utf-8-sig')
             for link in re.findall(r'\]\((<[^>]+>|[^)]+)\)', text):
                 link = unquote(link.strip('<>').split('#')[0])

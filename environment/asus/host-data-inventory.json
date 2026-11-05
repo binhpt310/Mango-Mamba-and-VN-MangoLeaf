@@ -1,0 +1,95 @@
+{
+  "mangoleafBD": {
+    "train": {
+      "Anthracnose": 400,
+      "Bacterial Canker": 400,
+      "Cutting Weevil": 400,
+      "Die Back": 400,
+      "Gall Midge": 400,
+      "Healthy": 400,
+      "Powdery Mildew": 400,
+      "Sooty Mould": 400
+    },
+    "val": {
+      "Anthracnose": 50,
+      "Bacterial Canker": 50,
+      "Cutting Weevil": 50,
+      "Die Back": 50,
+      "Gall Midge": 50,
+      "Healthy": 50,
+      "Powdery Mildew": 50,
+      "Sooty Mould": 50
+    },
+    "test": {
+      "Anthracnose": 50,
+      "Bacterial Canker": 50,
+      "Cutting Weevil": 50,
+      "Die Back": 50,
+      "Gall Midge": 50,
+      "Healthy": 50,
+      "Powdery Mildew": 50,
+      "Sooty Mould": 50
+    }
+  },
+  "combined_dataset": {
+    "train": {
+      "Anthracnose": 4000,
+      "Bacterial Canker": 4000,
+      "Cutting Weevil": 4000,
+      "Die Back": 4000,
+      "Gall Midge": 4000,
+      "Healthy": 4000,
+      "Powdery Mildew": 4000,
+      "Sooty Mould": 4000
+    },
+    "val": {
+      "Anthracnose": 500,
+      "Bacterial Canker": 500,
+      "Cutting Weevil": 500,
+      "Die Back": 500,
+      "Gall Midge": 500,
+      "Healthy": 500,
+      "Powdery Mildew": 500,
+      "Sooty Mould": 500
+    },
+    "test": {
+      "Anthracnose": 500,
+      "Bacterial Canker": 500,
+      "Cutting Weevil": 500,
+      "Die Back": 500,
+      "Gall Midge": 500,
+      "Healthy": 500,
+      "Powdery Mildew": 500,
+      "Sooty Mould": 500
+    }
+  },
+  "vn_mangoleaf": {
+    "train": {
+      "Anthracnose": 800,
+      "Dieback": 800,
+      "Gall_Midge": 800,
+      "Healthy": 800,
+      "Powdery_Mildew": 800,
+      "Red_Rust": 800,
+      "Sooty_Mold": 800
+    },
+    "val": {
+      "Anthracnose": 100,
+      "Dieback": 100,
+      "Gall_Midge": 100,
+      "Healthy": 100,
+      "Powdery_Mildew": 100,
+      "Red_Rust": 100,
+      "Sooty_Mold": 100
+    },
+    "test": {
+      "Anthracnose": 100,
+      "Dieback": 100,
+      "Gall_Midge": 100,
+      "Healthy": 100,
+      "Powdery_Mildew": 100,
+      "Red_Rust": 100,
+      "Sooty_Mold": 100
+    }
+  }
+}

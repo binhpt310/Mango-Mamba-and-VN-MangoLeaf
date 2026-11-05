@@ -1,0 +1,375 @@
+{
+  "created_at_utc": "2026-11-04T18:06:23.937240+00:00",
+  "supersedes_manifest_sha256": "9b85b1d9476253ed79036f7ce28a4ea83bde4dc7ada523dd4fd81aff5b0d7378",
+  "source_ssh_alias": "asus",
+  "source_venv": "/home/admincsc/workspace/binh/reproduce_mm/.venv-mango",
+  "package_scope": "Configuration overlay for an existing Mango-Mamba checkout. One README with 11 PDF figure assets; excludes the original PDF, native wheel, datasets, checkpoints and full venv.",
+  "files": [
+    {
+      "path": "code/analyze_vn_errors.py",
+      "bytes": 11905,
+      "sha256": "26fac052c59f5c0745445690052db93ff8e289c0eabc4edad2f9287814932436"
+    },
+    {
+      "path": "code/check_environment.py",
+      "bytes": 2958,
+      "sha256": "34bf5725edcbadde553576c91a8168b815c97a7b95184bac4e5d7fe996424ad2"
+    },
+    {
+      "path": "code/export_android_cam.py",
+      "bytes": 6369,
+      "sha256": "c18cfb8ab406f1b884dc270256b9e3d9af90e787d3288db00e8034f2a15816a7"
+    },
+    {
+      "path": "code/mango_mamba.py",
+      "bytes": 21911,
+      "sha256": "2ed4bb06ab9434d263dd1288c3dcd6b57023e10d4a99cec755cbfeed2150a54d"
+    },
+    {
+      "path": "code/measure_gpu_latency.py",
+      "bytes": 9400,
+      "sha256": "e46911aadf25e09d8a3467039ef8e711041788c6a07e79c3a85ae1efc77756bf"
+    },
+    {
+      "path": "code/render_thesis_figures.py",
+      "bytes": 4000,
+      "sha256": "1efb71833fb56ea815c08d08f274ffbb02d874a6abbbec8cbb59b9b485986090"
+    },
+    {
+      "path": "code/run_curriculum.py",
+      "bytes": 5625,
+      "sha256": "fe5a5de6422b5e82f1000c2041f6ecddbd0aaab0959610a8a77b43745b4f65ea"
+    },
+    {
+      "path": "code/summarize_thesis_results.py",
+      "bytes": 1791,
+      "sha256": "3bd520a0af3e515fb2628a6fed42dbc1c0e77a73103cbbf60f96662c5cc3dbd5"
+    },
+    {
+      "path": "code/train_mango_mamba.py",
+      "bytes": 59663,
+      "sha256": "43a960a0a01a9b64d5c2a4a92edec97592cd7f25c1e230b982cb355408d0e794"
+    },
+    {
+      "path": "docs/figures/thesis_fig_3_1_architecture.png",
+      "bytes": 164331,
+      "sha256": "6f0d96b835f50f2d49533cdca3085447c5bcfcb8b88a7a65beb952f9f22c4fda"
+    },
+    {
+      "path": "docs/figures/thesis_fig_3_2_block.png",
+      "bytes": 161191,
+      "sha256": "31e2c649cf4a3182835d8a375dbcfea62815aa8dc4e522d87422d31ff9f66d76"
+    },
+    {
+      "path": "docs/figures/thesis_fig_3_3_curriculum.png",
+      "bytes": 282930,
+      "sha256": "f8db671e141b2847320a666cffea1a3bfe34fb04cae06bf9fb7218ca0575ae50"
+    },
+    {
+      "path": "docs/figures/thesis_fig_4_1_android_ui.png",
+      "bytes": 443597,
+      "sha256": "6b48cc4c58e0a621a4947f4fe59c74dd84e07a414f6351e0cb93928ab6147b9d"
+    },
+    {
+      "path": "docs/figures/thesis_fig_4_2_training_vn_seed42.png",
+      "bytes": 83473,
+      "sha256": "496e40713b0193b5c65e72d29417e7c5fb639d5f6effa2d97b8b1a5032bfb910"
+    },
+    {
+      "path": "docs/figures/thesis_fig_4_3_confusion_mangoleafbd_seed3333.png",
+      "bytes": 105029,
+      "sha256": "6472ea574689af91dfcba4b7ff5f5938ac1f8b029864b03c7206b0cf7c5cad6f"
+    },
+    {
+      "path": "docs/figures/thesis_fig_4_4_confusion_combined_seed123.png",
+      "bytes": 149854,
+      "sha256": "43d78c865ee0287be13051d85506a0cbd9f9f12dd993258b6ab24a7eda25da6f"
+    },
+    {
+      "path": "docs/figures/thesis_fig_4_5_confusion_vn_seed42.png",
+      "bytes": 115390,
+      "sha256": "6d29decba799aecf44afcc0c6332524f4ae8b825c532be275e1ed83ff338d9e5"
+    },
+    {
+      "path": "docs/figures/thesis_fig_4_6_accuracy_by_seed.png",
+      "bytes": 107688,
+      "sha256": "adc17c4a4f073b8f57e4dda510b0c9dfbd11e477eccc9b121fdb551c22dfa023"
+    },
+    {
+      "path": "docs/figures/thesis_fig_4_7_gradcam_vn_seed42.png",
+      "bytes": 2085664,
+      "sha256": "048b6911ed00ed206083115c0403e57213947b4fe406935526aad25496063664"
+    },
+    {
+      "path": "docs/figures/thesis_fig_4_8_errors_vn_seed42.png",
+      "bytes": 597358,
+      "sha256": "1ffb59e2d8a4e9d22040e902b7743eb5f90a58544121850aad78fd6c95578507"
+    },
+    {
+      "path": "docs/figures/thesis_images_manifest.json",
+      "bytes": 19171,
+      "sha256": "d571f65c757be5e3f95a645170bfb6b10617517055f3322e050e41dfd2755158"
+    },
+    {
+      "path": "environment/asus/clean-install.log",
+      "bytes": 4899,
+      "sha256": "9f65ae8aeacea8541ae0889ae525372d1bce2c70524fea018efaed483eb10dcb"
+    },
+    {
+      "path": "environment/asus/clean-installed-packages.json",
+      "bytes": 5778,
+      "sha256": "bd000a59868fd0ae75db340b5c379dea0d3046250115effea9cbfe66e4b15d33"
+    },
+    {
+      "path": "environment/asus/clean-mamba-install.log",
+      "bytes": 185,
+      "sha256": "814c8ddc7072ba8bb1a5619c0f1102d372505a79062887ab316608de52f352da"
+    },
+    {
+      "path": "environment/asus/clean-pip-check.log",
+      "bytes": 63,
+      "sha256": "0d275fb9d805b4fcbadd7db0746c7a36ba2c44a33c370abc0d14153b500c4c05"
+    },
+    {
+      "path": "environment/asus/clean-smoke-test.log",
+      "bytes": 2125,
+      "sha256": "5f1edac48fed1d20ad9f7e31a45f09888c7ccf6cd17330d3b1ffab4f8befbc60"
+    },
+    {
+      "path": "environment/asus/host-data-inventory.json",
+      "bytes": 2032,
+      "sha256": "1891bfd2fceaa9454e8edd1f6ba0f4bdb5624b547ee636d8555e18eeb8d721d7"
+    },
+    {
+      "path": "environment/asus/host-environment.json",
+      "bytes": 6277,
+      "sha256": "b9e1c13d49616515e3b985141828dae3812a402db624d03d66ea6dd8dcc9bd9f"
+    },
+    {
+      "path": "environment/asus/host-source-hashes.json",
+      "bytes": 272,
+      "sha256": "b1c1ae1e9b74c04ecc58c96e8b0589be14c5ef756a70c2896800fa0c36b5ee93"
+    },
+    {
+      "path": "environment/asus/installed-packages.json",
+      "bytes": 10281,
+      "sha256": "f6a9f7278d5fe4f12f4987255788d22efe3da4c19f730e99df640c7763ad9c68"
+    },
+    {
+      "path": "environment/asus/live-gpu-state.txt",
+      "bytes": 1873,
+      "sha256": "7b129259e2602d40d21b7bf6db18bac0a08c088e1b04b2658c91bdc9c857bdfc"
+    },
+    {
+      "path": "environment/asus/mamba-installed-metadata.json",
+      "bytes": 7034,
+      "sha256": "6d346c8f4283653dafd4ae79c5cbc757b689a0a93fa9ed96a4ffe93e43b0e5c0"
+    },
+    {
+      "path": "environment/asus/mamba-wheel-provenance.json",
+      "bytes": 7626,
+      "sha256": "255fc54d8ac83037ba8899da7722250da6be95ad826217bef2e701f24f1b5c75"
+    },
+    {
+      "path": "environment/asus/pyvenv.cfg",
+      "bytes": 124,
+      "sha256": "0701ecbcd8954fd7d082293ea4b7a245452d973721dd6efb3a27af091757d1f4"
+    },
+    {
+      "path": "environment/asus/requirements-host-freeze.txt",
+      "bytes": 3358,
+      "sha256": "cc2c15d7670695c9302b6792cd56c0880a3cd45da8de3185ce5efb2a5713b2a7"
+    },
+    {
+      "path": "environment/asus/retained-thesis-results.csv",
+      "bytes": 2324,
+      "sha256": "5bb92879ee68583a7a24deeba84738bc0e17eee6204a6594890a5c54e8973bbf"
+    },
+    {
+      "path": "environment/asus/trainer-help.log",
+      "bytes": 5666,
+      "sha256": "a574739f2aed8d05c39ff5bcd03eb14035db0350283e7a7d6f90bb5a3b299dca"
+    },
+    {
+      "path": "environment/asus/validation-report.json",
+      "bytes": 1103,
+      "sha256": "6dcfe4b8b66964739acc675b0f3612c292e58828be72e7c8c499df985d389efb"
+    },
+    {
+      "path": "environment/asus/workspace-smoke-test.log",
+      "bytes": 1531,
+      "sha256": "898bfd33869fdd177fb8f00dccca765f7daa3185510a83fa820b1942ad786fc6"
+    },
+    {
+      "path": "environment/requirements-export.txt",
+      "bytes": 62,
+      "sha256": "97f6bd04baccaac7054cc92e0d6d170e0bedb37069fcd642b21bc8b3e76e21ad"
+    },
+    {
+      "path": "environment/requirements-training.txt",
+      "bytes": 576,
+      "sha256": "d22b91e351f2f89e2a461a8475d8772402a803e911ff135eccb1484eafc32d95"
+    },
+    {
+      "path": "environment/setup_linux.sh",
+      "bytes": 1351,
+      "sha256": "d20da6bffb6467f77c17fead39da313619458145470ff9a2c7081fb8d8c811ce"
+    },
+    {
+      "path": "README.md",
+      "bytes": 43711,
+      "sha256": "3785138dd1556b6debfd4e6ed3dbe558003aa9db0f9cfe9fb7cc17b31aacba6e"
+    }
+  ],
+  "result_inputs": [
+    {
+      "path": "experiments/01_phase1_mangoleafbd_320_seed_123/training_results.json",
+      "sha256": "300c8e68a432d8f68adcbef9ddcf75c64df61edd7bc4ba12d2bcc9c64cd7bb6f"
+    },
+    {
+      "path": "experiments/01_phase1_mangoleafbd_320_seed_2024/training_results.json",
+      "sha256": "d63116825035713a64b27d7562d36e5ddb46c577c61ef7ed0d7b33ae9acb3339"
+    },
+    {
+      "path": "experiments/01_phase1_mangoleafbd_320_seed_3333/training_results.json",
+      "sha256": "f6d483394e662115fbba84c3246879abfaf0d7fc891c79ce8c1df3fadc07b789"
+    },
+    {
+      "path": "experiments/01_phase1_mangoleafbd_320_seed_42/training_results.json",
+      "sha256": "5307792f69ad0fa141c66db776fcfc16de47725681b12d1b8071fd6673408c0c"
+    },
+    {
+      "path": "experiments/02_ablation_full_224_seed_123/training_results.json",
+      "sha256": "9d9fd1ec78bf64a1126d622c86e6d1ecb753fa6de5d034b7ca7437a61c3f9c62"
+    },
+    {
+      "path": "experiments/02_ablation_full_224_seed_2024/training_results.json",
+      "sha256": "b5d4efee6bc16668e8b976632f4e812e655036e788e3db82dfa662a85690ca3c"
+    },
+    {
+      "path": "experiments/02_ablation_full_224_seed_3333/training_results.json",
+      "sha256": "ef4d53006f79d68622d0d325885378fbd6e7bc7f66e21123ba115dad8840a369"
+    },
+    {
+      "path": "experiments/02_ablation_full_224_seed_42/training_results.json",
+      "sha256": "391fa61a394e696463e1796ad44bb7185d4744588b9062136d7687020b797577"
+    },
+    {
+      "path": "experiments/02_ablation_hybrid_minimal_224_seed_123/training_results.json",
+      "sha256": "a5dac28bf89c57339a27fb2d5abac6f4a58f3fcc4e43f44dad83130ba1fdaa83"
+    },
+    {
+      "path": "experiments/02_ablation_hybrid_minimal_224_seed_2024/training_results.json",
+      "sha256": "89e6e2135ab8ac99cf9fc9cadbb6d935540f6f45b884d8c526d615d5c598320d"
+    },
+    {
+      "path": "experiments/02_ablation_hybrid_minimal_224_seed_3333/training_results.json",
+      "sha256": "7cac9ca4ef35e8818aa07f3ef0a474c5a8334badcb9b21b7bd3d921dd4d18dfe"
+    },
+    {
+      "path": "experiments/02_ablation_hybrid_minimal_224_seed_42/training_results.json",
+      "sha256": "83d41af9edd38499494758f140d3642ac776e47d84671258d661ef27c6764d53"
+    },
+    {
+      "path": "experiments/02_ablation_no_eca_224_seed_123/training_results.json",
+      "sha256": "087007f7a71b8b54d4afbfc27a982a79297b371263901a201a331bd1892e2963"
+    },
+    {
+      "path": "experiments/02_ablation_no_eca_224_seed_2024/training_results.json",
+      "sha256": "68debec31234d72e6a375fc8d4c5ef5673cf98e7f70f493c7b2382ebc78a9b68"
+    },
+    {
+      "path": "experiments/02_ablation_no_eca_224_seed_3333/training_results.json",
+      "sha256": "8243e579ebd498750e7b916a0c628325f109539f9aaf2dc5dac2b563a4513acf"
+    },
+    {
+      "path": "experiments/02_ablation_no_eca_224_seed_42/training_results.json",
+      "sha256": "461c3a93f4351b971ffac9e3a45daa72e43b131c4912b35c3bca1c79517aff5f"
+    },
+    {
+      "path": "experiments/02_ablation_no_grn_224_seed_123/training_results.json",
+      "sha256": "9626cdcb28a6efd3382629335339b1854544f07ad1058d23b58dab934c8f8031"
+    },
+    {
+      "path": "experiments/02_ablation_no_grn_224_seed_2024/training_results.json",
+      "sha256": "79d2f49344c1860349daae876aa47262fdc712c1b80603431ba04b2a937edbb9"
+    },
+    {
+      "path": "experiments/02_ablation_no_grn_224_seed_3333/training_results.json",
+      "sha256": "02378c7de1c6729f3cacb4e7f5c433caf9818bd7fccfd61ed0f85866d0eb16a1"
+    },
+    {
+      "path": "experiments/02_ablation_no_grn_224_seed_42/training_results.json",
+      "sha256": "8538e785eb8850c7cdeab03825bcf43993f6e1e983a7e66663029cd970c676f7"
+    },
+    {
+      "path": "experiments/02_ablation_no_swiglu_224_seed_123/training_results.json",
+      "sha256": "74926fc91967ff7b0fc45a17826b4b5ca7066197567be127da2bed2f05bd9f2f"
+    },
+    {
+      "path": "experiments/02_ablation_no_swiglu_224_seed_2024/training_results.json",
+      "sha256": "6ba60db84d6b0b3ce0429aedd5c83262547dbab50a34ed7bfeadad1e09d50ab2"
+    },
+    {
+      "path": "experiments/02_ablation_no_swiglu_224_seed_3333/training_results.json",
+      "sha256": "00290274e89e921000dedfc874ba7c4703f03c7aac956c924541207e79b93d14"
+    },
+    {
+      "path": "experiments/02_ablation_no_swiglu_224_seed_42/training_results.json",
+      "sha256": "dfd234cf17e73923a318fd7c38ec88f86d95034b5d055ad41de73eaa8c8cf7d2"
+    },
+    {
+      "path": "experiments/03_phase2_combined_320_seed_123/training_results.json",
+      "sha256": "ffebaa7444062ece1d2a93c781278bf325d4bc5b79e7fc8138f5b7055deca3e2"
+    },
+    {
+      "path": "experiments/03_phase2_combined_320_seed_2024/training_results.json",
+      "sha256": "e0a482a0538d6dcf8bd30762f832a451f7ca34a349bde27d58a6f90851ae5c42"
+    },
+    {
+      "path": "experiments/03_phase2_combined_320_seed_3333/training_results.json",
+      "sha256": "d391ba09b6983acd34aa5ebb1aec8860d6d97c979a9dc10856eabd52e41b425e"
+    },
+    {
+      "path": "experiments/03_phase2_combined_320_seed_42/training_results.json",
+      "sha256": "0980087d7ba2aa6582e1dc9dd37c45ff5f4dfa777a827a71cb182dc341aa8f7a"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_123/training_results.json",
+      "sha256": "98ddf92b811a9861aabcd473ff48ba1e2fe94ed463706cc9c683ffeb13945685"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_2024/training_results.json",
+      "sha256": "d5175f8817134acfec4fee2d6f946dbd5083c4e9238ec2eb0b557e2b14b85098"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_3333/training_results.json",
+      "sha256": "0b66ba56821b5fe8404ce7b0c06c70c1d1ff73a4689194bedc5f5f1e8403df95"
+    },
+    {
+      "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/training_results.json",
+      "sha256": "82185a36d9b611a08f135868f55a1c68aec6e1cacbfc30184d6dbf82ae0bc2fa"
+    },
+    {
+      "path": "experiments/05_direct_vn_from_phase1_320_seed_123/training_results.json",
+      "sha256": "9021b6ccb7373e6a11454e3627d4ffcd6d69b3c7e5a7a2bde245d99a13e60ad8"
+    },
+    {
+      "path": "experiments/05_direct_vn_from_phase1_320_seed_2024/training_results.json",
+      "sha256": "9926c6f2b4ca7a21873e0f119922f056b688195848b3063dddbe6ea76845f100"
+    },
+    {
+      "path": "experiments/05_direct_vn_from_phase1_320_seed_3333/training_results.json",
+      "sha256": "30d4f3ac7d5212483426c5000e5a0e93dc4e48a6c1108c9ea2073a4484410400"
+    },
+    {
+      "path": "experiments/05_direct_vn_from_phase1_320_seed_42/training_results.json",
+      "sha256": "f54ff9695eda1253f1190d9bd6645b8f303292603e725c771c2371e5d21ba358"
+    }
+  ],
+  "thesis_pdf": {
+    "path": "Luận văn thạc sĩ.pdf",
+    "sha256": "5e9cd682fe50ce4ea7579ba5c7aad5006b4b8f81489c156b67ecb2a133aa8a8f",
+    "pages": 108
+  }
+}

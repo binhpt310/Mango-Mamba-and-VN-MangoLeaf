@@ -1,0 +1,29 @@
+/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/timm/models/registry.py:4: FutureWarning: Importing from timm.models.registry is deprecated, please import via timm.models
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.models", FutureWarning)
+Traceback (most recent call last):
+  File "/tmp/mango_workspace_check_20261105/code/check_environment.py", line 61, in <module>
+    main()
+  File "/tmp/mango_workspace_check_20261105/code/check_environment.py", line 29, in main
+    ).cuda().train()
+      ^^^^^^
+  File "/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1096, in cuda
+    return self._apply(lambda t: t.cuda(device))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+  File "/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/torch/nn/modules/module.py", line 964, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/tmp/mango_clean_venv_20261105/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1096, in <lambda>
+    return self._apply(lambda t: t.cuda(device))
+                                 ^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+For more detailed error information, run with CUDA_LOG_FILE=stderr
+

@@ -1,0 +1,390 @@
+[
+  {
+    "name": "annotated-doc",
+    "version": "0.0.5"
+  },
+  {
+    "name": "anyio",
+    "version": "4.14.2"
+  },
+  {
+    "name": "apache-tvm-ffi",
+    "version": "0.1.9"
+  },
+  {
+    "name": "certifi",
+    "version": "2026.7.22"
+  },
+  {
+    "name": "click",
+    "version": "8.4.2"
+  },
+  {
+    "name": "cloudpickle",
+    "version": "3.1.2"
+  },
+  {
+    "name": "contourpy",
+    "version": "1.3.3"
+  },
+  {
+    "name": "cuda-bindings",
+    "version": "13.3.1"
+  },
+  {
+    "name": "cuda-core",
+    "version": "1.0.1"
+  },
+  {
+    "name": "cuda-pathfinder",
+    "version": "1.6.0"
+  },
+  {
+    "name": "cuda-python",
+    "version": "13.3.1"
+  },
+  {
+    "name": "cuda-toolkit",
+    "version": "13.0.3.0"
+  },
+  {
+    "name": "cycler",
+    "version": "0.12.1"
+  },
+  {
+    "name": "einops",
+    "version": "0.8.2"
+  },
+  {
+    "name": "filelock",
+    "version": "3.29.0"
+  },
+  {
+    "name": "flatbuffers",
+    "version": "25.12.19"
+  },
+  {
+    "name": "fonttools",
+    "version": "4.63.0"
+  },
+  {
+    "name": "fsspec",
+    "version": "2026.4.0"
+  },
+  {
+    "name": "grad-cam",
+    "version": "1.5.5"
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0"
+  },
+  {
+    "name": "hf-xet",
+    "version": "1.5.2"
+  },
+  {
+    "name": "httpcore",
+    "version": "1.0.9"
+  },
+  {
+    "name": "httpx",
+    "version": "0.28.1"
+  },
+  {
+    "name": "huggingface_hub",
+    "version": "1.25.1"
+  },
+  {
+    "name": "idna",
+    "version": "3.19"
+  },
+  {
+    "name": "Jinja2",
+    "version": "3.1.6"
+  },
+  {
+    "name": "joblib",
+    "version": "1.5.3"
+  },
+  {
+    "name": "kiwisolver",
+    "version": "1.5.0"
+  },
+  {
+    "name": "mamba_ssm",
+    "version": "2.3.2.post1"
+  },
+  {
+    "name": "markdown-it-py",
+    "version": "4.2.0"
+  },
+  {
+    "name": "MarkupSafe",
+    "version": "3.0.3"
+  },
+  {
+    "name": "matplotlib",
+    "version": "3.11.1"
+  },
+  {
+    "name": "mdurl",
+    "version": "0.1.2"
+  },
+  {
+    "name": "ml_dtypes",
+    "version": "0.5.4"
+  },
+  {
+    "name": "mpmath",
+    "version": "1.3.0"
+  },
+  {
+    "name": "narwhals",
+    "version": "2.24.0"
+  },
+  {
+    "name": "networkx",
+    "version": "3.6.1"
+  },
+  {
+    "name": "ninja",
+    "version": "1.13.0"
+  },
+  {
+    "name": "numpy",
+    "version": "2.4.4"
+  },
+  {
+    "name": "nvidia-cublas",
+    "version": "13.1.1.3"
+  },
+  {
+    "name": "nvidia-cuda-cupti",
+    "version": "13.0.85"
+  },
+  {
+    "name": "nvidia-cuda-nvdisasm",
+    "version": "13.3.73"
+  },
+  {
+    "name": "nvidia-cuda-nvrtc",
+    "version": "13.0.88"
+  },
+  {
+    "name": "nvidia-cuda-runtime",
+    "version": "13.0.96"
+  },
+  {
+    "name": "nvidia-cudnn-cu13",
+    "version": "9.20.0.48"
+  },
+  {
+    "name": "nvidia-cufft",
+    "version": "12.0.0.61"
+  },
+  {
+    "name": "nvidia-cufile",
+    "version": "1.15.1.6"
+  },
+  {
+    "name": "nvidia-curand",
+    "version": "10.4.0.35"
+  },
+  {
+    "name": "nvidia-cusolver",
+    "version": "12.0.4.66"
+  },
+  {
+    "name": "nvidia-cusparse",
+    "version": "12.6.3.3"
+  },
+  {
+    "name": "nvidia-cusparselt-cu13",
+    "version": "0.8.1"
+  },
+  {
+    "name": "nvidia-cutlass-dsl",
+    "version": "4.6.0"
+  },
+  {
+    "name": "nvidia-cutlass-dsl-libs-base",
+    "version": "4.6.0"
+  },
+  {
+    "name": "nvidia-cutlass-dsl-libs-core",
+    "version": "4.6.0"
+  },
+  {
+    "name": "nvidia-cutlass-dsl-libs-cu12",
+    "version": "4.6.0"
+  },
+  {
+    "name": "nvidia-nccl-cu13",
+    "version": "2.29.7"
+  },
+  {
+    "name": "nvidia-nvjitlink",
+    "version": "13.2.78"
+  },
+  {
+    "name": "nvidia-nvshmem-cu13",
+    "version": "3.4.5"
+  },
+  {
+    "name": "nvidia-nvtx",
+    "version": "13.0.85"
+  },
+  {
+    "name": "onnx",
+    "version": "1.22.0"
+  },
+  {
+    "name": "onnxruntime",
+    "version": "1.30.0"
+  },
+  {
+    "name": "opencv-python",
+    "version": "5.0.0.93"
+  },
+  {
+    "name": "packaging",
+    "version": "26.3"
+  },
+  {
+    "name": "pandas",
+    "version": "3.0.5"
+  },
+  {
+    "name": "pillow",
+    "version": "12.2.0"
+  },
+  {
+    "name": "pip",
+    "version": "26.1.2"
+  },
+  {
+    "name": "protobuf",
+    "version": "6.33.6"
+  },
+  {
+    "name": "psutil",
+    "version": "7.2.2"
+  },
+  {
+    "name": "Pygments",
+    "version": "2.21.0"
+  },
+  {
+    "name": "pyparsing",
+    "version": "3.3.2"
+  },
+  {
+    "name": "python-dateutil",
+    "version": "2.9.0.post0"
+  },
+  {
+    "name": "PyYAML",
+    "version": "6.0.3"
+  },
+  {
+    "name": "quack-kernels",
+    "version": "0.6.1"
+  },
+  {
+    "name": "regex",
+    "version": "2026.7.19"
+  },
+  {
+    "name": "rich",
+    "version": "15.0.0"
+  },
+  {
+    "name": "safetensors",
+    "version": "0.8.0"
+  },
+  {
+    "name": "scikit-learn",
+    "version": "1.9.0"
+  },
+  {
+    "name": "scipy",
+    "version": "1.18.0"
+  },
+  {
+    "name": "seaborn",
+    "version": "0.13.2"
+  },
+  {
+    "name": "setuptools",
+    "version": "78.1.0"
+  },
+  {
+    "name": "shellingham",
+    "version": "1.5.4"
+  },
+  {
+    "name": "six",
+    "version": "1.17.0"
+  },
+  {
+    "name": "sympy",
+    "version": "1.14.0"
+  },
+  {
+    "name": "threadpoolctl",
+    "version": "3.6.0"
+  },
+  {
+    "name": "tilelang",
+    "version": "0.1.8"
+  },
+  {
+    "name": "timm",
+    "version": "1.0.28"
+  },
+  {
+    "name": "tokenizers",
+    "version": "0.22.2"
+  },
+  {
+    "name": "torch",
+    "version": "2.13.0+cu130"
+  },
+  {
+    "name": "torch_c_dlpack_ext",
+    "version": "0.1.5"
+  },
+  {
+    "name": "torchvision",
+    "version": "0.28.0+cu130"
+  },
+  {
+    "name": "tqdm",
+    "version": "4.70.0"
+  },
+  {
+    "name": "transformers",
+    "version": "5.14.1"
+  },
+  {
+    "name": "triton",
+    "version": "3.7.1"
+  },
+  {
+    "name": "ttach",
+    "version": "0.0.3"
+  },
+  {
+    "name": "typer",
+    "version": "0.27.0"
+  },
+  {
+    "name": "typing_extensions",
+    "version": "4.16.0"
+  },
+  {
+    "name": "z3-solver",
+    "version": "4.15.4.0"
+  }
+]

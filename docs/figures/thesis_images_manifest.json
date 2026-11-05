@@ -1,0 +1,561 @@
+{
+  "pdf": "Luận văn thạc sĩ.pdf",
+  "pdf_sha256": "5e9cd682fe50ce4ea7579ba5c7aad5006b4b8f81489c156b67ecb2a133aa8a8f",
+  "pdf_pages": 108,
+  "method": "Render each embedded image region from its PDF page on a white background at approximately native image resolution, preserving PDF soft-mask rendering; vertically stack panels for figures 4.7 and 4.8. No figure content is redrawn.",
+  "figures": [
+    {
+      "figure": "3.1",
+      "path": "docs/figures/thesis_fig_3_1_architecture.png",
+      "width": 1368,
+      "height": 568,
+      "sha256": "6f0d96b835f50f2d49533cdca3085447c5bcfcb8b88a7a65beb952f9f22c4fda",
+      "pdf_objects": [
+        {
+          "pdf_page": 43,
+          "printed_page": 40,
+          "xref": 335,
+          "image_bytes_sha256": "7d0abfa830a94d6f000d8ccbceb1266ec12a47227b8af11fb5c6f6e394a560b1",
+          "soft_mask_xref": 336,
+          "render_scale": 3.0861270173327715,
+          "bounds": [
+            [
+              99.25,
+              374.77001953125,
+              542.2000122070312,
+              558.52001953125
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "code/mango_mamba.py",
+          "sha256": "2ed4bb06ab9434d263dd1288c3dcd6b57023e10d4a99cec755cbfeed2150a54d"
+        }
+      ]
+    },
+    {
+      "figure": "3.2",
+      "path": "docs/figures/thesis_fig_3_2_block.png",
+      "width": 1385,
+      "height": 741,
+      "sha256": "31e2c649cf4a3182835d8a375dbcfea62815aa8dc4e522d87422d31ff9f66d76",
+      "pdf_objects": [
+        {
+          "pdf_page": 46,
+          "printed_page": 43,
+          "xref": 340,
+          "image_bytes_sha256": "692ed66170f004197431314d20a608c4457a18c9696eaf3a3b886261db475eed",
+          "soft_mask_xref": 341,
+          "render_scale": 3.0752139485373466,
+          "bounds": [
+            [
+              99.25,
+              105.68997192382812,
+              549.2999877929688,
+              346.52996826171875
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "code/mango_mamba.py",
+          "sha256": "2ed4bb06ab9434d263dd1288c3dcd6b57023e10d4a99cec755cbfeed2150a54d"
+        }
+      ]
+    },
+    {
+      "figure": "3.3",
+      "path": "docs/figures/thesis_fig_3_3_curriculum.png",
+      "width": 1262,
+      "height": 898,
+      "sha256": "f8db671e141b2847320a666cffea1a3bfe34fb04cae06bf9fb7218ca0575ae50",
+      "pdf_objects": [
+        {
+          "pdf_page": 51,
+          "printed_page": 48,
+          "xref": 347,
+          "image_bytes_sha256": "32bb55ad4e7b1cb0fc3ee74082ba2fe4515e666f6b7ecb8321ca498d618798fb",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7760044028618602,
+          "bounds": [
+            [
+              99.25,
+              223.52999877929688,
+              553.5,
+              546.75
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "code/run_curriculum.py",
+          "sha256": "fe5a5de6422b5e82f1000c2041f6ecddbd0aaab0959610a8a77b43745b4f65ea"
+        },
+        {
+          "path": "code/train_mango_mamba.py",
+          "sha256": "43a960a0a01a9b64d5c2a4a92edec97592cd7f25c1e230b982cb355408d0e794"
+        }
+      ]
+    },
+    {
+      "figure": "4.1",
+      "path": "docs/figures/thesis_fig_4_1_android_ui.png",
+      "width": 1205,
+      "height": 682,
+      "sha256": "6b48cc4c58e0a621a4947f4fe59c74dd84e07a414f6351e0cb93928ab6147b9d",
+      "pdf_objects": [
+        {
+          "pdf_page": 57,
+          "printed_page": 54,
+          "xref": 368,
+          "image_bytes_sha256": "2b6e34888052feee47b4f342065ff223aaceaabdb2ecc17a60d296dce18f7683",
+          "soft_mask_xref": 0,
+          "render_scale": 2.777393310265283,
+          "bounds": [
+            [
+              99.25,
+              353.3800048828125,
+              532.75,
+              598.4299926757812
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "android/app/src/main/java/com/mangomamba/benchmark/MainActivity.kt",
+          "sha256": "fcaa7a667e327b996e23ebd70089acc532a12c9a5298c28fa1e94c81b08d6f97"
+        },
+        {
+          "path": "android/app/src/main/assets/mango_mamba_v3_phase3_320_cam_manifest.json",
+          "sha256": "c5cc1da8a463d6b749ae82a559d512823f0326b2cab545e05e42deff43d89b3a"
+        }
+      ]
+    },
+    {
+      "figure": "4.2",
+      "path": "docs/figures/thesis_fig_4_2_training_vn_seed42.png",
+      "width": 1243,
+      "height": 409,
+      "sha256": "496e40713b0193b5c65e72d29417e7c5fb639d5f6effa2d97b8b1a5032bfb910",
+      "pdf_objects": [
+        {
+          "pdf_page": 63,
+          "printed_page": 60,
+          "xref": 375,
+          "image_bytes_sha256": "7d571280c14dddc1f44a5230df5b38e6f840864c033c3fce0a2b0a008e38311f",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7763497659147798,
+          "bounds": [
+            [
+              99.25,
+              545.530029296875,
+              546.5999755859375,
+              692.4300537109375
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/training_curves.png",
+          "sha256": "07097706015f608dc718cc21ef63a31974d088b86268e3fbfab165de10ba27a0"
+        }
+      ]
+    },
+    {
+      "figure": "4.3",
+      "path": "docs/figures/thesis_fig_4_3_confusion_mangoleafbd_seed3333.png",
+      "width": 1012,
+      "height": 875,
+      "sha256": "6472ea574689af91dfcba4b7ff5f5938ac1f8b029864b03c7206b0cf7c5cad6f",
+      "pdf_objects": [
+        {
+          "pdf_page": 65,
+          "printed_page": 62,
+          "xref": 378,
+          "image_bytes_sha256": "49c2e28691b82455fa7e4f6b62470f0c5ebf82bf88c037ec9b1be781d1221e35",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7764045678310847,
+          "bounds": [
+            [
+              136.67999267578125,
+              83.26995849609375,
+              500.82000732421875,
+              398.219970703125
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "experiments/01_phase1_mangoleafbd_320_seed_3333/confusion_matrix_test.png",
+          "sha256": "ab946ab1319dace06af7cff13d0688a88eeb5e4c8b49f05b0f85a0ad7763d05b"
+        }
+      ]
+    },
+    {
+      "figure": "4.4",
+      "path": "docs/figures/thesis_fig_4_4_confusion_combined_seed123.png",
+      "width": 1003,
+      "height": 875,
+      "sha256": "43d78c865ee0287be13051d85506a0cbd9f9f12dd993258b6ab24a7eda25da6f",
+      "pdf_objects": [
+        {
+          "pdf_page": 65,
+          "printed_page": 62,
+          "xref": 379,
+          "image_bytes_sha256": "9436ef0aa875f7a0458becd9690cd30c11cd2fcd6588b44c9ac01b30a8bcb16a",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7752390976989845,
+          "bounds": [
+            [
+              154.97999572753906,
+              426.4499816894531,
+              516.0299682617188,
+              741.5399780273438
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "experiments/03_phase2_combined_320_seed_123/confusion_matrix_test.png",
+          "sha256": "380444589c21f1ab4e508ec035079c598bf174df92ae931f53b04fb23ff793fd"
+        }
+      ]
+    },
+    {
+      "figure": "4.5",
+      "path": "docs/figures/thesis_fig_4_5_confusion_vn_seed42.png",
+      "width": 920,
+      "height": 804,
+      "sha256": "6d29decba799aecf44afcc0c6332524f4ae8b825c532be275e1ed83ff338d9e5",
+      "pdf_objects": [
+        {
+          "pdf_page": 66,
+          "printed_page": 63,
+          "xref": 381,
+          "image_bytes_sha256": "5b176b5535942892e1e95941e5c828523c9a8347d39f5650f138a156eb4d7b02",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7770225205134658,
+          "bounds": [
+            [
+              169.97999572753906,
+              103.97000122070312,
+              500.90997314453125,
+              392.8699951171875
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/confusion_matrix_test.png",
+          "sha256": "5c81221eece7ebe6a11b78734736f92f5f99becf87e472b98e621547cc8024ee"
+        }
+      ]
+    },
+    {
+      "figure": "4.6",
+      "path": "docs/figures/thesis_fig_4_6_accuracy_by_seed.png",
+      "width": 1225,
+      "height": 584,
+      "sha256": "adc17c4a4f073b8f57e4dda510b0c9dfbd11e477eccc9b121fdb551c22dfa023",
+      "pdf_objects": [
+        {
+          "pdf_page": 67,
+          "printed_page": 64,
+          "xref": 383,
+          "image_bytes_sha256": "509a4d82e820a275a5d0c46277b25828d4b22d953620e4170107352d5b59e290",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7755102040816326,
+          "bounds": [
+            [
+              99.25,
+              484.3900146484375,
+              540.25,
+              694.6400146484375
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "experiments/01_phase1_mangoleafbd_320_seed_42/training_results.json",
+          "sha256": "5307792f69ad0fa141c66db776fcfc16de47725681b12d1b8071fd6673408c0c"
+        },
+        {
+          "path": "experiments/01_phase1_mangoleafbd_320_seed_123/training_results.json",
+          "sha256": "300c8e68a432d8f68adcbef9ddcf75c64df61edd7bc4ba12d2bcc9c64cd7bb6f"
+        },
+        {
+          "path": "experiments/01_phase1_mangoleafbd_320_seed_2024/training_results.json",
+          "sha256": "d63116825035713a64b27d7562d36e5ddb46c577c61ef7ed0d7b33ae9acb3339"
+        },
+        {
+          "path": "experiments/01_phase1_mangoleafbd_320_seed_3333/training_results.json",
+          "sha256": "f6d483394e662115fbba84c3246879abfaf0d7fc891c79ce8c1df3fadc07b789"
+        },
+        {
+          "path": "experiments/03_phase2_combined_320_seed_42/training_results.json",
+          "sha256": "0980087d7ba2aa6582e1dc9dd37c45ff5f4dfa777a827a71cb182dc341aa8f7a"
+        },
+        {
+          "path": "experiments/03_phase2_combined_320_seed_123/training_results.json",
+          "sha256": "ffebaa7444062ece1d2a93c781278bf325d4bc5b79e7fc8138f5b7055deca3e2"
+        },
+        {
+          "path": "experiments/03_phase2_combined_320_seed_2024/training_results.json",
+          "sha256": "e0a482a0538d6dcf8bd30762f832a451f7ca34a349bde27d58a6f90851ae5c42"
+        },
+        {
+          "path": "experiments/03_phase2_combined_320_seed_3333/training_results.json",
+          "sha256": "d391ba09b6983acd34aa5ebb1aec8860d6d97c979a9dc10856eabd52e41b425e"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/training_results.json",
+          "sha256": "82185a36d9b611a08f135868f55a1c68aec6e1cacbfc30184d6dbf82ae0bc2fa"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_123/training_results.json",
+          "sha256": "98ddf92b811a9861aabcd473ff48ba1e2fe94ed463706cc9c683ffeb13945685"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_2024/training_results.json",
+          "sha256": "d5175f8817134acfec4fee2d6f946dbd5083c4e9238ec2eb0b557e2b14b85098"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_3333/training_results.json",
+          "sha256": "0b66ba56821b5fe8404ce7b0c06c70c1d1ff73a4689194bedc5f5f1e8403df95"
+        }
+      ]
+    },
+    {
+      "figure": "4.7",
+      "path": "docs/figures/thesis_fig_4_7_gradcam_vn_seed42.png",
+      "width": 1118,
+      "height": 2758,
+      "sha256": "048b6911ed00ed206083115c0403e57213947b4fe406935526aad25496063664",
+      "pdf_objects": [
+        {
+          "pdf_page": 71,
+          "printed_page": 68,
+          "xref": 388,
+          "image_bytes_sha256": "6d1b4968a46f235fbf080bf92e959443aed139d6d1dedd9e694a1414cc128b73",
+          "soft_mask_xref": 0,
+          "render_scale": 2.776535008434625,
+          "bounds": [
+            [
+              117.75,
+              262.65997314453125,
+              520.0499877929688,
+              404.3599853515625
+            ]
+          ]
+        },
+        {
+          "pdf_page": 71,
+          "printed_page": 68,
+          "xref": 389,
+          "image_bytes_sha256": "7260466d2b5084ed20fd8ef0713aba65c856efbdd5cb32177702345a47c4c651",
+          "soft_mask_xref": 0,
+          "render_scale": 2.776535008434625,
+          "bounds": [
+            [
+              117.75,
+              434.80999755859375,
+              520.0499877929688,
+              576.510009765625
+            ]
+          ]
+        },
+        {
+          "pdf_page": 71,
+          "printed_page": 68,
+          "xref": 390,
+          "image_bytes_sha256": "d43c44e655c399fe5127bac11f7e7df828d4c69e3fabe6113b99942fcd14dc7c",
+          "soft_mask_xref": 0,
+          "render_scale": 2.776535008434625,
+          "bounds": [
+            [
+              117.75,
+              606.9539794921875,
+              520.0499877929688,
+              748.6539916992188
+            ]
+          ]
+        },
+        {
+          "pdf_page": 72,
+          "printed_page": 69,
+          "xref": 392,
+          "image_bytes_sha256": "7756f51e22f4803e8fa02735c375ff780b8b41f80d22d23b930f02b8b2412237",
+          "soft_mask_xref": 0,
+          "render_scale": 2.776535008434625,
+          "bounds": [
+            [
+              117.75,
+              83.26997375488281,
+              520.0499877929688,
+              224.969970703125
+            ]
+          ]
+        },
+        {
+          "pdf_page": 72,
+          "printed_page": 69,
+          "xref": 393,
+          "image_bytes_sha256": "7d33623b49ca82d9ec034a72a4b20ef7c5f8b09bda1230db2b63fa65655a9f3e",
+          "soft_mask_xref": 0,
+          "render_scale": 2.776535008434625,
+          "bounds": [
+            [
+              117.75,
+              255.4199981689453,
+              520.0499877929688,
+              397.1199951171875
+            ]
+          ]
+        },
+        {
+          "pdf_page": 72,
+          "printed_page": 69,
+          "xref": 394,
+          "image_bytes_sha256": "e05f4af9f2aa57f140eaea51257a8a7e0b9453d98db1c737e2d2fbd2c96de073",
+          "soft_mask_xref": 0,
+          "render_scale": 2.776535008434625,
+          "bounds": [
+            [
+              117.75,
+              427.57000732421875,
+              520.0499877929688,
+              569.27001953125
+            ]
+          ]
+        },
+        {
+          "pdf_page": 72,
+          "printed_page": 69,
+          "xref": 395,
+          "image_bytes_sha256": "b657de6a0a2137c2a618f3f53d485b412ac5c922f3b02d7cc4ca5b3aa7eb27f9",
+          "soft_mask_xref": 0,
+          "render_scale": 2.776535008434625,
+          "bounds": [
+            [
+              117.75,
+              599.719970703125,
+              520.0499877929688,
+              741.4199829101562
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Healthy.png",
+          "sha256": "a1122806f504b8d07be900c6ab95891738c903a4668f769cdc8bb4862dd5e66f"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Anthracnose.png",
+          "sha256": "33583c5ef24d71670749f49cad9f862dfd2697f55b685ecd8f52017a04b950ae"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Gall_Midge.png",
+          "sha256": "1c2f1f8e893dd3e9dc8605a978165cfd1488640d6fbea90ab7ff78ef95ca383e"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Powdery_Mildew.png",
+          "sha256": "fc1174951f247db7f7afe2b5697862a1de50c935c43ecdb58a406eba6abdf956"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Sooty_Mold.png",
+          "sha256": "ba081b6dcff5c43a353fa504f21e610a311e4e4b90cc1d05a96a31743e3f8e85"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Dieback.png",
+          "sha256": "1ed58c7249c54a26ad824ab3078fa977b469bcf626418a8376c15a8c06d6461a"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/gradcam_Red_Rust.png",
+          "sha256": "f4d300a1a8b6b824703f9dca37df9406404996cbe954e806797502c1b0b87a78"
+        }
+      ]
+    },
+    {
+      "figure": "4.8",
+      "path": "docs/figures/thesis_fig_4_8_errors_vn_seed42.png",
+      "width": 1011,
+      "height": 1183,
+      "sha256": "1ffb59e2d8a4e9d22040e902b7743eb5f90a58544121850aad78fd6c95578507",
+      "pdf_objects": [
+        {
+          "pdf_page": 73,
+          "printed_page": 70,
+          "xref": 397,
+          "image_bytes_sha256": "b8dca6c845cca02947d36a8e6b6bf27f209d9da1273cd205a690587ea65dd918",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7773956611920494,
+          "bounds": [
+            [
+              153.8800048828125,
+              431.88995361328125,
+              517.530029296875,
+              573.5899658203125
+            ]
+          ]
+        },
+        {
+          "pdf_page": 73,
+          "printed_page": 70,
+          "xref": 398,
+          "image_bytes_sha256": "d3934cbc853a94bb7ce3274a967ea543d9fb976ce0f5b0b5b26a9b9603504633",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7773956611920494,
+          "bounds": [
+            [
+              153.8800048828125,
+              601.7669677734375,
+              517.530029296875,
+              743.4669799804688
+            ]
+          ]
+        },
+        {
+          "pdf_page": 74,
+          "printed_page": 71,
+          "xref": 400,
+          "image_bytes_sha256": "d1493973bba99ad483b267a1ce9bdaeb6ccb18fa640f071df804b5348343ac0d",
+          "soft_mask_xref": 0,
+          "render_scale": 2.7773956611920494,
+          "bounds": [
+            [
+              153.8800048828125,
+              83.26997375488281,
+              517.530029296875,
+              224.969970703125
+            ]
+          ]
+        }
+      ],
+      "related_sources": [
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/error_001_true_Anthracnose_pred_Gall_Midge_cam.png",
+          "sha256": "a4f063b00bda174026bd10590dd46d04efc77ff6516bf0f130d2b492282c52c5"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/error_002_true_Anthracnose_pred_Sooty_Mold_cam.png",
+          "sha256": "fde0de1d5a024c3cf6c881d6a6ea4c47c8c26946891977bc9ba1f48f4fa49dd7"
+        },
+        {
+          "path": "experiments/04_phase3_vn_mangoleaf_320_seed_42/error_003_true_Anthracnose_pred_Red_Rust_cam.png",
+          "sha256": "41ba7092bd65f88d2b31c4f1b37337da50a259a41ed1e5ec7606318b3a01475f"
+        }
+      ]
+    }
+  ]
+}

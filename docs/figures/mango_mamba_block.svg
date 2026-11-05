@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1260" height="800" viewBox="0 0 1260 800" role="img" aria-labelledby="title desc">
+  <title id="title">MangoMambaBlock and its two mixer choices</title>
+  <desc id="desc">Window-token input, two pre-normalized residual branches, and learned input-independent channel gates inside MultiScaleMambaMixer and LKA.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8Z" fill="#334155"/></marker>
+    <style>
+      text{font-family:Arial,sans-serif;fill:#172033;font-size:17px;text-anchor:middle}
+      .head{font-size:22px;font-weight:bold}.small{font-size:15px}.math{font-family:Consolas,monospace;font-size:16px}
+      .box{stroke:#64748b;stroke-width:1.5;rx:8}.line{fill:none;stroke:#334155;stroke-width:1.8;marker-end:url(#arrow)}
+      .frame{fill:#fff;stroke:#cbd5e1;stroke-width:1.5;rx:12}
+    </style>
+  </defs>
+  <rect width="1260" height="800" fill="white"/>
+  <rect x="20" y="20" width="350" height="758" class="frame"/>
+  <text x="195" y="58" class="head">MangoMambaBlock</text>
+  <text x="195" y="95" class="math">x: B_win × S² × C</text>
+  <path d="M195 108V135" class="line"/>
+  <rect x="100" y="138" width="190" height="44" fill="#eef2ff" class="box"/><text x="195" y="166">LayerNorm(C)</text>
+  <path d="M195 182V209" class="line"/>
+  <rect x="85" y="212" width="220" height="56" fill="#dcfce7" class="box"/><text x="195" y="236">Mixer</text><text x="195" y="257" class="small">MultiScaleMamba or LKA</text>
+  <path d="M195 268V294" class="line"/>
+  <rect x="88" y="297" width="214" height="44" fill="#fff7db" class="box"/><text x="195" y="325">γ₁ × output; DropPath</text>
+  <path d="M195 341V366" class="line"/><circle cx="195" cy="383" r="16" fill="white" stroke="#334155"/><text x="195" y="389">+</text>
+  <path d="M195 116H50V383H177" class="line"/>
+  <path d="M195 399V426" class="line"/>
+  <rect x="100" y="429" width="190" height="44" fill="#eef2ff" class="box"/><text x="195" y="457">LayerNorm(C)</text>
+  <path d="M195 473V499" class="line"/>
+  <rect x="85" y="502" width="220" height="48" fill="#fce7f3" class="box"/><text x="195" y="532">SwiGLU or GELU MLP</text>
+  <path d="M195 550V576" class="line"/>
+  <rect x="88" y="579" width="214" height="44" fill="#fff7db" class="box"/><text x="195" y="607">γ₂ × output; DropPath</text>
+  <path d="M195 623V648" class="line"/><circle cx="195" cy="665" r="16" fill="white" stroke="#334155"/><text x="195" y="671">+</text>
+  <path d="M195 412H50V665H177" class="line"/>
+  <path d="M195 681V712" class="line"/><text x="195" y="740" class="math">output: B_win × S² × C</text>
+  <text x="195" y="764" class="small">γ₁ = γ₂ = 1 when layer scale is off</text>
+
+  <rect x="400" y="20" width="840" height="384" class="frame"/>
+  <text x="820" y="59" class="head">MultiScaleMambaMixer</text>
+  <text x="820" y="94" class="math">input: B_win × S² × C</text>
+  <path d="M820 108V126H610V146" class="line"/><path d="M820 126H1030V146" class="line"/>
+  <rect x="466" y="150" width="288" height="64" fill="#dcfce7" class="box"/><text x="610" y="177">DiseaseAwareMixer</text><text x="610" y="199" class="small">native S × S window; expand 1.5</text>
+  <rect x="876" y="150" width="308" height="64" fill="#e0f2fe" class="box"/><text x="1030" y="177">Reshape; bilinear downsample</text><text x="1030" y="199" class="small">S_low = max(1, floor(S / 2))</text>
+  <path d="M1030 214V238" class="line"/>
+  <rect x="876" y="241" width="308" height="62" fill="#dcfce7" class="box"/><text x="1030" y="266">DiseaseAwareMixer; expand 1.0</text><text x="1030" y="289" class="small">bilinear upsample back to S × S</text>
+  <path d="M610 214V325H738" class="line"/><path d="M1030 303V325H902" class="line"/>
+  <rect x="741" y="310" width="158" height="34" fill="#fff7db" class="box"/><text x="820" y="333">Gated fusion</text>
+  <text x="820" y="368" class="math">y = (1 - g) × y_high + g × y_low_up</text>
+  <text x="820" y="391" class="small">g = sigmoid(θ), learned parameter θ with shape 1 × 1 × C</text>
+
+  <rect x="400" y="426" width="840" height="240" class="frame"/>
+  <text x="820" y="464" class="head">LargeKernelAttention in MangoMambaBlock</text>
+  <text x="820" y="496" class="math">tokens → x_img: B_win × C × S × S</text>
+  <rect x="438" y="519" width="215" height="48" fill="#e0f2fe" class="box"/><text x="545" y="549">DWConv 3 × 3</text>
+  <path d="M653 543H695" class="line"/>
+  <rect x="699" y="519" width="252" height="48" fill="#e0f2fe" class="box"/><text x="825" y="549">DWConv 5 × 5; dilation 2</text>
+  <path d="M951 543H991" class="line"/>
+  <rect x="995" y="519" width="211" height="48" fill="#fff7db" class="box"/><text x="1100" y="549">g × attention + x_img</text>
+  <text x="820" y="604" class="small">g = sigmoid(θ), learned parameter θ with shape 1 × C × 1 × 1</text>
+  <text x="820" y="638" class="math">flatten spatial axes → B_win × S² × C</text>
+
+  <text x="820" y="711">The gates are learned channel parameters, not input-derived global context.</text>
+  <text x="820" y="740" class="small">A hybrid stage uses the two mixer types in different blocks.</text>
+  <text x="820" y="765" class="small">Spatial C × H × W labels belong at stage boundaries, outside window-token blocks.</text>
+</svg>

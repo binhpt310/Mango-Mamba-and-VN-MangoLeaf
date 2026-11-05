@@ -7,3 +7,10 @@ runs/
 __pycache__/
 *.py[cod]
 *.part
+
+# Local Python environments and working files.
+.venv*/
+venv/
+tmp/
+# Native recovery artifacts are kept locally; configuration stays in Git.
+environment/asus/wheels/
