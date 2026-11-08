@@ -52,15 +52,15 @@ Các số trên được tính từ `training_results.json → test_metrics` c�
 
 Mã mô hình: [mango_mamba.py](code/mango_mamba.py).
 
-### 2.2. Cấu trúc block
+### 2.2. Cấu trúc 1 MangoMamba Block
 
 ![MangoMambaBlock, window-token và gate học được](docs/figures/mango_mamba_block.svg)
 
 Sơ đồ theo [mango_mamba.py](code/mango_mamba.py): block nhận chuỗi `B_win × S² × C`; gate trong hai mixer là tham số học được theo kênh.
 
-### 2.3. Học theo chương trình ba giai đoạn (Hình 3.3)
+### 2.3. Học theo quy trình ba giai đoạn (Hình 3.3)
 
-![Hình 3.3. Quy trình huấn luyện theo chương trình ba giai đoạn](docs/figures/thesis_fig_3_3_curriculum.png)
+![Hình 3.3. Quy trình huấn luyện theo quy trình ba giai đoạn](docs/figures/thesis_fig_3_3_curriculum.png)
 
 Quy trình chạy: [run_curriculum.py](code/run_curriculum.py).
 
@@ -136,8 +136,6 @@ Lệnh giải nén tạo `data/<bộ_dữ_liệu>/{train,val,test}/<tên_lớp>/
 | `data/mangoleafBD` | 8 | 3.200 | 400 | 400 |
 | `data/combined_dataset` | 8 | 32.000 | 4.000 | 4.000 |
 | `data/vn_mangoleaf` | 7 | 5.600 | 700 | 700 |
-
-[Manifest dữ liệu](datasets/mango_mamba_datasets.manifest.json) ghi SHA-256 của ZIP và từng file; [file checksum](datasets/mango_mamba_datasets.zip.sha256) dùng để kiểm tra bản tải về.
 
 Repo có 36 file kết quả và 16 checkpoint của phase 1, phase 2, phase 3 và direct-VN. Các lượt ablation hiện có kết quả nhưng thiếu checkpoint.
 
